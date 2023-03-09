@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:real_estate/screens/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
 import '../main.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,8 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           systemNavigationBarColor: Colors.white,
           statusBarColor: Colors.white));
-      Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+      _initializeFirebase().then((value) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+      });
     });
   }
 
@@ -47,4 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
       ]),
     );
   }
+}
+
+Future<void> _initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
