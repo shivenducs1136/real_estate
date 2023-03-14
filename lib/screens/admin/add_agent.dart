@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
+import "package:image_picker/image_picker.dart";
+import "package:real_estate/apis/api.dart";
+import "package:real_estate/model/agent_model.dart";
 
+import "../../helper/dialogs.dart";
 import "../../main.dart";
 
 class AddAgentScreen extends StatefulWidget {
@@ -11,6 +15,12 @@ class AddAgentScreen extends StatefulWidget {
 
 class _AddAgentScreenState extends State<AddAgentScreen> {
   final formKey = GlobalKey<FormState>();
+  String agent_name = "";
+  String age = "";
+  String phone_number = "";
+  String address = "";
+  XFile? img;
+  bool isImageAdded = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -65,6 +75,14 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                agent_name = value;
+                              });
+                            },
+                            validator: (val) => val != null && val.isNotEmpty
+                                ? null
+                                : "Required Field",
                             keyboardType: TextInputType.name,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -99,6 +117,15 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    age = value;
+                                  });
+                                },
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
@@ -130,6 +157,15 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               height: mq.height * .05,
                               width: mq.width * .5,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    phone_number = value;
+                                  });
+                                },
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
@@ -168,6 +204,14 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            address = value;
+                          });
+                        },
+                        validator: (val) => val != null && val.isNotEmpty
+                            ? null
+                            : "Required Field",
                         keyboardType: TextInputType.streetAddress,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -186,7 +230,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         Column(
                           children: [
                             Text(
-                              "Add Images",
+                              "Add Agent Image",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -195,11 +239,29 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             SizedBox(
                               width: mq.width * .1,
                             ),
-                            Image.asset(
-                              "images/addimg.png",
-                              height: 50,
-                              width: 50,
+                            InkWell(
+                              onTap: () async {
+                                final ImagePicker _picker = ImagePicker();
+                                final XFile? image = await _picker.pickImage(
+                                    source: ImageSource.gallery);
+                                setState(() {
+                                  img = image;
+                                });
+                              },
+                              child: Image.asset(
+                                "images/addimg.png",
+                                height: 50,
+                                width: 50,
+                              ),
                             ),
+                            if (isImageAdded)
+                              Text(
+                                "Agent image added",
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              )
                           ],
                         ),
                       ],
@@ -207,21 +269,47 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     SizedBox(
                       height: mq.height * .1,
                     ),
-                    Container(
-                      height: mq.height * .07,
-                      width: mq.width,
-                      child: Center(
-                        child: Text(
-                          "Add Agent",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: () {
+                        Dialogs.showProgressBar(context);
+                        AgentModel a = AgentModel(
+                            agent_name: agent_name,
+                            age: age,
+                            phone_number: phone_number,
+                            address: address,
+                            id: "${DateTime.now().microsecondsSinceEpoch}");
+                        APIs.addAgentToFirebase(a).then((value) {
+                          if (img != null) {
+                            APIs.addAgentImage(img!, a).then((value) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Dialogs.showSnackbar(
+                                  context, "Agent Added Successfully");
+                            });
+                          } else {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Dialogs.showSnackbar(
+                                context, "Agent Added Successfully");
+                          }
+                        });
+                      },
+                      child: Container(
+                        height: mq.height * .07,
+                        width: mq.width,
+                        child: Center(
+                          child: Text(
+                            "Add Agent",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blue),
                       ),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.blue),
                     )
                   ]),
             ),

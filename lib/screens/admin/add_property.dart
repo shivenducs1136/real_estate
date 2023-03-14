@@ -1,5 +1,12 @@
-import "package:flutter/material.dart";
+import "dart:developer";
 
+import "package:flutter/material.dart";
+import "package:geocoding/geocoding.dart";
+import "package:geolocator/geolocator.dart";
+import "package:image_picker/image_picker.dart";
+import "package:real_estate/apis/api.dart";
+import "package:real_estate/model/property_model.dart";
+import "../../helper/dialogs.dart";
 import "../../main.dart";
 
 class AddPropertyScreen extends StatefulWidget {
@@ -11,7 +18,21 @@ class AddPropertyScreen extends StatefulWidget {
 
 class _AddPropertyScreenState extends State<AddPropertyScreen> {
   final formKey = GlobalKey<FormState>();
-
+  String property_name = "";
+  String bedrooms = "";
+  String bathrooms = "";
+  String garages = "";
+  String area = "";
+  String status = "";
+  String year_built = "";
+  String address = "";
+  String lat = "";
+  String long = "";
+  List<XFile>? images = <XFile>[];
+  bool isImageAdded = false;
+  bool isLocationFetched = false;
+  String? _currentAddress;
+  Position? _currentPosition;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -66,7 +87,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                property_name = value;
+                              });
+                            },
                             keyboardType: TextInputType.name,
+                            validator: (val) => val != null && val.isNotEmpty
+                                ? null
+                                : "Required Field",
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12)),
@@ -100,7 +129,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    bedrooms = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
@@ -118,7 +156,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Bedrooms",
+                              "Bathrooms",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -131,12 +169,21 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    bathrooms = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
                                   hintText: "eg. 1,2,3",
-                                  labelText: "Bedrooms",
+                                  labelText: "Bathrooms",
                                 ),
                               ),
                             )
@@ -167,7 +214,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    garages = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
@@ -198,7 +254,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    area = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
@@ -234,7 +299,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    status = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.name,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
@@ -265,7 +339,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                onChanged: (value) {
+                                  setState(() {
+                                    year_built = value!;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
+                                validator: (val) =>
+                                    val != null && val.isNotEmpty
+                                        ? null
+                                        : "Required Field",
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
@@ -300,7 +383,15 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            address = value!;
+                          });
+                        },
                         keyboardType: TextInputType.streetAddress,
+                        validator: (val) => val != null && val.isNotEmpty
+                            ? null
+                            : "Required Field",
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
@@ -327,37 +418,101 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             SizedBox(
                               width: mq.width * .1,
                             ),
-                            Image.asset(
-                              "images/addimg.png",
-                              height: 50,
-                              width: 50,
+                            InkWell(
+                              onTap: () async {
+                                // addimages
+                                final ImagePicker _picker = ImagePicker();
+                                List<XFile>? img = await _picker
+                                    .pickMultiImage()
+                                    .then((value) {
+                                  setState(() {
+                                    images = value;
+                                    isImageAdded = true;
+                                  });
+                                });
+                              },
+                              child: Image.asset(
+                                "images/addimg.png",
+                                height: 50,
+                                width: 50,
+                              ),
                             ),
+                            if (isImageAdded)
+                              Text(
+                                "${images?.length} images selected",
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              )
                           ],
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _handleLocationPermission().then(
+                              (value) {
+                                _getCurrentPosition().then((value) {
+                                  setState(() {
+                                    lat =
+                                        _currentPosition?.latitude.toString() ??
+                                            "";
+                                    long = _currentPosition?.longitude
+                                            .toString() ??
+                                        "";
+                                    isLocationFetched = true;
+                                  });
+                                });
+                              },
+                            );
+                          },
                           child: Text("GPS Location"),
                         ),
+                        if (isLocationFetched)
+                          Icon(Icons.done_all_outlined, color: Colors.green)
                       ],
                     ),
                     SizedBox(
                       height: mq.height * .1,
                     ),
-                    Container(
-                      height: mq.height * .07,
-                      width: mq.width,
-                      child: Center(
-                        child: Text(
-                          "Add Property",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: () {
+                        // add data to firebase
+                        Property p = Property(
+                            property_name: property_name,
+                            bedrooms: bedrooms,
+                            bathrooms: bathrooms,
+                            garages: garages,
+                            area: area,
+                            id: "${DateTime.now().microsecondsSinceEpoch}",
+                            address: address,
+                            lat: lat,
+                            lon: long);
+                        Dialogs.showProgressBar(context);
+                        APIs.addPropertyToFirebase(p).then((value) {
+                          APIs.addPropertyPhotos(images!, p).then((value) {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Dialogs.showSnackbar(
+                                context, "Property Added Successfully");
+                          });
+                        });
+                      },
+                      child: Container(
+                        height: mq.height * .07,
+                        width: mq.width,
+                        child: Center(
+                          child: Text(
+                            "Add Property",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blue),
                       ),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.blue),
                     )
                   ]),
             ),
@@ -365,5 +520,58 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _getCurrentPosition() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress = """${place.street}, ${place.subLocality},
+          ${place.subAdministrativeArea}, ${place.postalCode}""";
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 }
