@@ -2,6 +2,7 @@ class Property {
   Property({
     required this.property_name,
     required this.bedrooms,
+    required this.cost,
     required this.bathrooms,
     required this.garages,
     required this.area,
@@ -9,6 +10,7 @@ class Property {
     required this.address,
     required this.lat,
     required this.lon,
+    required this.showImg,
   });
   late String property_name;
   late String bedrooms;
@@ -19,17 +21,21 @@ class Property {
   late String address;
   late String lat;
   late String lon;
+  late String cost;
+  late String showImg;
 
   Property.fromJson(Map<String, dynamic> json) {
     property_name = json['property_name'] ?? '';
-    bedrooms = json['bedrooms'] ?? '';
-    bathrooms = json['bathrooms'] ?? '';
-    garages = json['garages'] ?? '';
-    area = json['area'] ?? '';
+    bedrooms = json['bedrooms'] ?? "0";
+    bathrooms = json['bathrooms'] ?? "0";
+    garages = json['garages'] ?? "0";
+    area = json['area'] ?? "0";
     id = json['id'] ?? '';
     address = json['address'] ?? '';
     lat = json['lat'] ?? '';
     lon = json['lon'] ?? '';
+    cost = json['cost'] ?? "0";
+    showImg = json['showImg'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +49,8 @@ class Property {
     _data['address'] = address;
     _data['lat'] = lat;
     _data['lon'] = lon;
+    _data['cost'] = cost;
+    _data['showImg'] = showImg;
     return _data;
   }
 }

@@ -23,7 +23,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   String bathrooms = "";
   String garages = "";
   String area = "";
-  String status = "";
+  String cost = "";
   String year_built = "";
   String address = "";
   String lat = "";
@@ -286,7 +286,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Status",
+                              "Cost",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -301,7 +301,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               child: TextFormField(
                                 onChanged: (value) {
                                   setState(() {
-                                    status = value!;
+                                    cost = value!;
                                   });
                                 },
                                 keyboardType: TextInputType.name,
@@ -313,7 +313,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
                                   hintText: "eg. 1,2,3",
-                                  labelText: "Status",
+                                  labelText: "Cost",
                                 ),
                               ),
                             )
@@ -482,11 +482,13 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             bedrooms: bedrooms,
                             bathrooms: bathrooms,
                             garages: garages,
+                            cost: cost,
                             area: area,
                             id: "${DateTime.now().microsecondsSinceEpoch}",
                             address: address,
                             lat: lat,
-                            lon: long);
+                            lon: long,
+                            showImg: 'https://picsum.photos/200/300');
                         Dialogs.showProgressBar(context);
                         APIs.addPropertyToFirebase(p).then((value) {
                           APIs.addPropertyPhotos(images!, p).then((value) {

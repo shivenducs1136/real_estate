@@ -45,8 +45,7 @@ class APIs {
     log('Extension: $ext');
 
     //storage file ref with path
-    final ref =
-        storage.ref().child('property_pictures/${a.id}/${file.name}.$ext');
+    final ref = storage.ref().child('agent_pictures/${a.id}/${file.name}.$ext');
 
     //uploading image
     await ref
@@ -66,6 +65,7 @@ class APIs {
   }
 
   static Future<void> addPropertyPhotos(List<XFile> images, Property p) async {
+    bool x = true;
     for (XFile file in images) {
       final ext = file.path.split('.').last;
       log('Extension: $ext');
@@ -89,6 +89,24 @@ class APIs {
           .collection('photos')
           .doc("${file.name}.${ext}")
           .set({"image": imageUrl});
+      if (x) {
+        await firestore.collection('property').doc(p.id).update({
+          'showImg': imageUrl,
+        });
+        x = false;
+      }
     }
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllProperties() {
+    return firestore.collection('property').snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllPhotos(Property p) {
+    return firestore
+        .collection('property')
+        .doc(p.id)
+        .collection("photos")
+        .snapshots();
   }
 }
