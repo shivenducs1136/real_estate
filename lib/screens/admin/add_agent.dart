@@ -1,7 +1,10 @@
+import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 import "package:real_estate/apis/api.dart";
 import "package:real_estate/model/agent_model.dart";
+import "package:real_estate/model/mailer.dart";
 
 import "../../helper/dialogs.dart";
 import "../../main.dart";
@@ -16,6 +19,7 @@ class AddAgentScreen extends StatefulWidget {
 class _AddAgentScreenState extends State<AddAgentScreen> {
   final formKey = GlobalKey<FormState>();
   String agent_name = "";
+  String agent_email = "";
   String age = "";
   String phone_number = "";
   String address = "";
@@ -62,7 +66,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Agent Name",
                           style: TextStyle(
                               color: Colors.black,
@@ -97,13 +101,51 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     SizedBox(
                       height: mq.height * .01,
                     ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Email Id",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: mq.height * .01,
+                        ),
+                        SizedBox(
+                          height: mq.height * .05,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                agent_email = value;
+                              });
+                            },
+                            validator: (val) => val != null && val.isNotEmpty
+                                ? null
+                                : "Required Field",
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              hintText: "eg. john@gmail.com",
+                              labelText: "john@gmail.com",
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: mq.height * .01,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Age",
                               style: TextStyle(
                                   color: Colors.black,
@@ -187,7 +229,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           "Address",
                           style: TextStyle(
@@ -229,7 +271,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                       children: [
                         Column(
                           children: [
-                            Text(
+                            const Text(
                               "Add Agent Image",
                               style: TextStyle(
                                   color: Colors.black,
@@ -255,7 +297,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               ),
                             ),
                             if (isImageAdded)
-                              Text(
+                              const Text(
                                 "Agent image added",
                                 style: TextStyle(
                                     color: Colors.green,
@@ -271,13 +313,18 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        var value = new Random();
+                        var codeNumber =
+                            (value.nextInt(900000) + 100000).toString();
                         Dialogs.showProgressBar(context);
                         AgentModel a = AgentModel(
+                            password: codeNumber,
                             agent_name: agent_name,
+                            email: agent_email,
                             age: age,
                             phone_number: phone_number,
                             address: address,
-                            id: "${DateTime.now().microsecondsSinceEpoch}",
+                            id: "${agent_email}",
                             photo:
                                 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
                         APIs.addAgentToFirebase(a).then((value) {
@@ -285,6 +332,8 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             APIs.addAgentImage(img!, a).then((value) {
                               Navigator.pop(context);
                               Navigator.pop(context);
+                              Mailer.sendCredentialsEmail(
+                                  password: codeNumber, destEmail: agent_email);
                               Dialogs.showSnackbar(
                                   context, "Agent Added Successfully");
                             });

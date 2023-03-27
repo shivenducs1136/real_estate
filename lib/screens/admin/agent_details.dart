@@ -1,10 +1,12 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/agent_model.dart';
 
 import '../../main.dart';
@@ -20,6 +22,16 @@ class AgentDetails extends StatefulWidget {
 
 class _AgentDetailsState extends State<AgentDetails> {
   List<Property> mlist = [];
+  @override
+  void initState() {
+    APIs.getAssignedPropertyofAgents(widget.curr_agent).then((value) {
+      setState(() {
+        mlist = value;
+        log(mlist.toString());
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,55 +74,64 @@ class _AgentDetailsState extends State<AgentDetails> {
               const SizedBox(
                 height: 50,
               ),
-              Card(
-                child: Container(
-                  width: mq.width,
-                  height: mq.height * .1,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Positioned(
-                            child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage:
-                              NetworkImage(widget.curr_agent.photo),
-                        )),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
+              Container(
+                width: mq.width,
+                height: mq.height * .1,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    border: Border.all(width: 1, color: Colors.black),
+                    color: Color.fromARGB(222, 255, 255, 255)),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Positioned(
+                          child: CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(widget.curr_agent.photo),
+                      )),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 18,
+                            width: mq.width * .6,
+                            child: Text(
                               widget.curr_agent.agent_name,
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Text(
-                              "${widget.curr_agent.age} years",
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                              maxLines: 1,
-                            ),
-                            Text(
+                          ),
+                          Text(
+                            "${widget.curr_agent.age} years",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500),
+                            maxLines: 1,
+                          ),
+                          Container(
+                            height: 14,
+                            width: mq.width * .6,
+                            child: Text(
                               "at ${widget.curr_agent.address}",
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500),
                               maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -127,35 +148,18 @@ class _AgentDetailsState extends State<AgentDetails> {
               const SizedBox(
                 height: 50,
               ),
-              StreamBuilder(
-                  stream: Stream.fromFuture(
-                      APIs.getAllAssignedProperties(widget.curr_agent)
-                          .then((value) => value)),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                      case ConnectionState.none:
-                        return const SizedBox();
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        // final propertySnapshot = snapshot.data;
-                        // mlist.add(Property.fromJson(propertySnapshot.data()));
-                        return Container(
-                            height: mq.height,
-                            child: GridView.builder(
-                                itemCount: mlist.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio:
-                                      (mq.height / mq.width) * .33,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                                itemBuilder: ((context, index) =>
-                                    propertyItem(mlist[index]))));
-                    }
-                  }),
+              Container(
+                  height: mq.height,
+                  child: GridView.builder(
+                      itemCount: mlist.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: (mq.height / mq.width) * .33,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemBuilder: ((context, index) =>
+                          propertyItem(mlist[index]))))
             ]),
           ),
         ),
@@ -174,7 +178,7 @@ class _AgentDetailsState extends State<AgentDetails> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(width: 1.0)),
         child: Padding(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
@@ -182,7 +186,8 @@ class _AgentDetailsState extends State<AgentDetails> {
               width: mq.width * .4,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(image: AssetImage("images/home.png"))),
+                  image: const DecorationImage(
+                      image: AssetImage("images/home.png"))),
               child:
                   FittedBox(fit: BoxFit.fill, child: Image.network(p.showImg)),
             ),
@@ -191,7 +196,7 @@ class _AgentDetailsState extends State<AgentDetails> {
             ),
             Text(
               p.property_name,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
@@ -200,7 +205,7 @@ class _AgentDetailsState extends State<AgentDetails> {
             ),
             Text(
               "${p.area} sq. ft.",
-              style: TextStyle(color: Colors.black, fontSize: 12),
+              style: const TextStyle(color: Colors.black, fontSize: 12),
               maxLines: 1,
               textWidthBasis: TextWidthBasis.parent,
             ),
@@ -212,15 +217,15 @@ class _AgentDetailsState extends State<AgentDetails> {
               children: [
                 Text(
                   "₹ ${p.cost}",
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                   maxLines: 1,
                   textWidthBasis: TextWidthBasis.parent,
                 ),
-                Icon(
-                  Icons.edit,
+                const Icon(
+                  Icons.arrow_forward,
                   size: 22,
                 )
               ],

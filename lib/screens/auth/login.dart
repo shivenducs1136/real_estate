@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/screens/admin/admin_screen.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
+import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
@@ -45,7 +46,8 @@ class _LoginMainState extends State<LoginMain> {
                     // ignore: prefer_const_constructors
                     InkWell(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (_) => LoginScreen()));
                       },
                       // ignore: prefer_const_constructors
                       child: Icon(

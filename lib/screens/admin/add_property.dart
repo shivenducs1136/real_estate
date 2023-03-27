@@ -8,6 +8,7 @@ import "package:real_estate/apis/api.dart";
 import "package:real_estate/model/property_model.dart";
 import "../../helper/dialogs.dart";
 import "../../main.dart";
+import 'package:map_location_picker/map_location_picker.dart';
 
 class AddPropertyScreen extends StatefulWidget {
   const AddPropertyScreen(
@@ -389,7 +390,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           "Address",
                           style: TextStyle(
@@ -432,7 +433,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       children: [
                         Column(
                           children: [
-                            Text(
+                            const Text(
                               "Add Images",
                               style: TextStyle(
                                   color: Colors.black,
@@ -464,7 +465,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             if (isImageAdded)
                               Text(
                                 "${images?.length} images selected",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.green,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400),

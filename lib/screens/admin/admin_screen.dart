@@ -62,7 +62,16 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 InkWell(
                   onTap: () => {},
-                  child: Icon(Icons.menu),
+                  child: Container(
+                      height: 48,
+                      width: 48,
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black),
+                          borderRadius: BorderRadius.circular(14)),
+                      child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: Image.asset("images/company_logo.jpeg"))),
                 )
               ]),
               SizedBox(
@@ -217,7 +226,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 "My Agents",
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                     fontSize: 22),
               ),
               SizedBox(
@@ -250,11 +259,13 @@ class _AdminScreenState extends State<AdminScreen> {
                                       agentChip(_agentlist[index]))));
                         } else {
                           return agentChip(AgentModel(
+                              password: '982132',
+                              email: 'xyz@gmail.com',
                               agent_name: "Sample Name",
                               age: "0",
                               phone_number: "0000000000",
                               address: "Sample Address",
-                              id: "1",
+                              id: "xyz@gmail.com",
                               photo:
                                   "https://th.bing.com/th/id/OIP.tWwHa21PC-F18kRm0I2w7wHaHa?pid=ImgDet&rs=1"));
                         }

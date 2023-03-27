@@ -88,11 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => const LoginMain(
-                                        mtitle: "Admin Login", isAdmin: true)));
+                                          mtitle: "Admin Login",
+                                          isAdmin: true,
+                                        )));
                           },
                           child: const Center(
                               child: Text(
@@ -110,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => const LoginMain(

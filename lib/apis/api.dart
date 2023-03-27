@@ -120,12 +120,6 @@ class APIs {
     return firestore.collection('agents').snapshots();
   }
 
-  static Future<QuerySnapshot<Map<String, dynamic>>> getCachedData() async {
-    return await firestore
-        .collection('agents')
-        .get(GetOptions(source: Source.cache));
-  }
-
   static Future<void> assignPropertyToAgent(Property p, AgentModel a) async {
     await firestore
         .collection('property')
@@ -156,25 +150,42 @@ class APIs {
         .snapshots();
   }
 
-  static Future<Stream<DocumentSnapshot<Map<String, dynamic>>>?>
-      getAllAssignedProperties(AgentModel a) async {
-    List<Property> mlist = [];
-    await firestore
+  // static Stream<QuerySnapshot<Map<String, dynamic>>> getAgentAssignedPropertyId(
+  //     AgentModel a) {
+  //   return firestore
+  //       .collection("agents")
+  //       .doc("${a.id}")
+  //       .collection("assigned_properties")
+  //       .snapshots();
+  // }
+
+  static Future<List<Property>> getAssignedPropertyofAgents(
+      AgentModel a) async {
+    List<Property> p = [];
+    var propId = await firestore
         .collection("agents")
-        .doc("${a.id}")
+        .doc(a.id)
         .collection("assigned_properties")
-        .get()
-        .then((property_id) async {
-      for (var propId in property_id.docs) {
-        await firestore
-            .collection("property")
-            .doc(propId.id.toString())
-            .get()
-            .then((value) {
-          return value;
-        });
-      }
-    });
+        .get();
+    for (var ele in propId.docs) {
+      var propertySnapshot =
+          await firestore.collection("property").doc(ele.id).get();
+      p.add(Property(
+          property_name: propertySnapshot.get('property_name'),
+          bedrooms: propertySnapshot.get('bedrooms'),
+          cost: propertySnapshot.get('cost'),
+          bathrooms: propertySnapshot.get('bathrooms'),
+          garages: propertySnapshot.get('garages'),
+          area: propertySnapshot.get('area'),
+          id: propertySnapshot.get('id'),
+          address: propertySnapshot.get('address'),
+          lat: propertySnapshot.get('lat'),
+          lon: propertySnapshot.get('lon'),
+          showImg: propertySnapshot.get('showImg'),
+          yearBuilt: propertySnapshot.get('yearBuilt')));
+    }
+    log(p.toString());
+    return p;
   }
 }
 /**.get()
