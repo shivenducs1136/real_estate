@@ -277,7 +277,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             age: age,
                             phone_number: phone_number,
                             address: address,
-                            id: "${DateTime.now().microsecondsSinceEpoch}");
+                            id: "${DateTime.now().microsecondsSinceEpoch}",
+                            photo:
+                                'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
                         APIs.addAgentToFirebase(a).then((value) {
                           if (img != null) {
                             APIs.addAgentImage(img!, a).then((value) {

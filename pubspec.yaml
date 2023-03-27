@@ -43,6 +43,8 @@ dependencies:
   geocoding: ^2.1.0
   image_picker: ^0.8.7
   firebase_storage: ^11.0.15
+  flutter_typeahead: ^4.3.7
+  lottie: ^2.3.0
 
 dev_dependencies:
   flutter_test:

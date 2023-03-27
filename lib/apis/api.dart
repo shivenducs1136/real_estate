@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
 
 import '../model/agent_model.dart';
@@ -21,7 +24,7 @@ class APIs {
   }
 
   static Future<bool> agentLogin(String agentEmail, String password) async {
-    final data = await firestore.collection('agent').doc(agentEmail).get();
+    final data = await firestore.collection('agents').doc(agentEmail).get();
 
     log('data : $data');
     if (data.exists) {
@@ -62,6 +65,9 @@ class APIs {
         .collection('photos')
         .doc("${file.name}.${ext}")
         .set({"image": imageUrl});
+    await firestore.collection('agents').doc(a.id).update({
+      'photo': imageUrl,
+    });
   }
 
   static Future<void> addPropertyPhotos(List<XFile> images, Property p) async {
@@ -109,4 +115,84 @@ class APIs {
         .collection("photos")
         .snapshots();
   }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllAgents() {
+    return firestore.collection('agents').snapshots();
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getCachedData() async {
+    return await firestore
+        .collection('agents')
+        .get(GetOptions(source: Source.cache));
+  }
+
+  static Future<void> assignPropertyToAgent(Property p, AgentModel a) async {
+    await firestore
+        .collection('property')
+        .doc(p.id)
+        .collection('assigned_agents')
+        .doc(a.id)
+        .set({'agent_id': a.id});
+    await firestore
+        .collection('agents')
+        .doc(a.id)
+        .collection('assigned_properties')
+        .doc(p.id)
+        .set({'property_id': p.id});
+  }
+
+  static Future<void> addCustomer(CustomerModel c) async {
+    return await firestore
+        .collection('customer')
+        .doc(c.customer_id)
+        .set(c.toJson());
+  }
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getPropertyByPropertyId(
+      String propId) {
+    return FirebaseFirestore.instance
+        .collection('property')
+        .doc(propId)
+        .snapshots();
+  }
+
+  static Future<Stream<DocumentSnapshot<Map<String, dynamic>>>?>
+      getAllAssignedProperties(AgentModel a) async {
+    List<Property> mlist = [];
+    await firestore
+        .collection("agents")
+        .doc("${a.id}")
+        .collection("assigned_properties")
+        .get()
+        .then((property_id) async {
+      for (var propId in property_id.docs) {
+        await firestore
+            .collection("property")
+            .doc(propId.id.toString())
+            .get()
+            .then((value) {
+          return value;
+        });
+      }
+    });
+  }
 }
+/**.get()
+            .data()
+            .then((propertySnapshot) {
+          log("propertySnapshot : ${propertySnapshot.data()}");
+          if (propertySnapshot != null) {
+            list.add(Property(
+                property_name: propertySnapshot.get('property_name'),
+                bedrooms: propertySnapshot.get('bedrooms'),
+                cost: propertySnapshot.get('cost'),
+                bathrooms: propertySnapshot.get('bathrooms'),
+                garages: propertySnapshot.get('garages'),
+                area: propertySnapshot.get('area'),
+                id: propertySnapshot.get('id'),
+                address: propertySnapshot.get('address'),
+                lat: propertySnapshot.get('lat'),
+                lon: propertySnapshot.get('lon'),
+                showImg: propertySnapshot.get('showImg'),
+                yearBuilt: propertySnapshot.get('yearBuilt')));
+          } */

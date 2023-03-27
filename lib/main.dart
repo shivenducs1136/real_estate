@@ -8,9 +8,7 @@ import 'firebase_options.dart';
 late Size mq;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge)
       .then((value) async {
     await _initializeFirebase();
     runApp(const MyApp());
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       home: const SplashScreen(),
     );

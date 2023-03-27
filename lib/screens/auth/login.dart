@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
@@ -20,6 +21,13 @@ class LoginMain extends StatefulWidget {
 class _LoginMainState extends State<LoginMain> {
   String email = "";
   String password = "";
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -69,7 +77,7 @@ class _LoginMainState extends State<LoginMain> {
                         // ignore: prefer_const_constructors
                         prefixIcon: Icon(
                           Icons.email,
-                          color: Colors.blue,
+                          color: Colors.green,
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
@@ -87,8 +95,10 @@ class _LoginMainState extends State<LoginMain> {
                           ? null
                           : "Required Field",
                       decoration: InputDecoration(
-                        prefixIcon:
-                            const Icon(Icons.password, color: Colors.blue),
+                        prefixIcon: const Icon(
+                          Icons.password,
+                          color: Colors.green,
+                        ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
                         hintText: 'eg. 1234!',

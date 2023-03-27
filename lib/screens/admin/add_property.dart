@@ -10,8 +10,10 @@ import "../../helper/dialogs.dart";
 import "../../main.dart";
 
 class AddPropertyScreen extends StatefulWidget {
-  const AddPropertyScreen({super.key});
-
+  const AddPropertyScreen(
+      {super.key, required this.currProp, required this.isUpdate});
+  final Property currProp;
+  final bool isUpdate;
   @override
   State<AddPropertyScreen> createState() => _AddPropertyScreenState();
 }
@@ -35,6 +37,18 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   Position? _currentPosition;
   @override
   Widget build(BuildContext context) {
+    property_name = widget.currProp.property_name;
+    bedrooms = widget.currProp.bedrooms;
+    bathrooms = widget.currProp.bathrooms;
+    garages = widget.currProp.garages;
+    area = widget.currProp.area;
+    year_built = widget.currProp.yearBuilt;
+    widget.currProp.cost = widget.currProp.cost;
+    address = widget.currProp.address;
+    lat = widget.currProp.lat;
+    long = widget.currProp.lon;
+    cost = widget.currProp.cost;
+    setState(() {});
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -59,8 +73,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             size: 25,
                           ),
                         ),
-                        const Text(
-                          "   Add Property",
+                        Text(
+                          widget.isUpdate
+                              ? "   Update Property"
+                              : "   Add Property",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20,
@@ -87,6 +103,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
+                            initialValue: property_name,
                             onChanged: (value) {
                               setState(() {
                                 property_name = value;
@@ -129,6 +146,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: bedrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bedrooms = value!;
@@ -169,6 +187,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: bathrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bathrooms = value!;
@@ -214,6 +233,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: garages,
                                 onChanged: (value) {
                                   setState(() {
                                     garages = value!;
@@ -254,6 +274,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: area,
                                 onChanged: (value) {
                                   setState(() {
                                     area = value!;
@@ -299,6 +320,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: cost,
                                 onChanged: (value) {
                                   setState(() {
                                     cost = value!;
@@ -339,6 +361,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue: year_built,
                                 onChanged: (value) {
                                   setState(() {
                                     year_built = value!;
@@ -383,6 +406,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
+                        initialValue: address,
                         onChanged: (value) {
                           setState(() {
                             address = value!;
@@ -488,7 +512,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             address: address,
                             lat: lat,
                             lon: long,
-                            showImg: 'https://picsum.photos/200/300');
+                            showImg: 'https://picsum.photos/200/300',
+                            yearBuilt: year_built);
                         Dialogs.showProgressBar(context);
                         APIs.addPropertyToFirebase(p).then((value) {
                           APIs.addPropertyPhotos(images!, p).then((value) {
@@ -504,7 +529,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         width: mq.width,
                         child: Center(
                           child: Text(
-                            "Add Property",
+                            widget.isUpdate
+                                ? "Update Property"
+                                : "Add Property",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
