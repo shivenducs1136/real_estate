@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
 import 'package:real_estate/screens/admin/add_property.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
+import 'package:real_estate/screens/admin/all_agent_screen.dart';
 import 'package:real_estate/screens/admin/assign_property.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
@@ -222,12 +224,32 @@ class _AdminScreenState extends State<AdminScreen> {
               SizedBox(
                 height: mq.height * .04,
               ),
-              const Text(
-                "My Agents",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 22),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "My Agents",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const AllAgentScreen()));
+                    },
+                    child: const Text(
+                      "View all",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: mq.height * .02,
@@ -254,7 +276,9 @@ class _AdminScreenState extends State<AdminScreen> {
                               height: mq.height,
                               child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: _agentlist.length,
+                                  itemCount: _agentlist.length > 10
+                                      ? 10
+                                      : _agentlist.length,
                                   itemBuilder: ((context, index) =>
                                       agentChip(_agentlist[index]))));
                         } else {
@@ -272,7 +296,33 @@ class _AdminScreenState extends State<AdminScreen> {
                     }
                   },
                 ),
-              )
+              ),
+              SizedBox(
+                height: mq.height * .04,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    "Company Updates",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: mq.height * .02,
+              ),
+              Center(
+                child: Lottie.asset(
+                  'images/nodata.json',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.fill,
+                ),
+              ),
             ],
           ),
         ),
