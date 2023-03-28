@@ -211,7 +211,8 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                         phonenumber: _phoneNumber,
                                         address: _address,
                                         customer_id:
-                                            "${DateTime.now().microsecondsSinceEpoch}"))
+                                            "${DateTime.now().microsecondsSinceEpoch}",
+                                        isLoan: false))
                                     .then((value) {
                                   Dialogs.showSnackbar(context,
                                       "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");

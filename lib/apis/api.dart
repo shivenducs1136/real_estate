@@ -187,6 +187,19 @@ class APIs {
     log(p.toString());
     return p;
   }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAssignedCustomers(
+      AgentModel a, Property p) {
+    return firestore
+        .collection("customer")
+        .where('agent_id', isEqualTo: a.id)
+        .where('property_id')
+        .snapshots();
+  }
+
+  static Future<void> deleteAgentWithAgentId(String agentId) async {
+    await firestore.collection('agents').doc(agentId).delete();
+  }
 }
 /**.get()
             .data()

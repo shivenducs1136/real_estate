@@ -1,21 +1,25 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import 'package:flutter/material.dart';
-import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/model/customer_model.dart';
+import 'package:real_estate/model/property_model.dart';
+import 'package:real_estate/screens/admin/agent_details.dart';
 
-import '../../helper/dialogs.dart';
+import '../../apis/api.dart';
 import '../../main.dart';
 
-class AllAgentScreen extends StatefulWidget {
-  const AllAgentScreen({super.key});
-
+class AssignedCustomers extends StatefulWidget {
+  const AssignedCustomers({
+    super.key,
+    required this.property,
+    required this.agent,
+  });
+  final Property property;
+  final AgentModel agent;
   @override
-  State<AllAgentScreen> createState() => _AllAgentScreenState();
+  State<AssignedCustomers> createState() => _AssignedCustomersState();
 }
 
-class _AllAgentScreenState extends State<AllAgentScreen> {
+class _AssignedCustomersState extends State<AssignedCustomers> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,7 +44,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
               GestureDetector(
                 onTap: () {},
                 child: const Text(
-                  "Agent Details",
+                  "Customer Details",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -65,7 +69,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
           ),
         ),
         StreamBuilder(
-            stream: APIs.getAllAgents(),
+            stream: APIs.getAssignedCustomers(widget.agent, widget.property),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -74,16 +78,16 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                 case ConnectionState.active:
                 case ConnectionState.done:
                   final data = snapshot.data?.docs;
-                  List<AgentModel> _agentlist = data
-                          ?.map((e) => AgentModel.fromJson(e.data()))
+                  List<CustomerModel> _customerList = data
+                          ?.map((e) => CustomerModel.fromJson(e.data()))
                           .toList() ??
                       [];
-                  if (_agentlist.isNotEmpty) {
+                  if (_customerList.isNotEmpty) {
                     return Container(
                       height: mq.height - 160,
                       width: mq.width,
                       child: ListView.builder(
-                          itemCount: _agentlist.length,
+                          itemCount: _customerList.length,
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
@@ -95,52 +99,51 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                     border: Border.all(
                                         width: 1, color: Colors.black),
                                   ),
-                                  child: GestureDetector(
-                                    onLongPress: () {
-                                      Dialogs.showInputDialog(
-                                          context: context,
-                                          title: "Delete",
-                                          hint:
-                                              "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
-                                          onOk: () {
-                                            Dialogs.showProgressBar(context);
-                                            APIs.deleteAgentWithAgentId(
-                                                    _agentlist[index].id)
-                                                .then((value) {
-                                              Navigator.pop(context);
-                                              Dialogs.showSnackbar(context,
-                                                  "Deleted Successfully");
-                                              _agentlist.remove(index);
-                                            });
-                                          },
-                                          onCancel: () {});
-                                    },
-                                    child: ListTile(
-                                      title: Text(
-                                          "${_agentlist[index].agent_name}"),
-                                      subtitle:
-                                          Text("${_agentlist[index].email}"),
-                                      leading: Container(
-                                          height: 48,
-                                          width: 48,
-                                          decoration: BoxDecoration(),
-                                          child: ClipRRect(
-                                            clipBehavior: Clip.hardEdge,
-                                            borderRadius:
-                                                BorderRadius.circular(24),
-                                            child: FittedBox(
-                                              fit: BoxFit.fill,
-                                              child: Image.network(
-                                                  _agentlist[index].photo),
-                                            ),
-                                          )),
+                                  child: ListTile(
+                                    title: Text(
+                                        _customerList[index].customer_name),
+                                    subtitle: Text(
+                                      _customerList[index].address,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
+                                    leading: Container(
+                                        height: 24,
+                                        width: 24,
+                                        decoration: BoxDecoration(),
+                                        child: ClipRRect(
+                                          clipBehavior: Clip.hardEdge,
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                          child: FittedBox(
+                                            fit: BoxFit.fill,
+                                            child: Icon(
+                                              Icons.circle,
+                                              color: _customerList[index].isLoan
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        )),
+                                    trailing: Container(
+                                        height: 36,
+                                        width: 36,
+                                        decoration: BoxDecoration(),
+                                        child: ClipRRect(
+                                          clipBehavior: Clip.hardEdge,
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                          child: const FittedBox(
+                                            fit: BoxFit.fill,
+                                            child: Icon(Icons.call),
+                                          ),
+                                        )),
                                   ),
                                 ),
                               )),
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: Text("No data"),
                     );
                   }

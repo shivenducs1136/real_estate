@@ -10,8 +10,10 @@ import "../../helper/dialogs.dart";
 import "../../main.dart";
 
 class AddAgentScreen extends StatefulWidget {
-  const AddAgentScreen({super.key});
-
+  const AddAgentScreen(
+      {super.key, required this.isUpdate, required this.agent});
+  final bool isUpdate;
+  final AgentModel? agent;
   @override
   State<AddAgentScreen> createState() => _AddAgentScreenState();
 }
@@ -51,9 +53,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             size: 25,
                           ),
                         ),
-                        const Text(
-                          "   Add Agent",
-                          style: TextStyle(
+                        Text(
+                          widget.isUpdate ? "   Update Agent" : "   Add Agent",
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -88,6 +90,8 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 ? null
                                 : "Required Field",
                             keyboardType: TextInputType.name,
+                            initialValue:
+                                widget.isUpdate ? widget.agent?.agent_name : '',
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12)),
@@ -117,6 +121,8 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
+                            initialValue:
+                                widget.isUpdate ? widget.agent?.email : '',
                             onChanged: (value) {
                               setState(() {
                                 agent_email = value;
@@ -159,6 +165,8 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
+                                initialValue:
+                                    widget.isUpdate ? widget.agent?.age : '',
                                 onChanged: (value) {
                                   setState(() {
                                     age = value;
@@ -185,7 +193,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Phone Number",
                               style: TextStyle(
                                   color: Colors.black,
@@ -199,6 +207,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               height: mq.height * .05,
                               width: mq.width * .5,
                               child: TextFormField(
+                                initialValue: widget.isUpdate
+                                    ? widget.agent?.phone_number
+                                    : '',
                                 onChanged: (value) {
                                   setState(() {
                                     phone_number = value;
@@ -246,6 +257,8 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
+                        initialValue:
+                            widget.isUpdate ? widget.agent?.address : '',
                         onChanged: (value) {
                           setState(() {
                             address = value;

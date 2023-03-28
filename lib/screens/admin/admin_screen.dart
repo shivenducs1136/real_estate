@@ -121,8 +121,13 @@ class _AdminScreenState extends State<AdminScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => AddAgentScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => AddAgentScreen(
+                                    isUpdate: false,
+                                    agent: null,
+                                  )));
                     },
                     child: Container(
                       height: 100,
@@ -391,7 +396,12 @@ class _AdminScreenState extends State<AdminScreen> {
                       )));
         } else if (type == 2) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => AddAgentScreen()));
+              context,
+              MaterialPageRoute(
+                  builder: (_) => AddAgentScreen(
+                        isUpdate: false,
+                        agent: null,
+                      )));
         } else if (type == 3) {
           Navigator.push(
               context, MaterialPageRoute(builder: (_) => ViewPropertyScreen()));

@@ -14,4 +14,38 @@ class Dialogs {
         context: context,
         builder: (_) => Center(child: CircularProgressIndicator()));
   }
+
+  static Future<void> showInputDialog({
+    required BuildContext context,
+    required String title,
+    required String hint,
+    required Function() onOk,
+    required VoidCallback onCancel,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(hint),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onCancel();
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onOk();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

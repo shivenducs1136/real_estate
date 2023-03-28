@@ -5,9 +5,12 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/screens/admin/add_agent.dart';
+import 'package:real_estate/screens/admin/assigned_customer.dart';
 
 import '../../main.dart';
 import '../../model/property_model.dart';
@@ -68,7 +71,17 @@ class _AgentDetailsState extends State<AgentDetails> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const Icon(Icons.edit_document)
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => AddAgentScreen(
+                                      isUpdate: true,
+                                      agent: widget.curr_agent,
+                                    )));
+                      },
+                      child: const Icon(Icons.edit_document))
                 ],
               ),
               const SizedBox(
@@ -148,18 +161,30 @@ class _AgentDetailsState extends State<AgentDetails> {
               const SizedBox(
                 height: 50,
               ),
-              Container(
-                  height: mq.height,
-                  child: GridView.builder(
-                      itemCount: mlist.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: (mq.height / mq.width) * .33,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: ((context, index) =>
-                          propertyItem(mlist[index]))))
+              mlist.length != 0
+                  ? Container(
+                      height: mq.height * .5,
+                      child: GridView.builder(
+                          itemCount: mlist!.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: (mq.height / mq.width) * .33,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemBuilder: ((context, index) =>
+                              propertyItem(mlist![index]))))
+                  : Container(
+                      height: mq.height * .5,
+                      child: Center(
+                          child: Lottie.asset(
+                        'images/nodata.json',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.fill,
+                      )),
+                    )
             ]),
           ),
         ),
@@ -169,7 +194,13 @@ class _AgentDetailsState extends State<AgentDetails> {
 
   Widget propertyItem(Property p) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) =>
+                    AssignedCustomers(property: p, agent: widget.curr_agent)));
+      },
       child: Container(
         width: mq.width * .4,
         height: mq.height * .27,
