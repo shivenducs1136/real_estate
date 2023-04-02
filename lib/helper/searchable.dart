@@ -33,6 +33,9 @@ class _MySearchableDropdownState extends State<MySearchableDropdown> {
     return TypeAheadFormField<Property>(
       textFieldConfiguration: TextFieldConfiguration(
         controller: _controller,
+        onTap: () {
+          _controller.text = "";
+        },
         decoration: InputDecoration(
           hintText: widget.hintText,
           border: OutlineInputBorder(),

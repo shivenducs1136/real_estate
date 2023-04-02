@@ -124,7 +124,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => AddAgentScreen(
+                              builder: (_) => const AddAgentScreen(
                                     isUpdate: false,
                                     agent: null,
                                   )));
@@ -133,7 +133,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       height: 100,
                       width: mq.width * .2,
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(196, 221, 255, 1),
+                        color: const Color.fromRGBO(196, 221, 255, 1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(

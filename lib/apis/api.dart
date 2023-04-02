@@ -40,7 +40,7 @@ class APIs {
   }
 
   static Future<void> addAgentToFirebase(AgentModel a) async {
-    return await firestore.collection('agents').doc(a.id).set(a.toJson());
+    return await firestore.collection('agents').doc(a.email).set(a.toJson());
   }
 
   static Future<void> addAgentImage(XFile file, AgentModel a) async {
@@ -193,12 +193,21 @@ class APIs {
     return firestore
         .collection("customer")
         .where('agent_id', isEqualTo: a.id)
-        .where('property_id')
+        .where('property_id', isEqualTo: p.id)
         .snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllCustomers() {
+    return firestore.collection("customer").snapshots();
   }
 
   static Future<void> deleteAgentWithAgentId(String agentId) async {
     await firestore.collection('agents').doc(agentId).delete();
+  }
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getSpecificAgentDetail(
+      String email) {
+    return firestore.collection("agents").doc(email).snapshots();
   }
 }
 /**.get()

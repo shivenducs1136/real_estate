@@ -131,9 +131,12 @@ class _LoginMainState extends State<LoginMain> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const AgentScreen()));
+                                builder: (_) => AgentScreen(
+                                      email: email,
+                                    )));
                         final prefs = await SharedPreferences.getInstance();
                         await prefs.setInt('login', 2);
+                        await prefs.setString('email', email);
                       }
                     });
                   }

@@ -24,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
       final prefs = await SharedPreferences.getInstance();
 
       final int loginflag = prefs.getInt('login') ?? 0;
+      final String email = prefs.getString('email') ?? '';
       if (loginflag == 0) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => const LoginScreen()));
@@ -32,7 +33,11 @@ class _SplashScreenState extends State<SplashScreen> {
             context, MaterialPageRoute(builder: (_) => const AdminScreen()));
       } else if (loginflag == 2) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const AgentScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (_) => AgentScreen(
+                      email: email,
+                    )));
       }
     });
   }

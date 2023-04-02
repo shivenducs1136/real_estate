@@ -1,16 +1,10 @@
 import 'dart:developer';
-import 'dart:ui';
-
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
-import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
-import 'package:real_estate/screens/admin/assigned_customer.dart';
+import 'package:real_estate/screens/common/assigned_customer.dart';
 
 import '../../main.dart';
 import '../../model/property_model.dart';
@@ -192,75 +186,56 @@ class _AgentDetailsState extends State<AgentDetails> {
     );
   }
 
-  Widget propertyItem(Property p) {
+  Widget propertyItem(Property property) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) =>
-                    AssignedCustomers(property: p, agent: widget.curr_agent)));
+                builder: (_) => AssignedCustomers(
+                    property: property, agent: widget.curr_agent)));
       },
-      child: Container(
-        width: mq.width * .4,
-        height: mq.height * .27,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 1.0)),
+      child: Card(
+        elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.all(5),
+          padding: EdgeInsets.all(10),
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              height: mq.height * .17,
-              width: mq.width * .4,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                      image: AssetImage("images/home.png"))),
-              child:
-                  FittedBox(fit: BoxFit.fill, child: Image.network(p.showImg)),
-            ),
-            SizedBox(
-              height: mq.height * .007,
-            ),
-            Text(
-              p.property_name,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-              maxLines: 1,
-              textWidthBasis: TextWidthBasis.parent,
-            ),
-            Text(
-              "${p.area} sq. ft.",
-              style: const TextStyle(color: Colors.black, fontSize: 12),
-              maxLines: 1,
-              textWidthBasis: TextWidthBasis.parent,
-            ),
-            SizedBox(
-              height: mq.height * .01,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "₹ ${p.cost}",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  textWidthBasis: TextWidthBasis.parent,
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.network(
+                  property.showImg,
+                  fit: BoxFit.cover,
                 ),
-                const Icon(
-                  Icons.arrow_forward,
-                  size: 22,
-                )
-              ],
-            )
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              property.property_name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              property.address,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text('\$${property.cost.toString()}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ))
           ]),
         ),
       ),

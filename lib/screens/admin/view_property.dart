@@ -59,43 +59,44 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
               child: SingleChildScrollView(
                 // ignore: prefer_const_literals_to_create_immutables
 
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        // ignore: prefer_const_literals_to_create_immutables
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.black,
-                              size: 25,
-                            ),
+                child: Container(
+                  height: mq.height,
+                  width: mq.width,
+                  child: Stack(children: [
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                            size: 25,
                           ),
-                          (_isSearching)
-                              ? const Text(
-                                  "  Search Properties",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              : const Text(
-                                  "  All Properties",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      TextField(
+                        ),
+                        (_isSearching)
+                            ? const Text(
+                                "  Search Properties",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            : const Text(
+                                "  All Properties",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                      ],
+                    ),
+                    Positioned(
+                      top: 45,
+                      left: 10,
+                      right: 10,
+                      child: TextField(
                         controller: _searchController,
                         onChanged: (value) {
                           _searchList.clear();
@@ -122,10 +123,16 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      StreamBuilder(
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Positioned(
+                      top: 130,
+                      left: 10,
+                      right: 10,
+                      bottom: 10,
+                      child: StreamBuilder(
                           stream: APIs.getAllProperties(),
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
@@ -142,22 +149,22 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                     [];
                                 if (_list.isNotEmpty) {
                                   return Container(
-                                      height: mq.height,
-                                      child: GridView.builder(
-                                          itemCount: _isSearching
-                                              ? _searchList.length
-                                              : _list.length,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            childAspectRatio: .7,
-                                            crossAxisSpacing: 10,
-                                            mainAxisSpacing: 10,
-                                          ),
-                                          itemBuilder: ((context, index) =>
-                                              propertyItem(_isSearching
-                                                  ? _searchList[index]
-                                                  : _list[index]))));
+                                    child: GridView.builder(
+                                        itemCount: _isSearching
+                                            ? _searchList.length
+                                            : _list.length,
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: .8,
+                                          crossAxisSpacing: 10,
+                                          mainAxisSpacing: 10,
+                                        ),
+                                        itemBuilder: ((context, index) =>
+                                            propertyItem(_isSearching
+                                                ? _searchList[index]
+                                                : _list[index]))),
+                                  );
                                 } else {
                                   return const Center(
                                     child: Text(
@@ -168,8 +175,10 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                   );
                                 }
                             }
-                          })
-                    ]),
+                          }),
+                    )
+                  ]),
+                ),
               ),
             ),
           ),
@@ -178,79 +187,53 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
     );
   }
 
-  Widget propertyItem(Property p) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => AddPropertyScreen(
-                      currProp: p,
-                      isUpdate: true,
-                    )));
-      },
-      child: Container(
-        width: 100,
-        height: 200,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 1.0)),
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              height: ResponsiveSize.height(150, context),
-              width: ResponsiveSize.height(mq.width, context),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                      image: AssetImage("images/home.png"))),
-              child:
-                  FittedBox(fit: BoxFit.fill, child: Image.network(p.showImg)),
+  Widget propertyItem(Property property) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                property.showImg,
+                fit: BoxFit.cover,
+              ),
             ),
-            const SizedBox(
-              height: 8,
+          ),
+          SizedBox(height: 8),
+          Text(
+            property.property_name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-            Text(
-              p.property_name,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-              maxLines: 1,
-              textWidthBasis: TextWidthBasis.parent,
+          ),
+          SizedBox(height: 4),
+          Text(
+            property.address,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 14,
             ),
-            Text(
-              "${p.area} sq. ft.",
-              style: const TextStyle(color: Colors.black, fontSize: 12),
-              maxLines: 1,
-              textWidthBasis: TextWidthBasis.parent,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '\$${property.cost.toString()} ',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "₹ ${p.cost}",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  textWidthBasis: TextWidthBasis.parent,
-                ),
-                const Icon(
-                  Icons.edit,
-                  size: 20,
-                )
-              ],
-            )
-          ]),
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          )
+        ]),
       ),
     );
   }
