@@ -9,6 +9,7 @@ import 'package:real_estate/screens/admin/agent_details.dart';
 import 'package:real_estate/screens/common/assigned_customer.dart';
 import 'package:real_estate/screens/agent/generate_otp.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AgentScreen extends StatefulWidget {
   const AgentScreen({super.key, required this.email});
@@ -20,12 +21,15 @@ class AgentScreen extends StatefulWidget {
 class _AgentScreenState extends State<AgentScreen> {
   AgentModel? agentModel;
   List<Property> mlist = [];
+  bool? isTracking = false;
   @override
   void initState() {
     APIs.getSpecificAgentDetail(widget.email).listen((event) {
       setState(() {
         agentModel = AgentModel.fromJson(event.data()!);
-        APIs.getAssignedPropertyofAgents(agentModel!).then((value) {
+        APIs.getAssignedPropertyofAgents(agentModel!).then((value) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          isTracking = prefs.getBool('isTracking');
           setState(() {
             mlist = value;
           });
@@ -106,53 +110,109 @@ class _AgentScreenState extends State<AgentScreen> {
                                   itemBuilder: ((context, index) =>
                                       propertyItem(mlist[index]))),
                             ))
-                        : Container(
-                            height: mq.height * .5,
-                            child: Center(
-                                child: Lottie.asset(
-                              'images/nodata.json',
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.fill,
-                            )),
-                          ),
+                        : Center(
+                            child: Lottie.asset(
+                            'images/nodata.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.fill,
+                          )),
                     Positioned(
-                      top: 80,
-                      left: 10,
-                      child: Container(
-                        height: 80,
-                        width: 200,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(18)),
-                        child: Center(
-                            child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => GenerateOtpScreen()));
-                              },
-                              child: const Text(
-                                "Generate OTP",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                        top: 100,
+                        left: 10,
+                        right: 10,
+                        child: Container(
+                          width: mq.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                GenerateOtpScreen()));
+                                  },
+                                  child: Container(
+                                    height: 70,
+                                    width: (mq.width / 2) - 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(18)),
+                                    child: Center(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        const Text(
+                                          "Generate OTP",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Container(
+                                            height: 24,
+                                            width: 24,
+                                            child: const Image(
+                                                image: AssetImage(
+                                                    "images/otp.png")))
+                                      ],
+                                    )),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Container(
-                                height: 24,
-                                width: 24,
-                                child:
-                                    Image(image: AssetImage("images/otp.png")))
-                          ],
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (isTracking == true) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  GenerateOtpScreen()));
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 70,
+                                    width: (mq.width / 2) - 40,
+                                    decoration: BoxDecoration(
+                                        color: isTracking == true
+                                            ? Colors.blue
+                                            : Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(18)),
+                                    child: Center(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        const Text(
+                                          "Location",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Container(
+                                            height: 24,
+                                            width: 24,
+                                            child: const Image(
+                                                image: AssetImage(
+                                                    "images/delivery.png")))
+                                      ],
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         )),
-                      ),
-                    ),
                   ])
                 : const Center(
                     child: CircularProgressIndicator(color: Colors.blue),

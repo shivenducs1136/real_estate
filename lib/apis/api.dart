@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
@@ -209,23 +210,26 @@ class APIs {
       String email) {
     return firestore.collection("agents").doc(email).snapshots();
   }
+
+  static Future<List<LatLng>> getAgentCoordinates(CustomerModel c) async {
+    List<LatLng> mlist = [];
+    final mdata = await firestore
+        .collection("tracking")
+        //.doc(c.property_id)
+        .doc("1678985709821512")
+        // .collection(c.agent_id)
+        .collection("1678994107233745")
+        .doc("1678997144177592")
+        // .doc(c.customer_id)
+        .collection("coordinates")
+        .get();
+    for (var ele in mdata.docs) {
+      mlist.add(LatLng(toDouble(ele.get('lat')), toDouble(ele.get('long'))));
+    }
+    return mlist;
+  }
+
+  static toDouble(String num) {
+    return double.parse(num);
+  }
 }
-/**.get()
-            .data()
-            .then((propertySnapshot) {
-          log("propertySnapshot : ${propertySnapshot.data()}");
-          if (propertySnapshot != null) {
-            list.add(Property(
-                property_name: propertySnapshot.get('property_name'),
-                bedrooms: propertySnapshot.get('bedrooms'),
-                cost: propertySnapshot.get('cost'),
-                bathrooms: propertySnapshot.get('bathrooms'),
-                garages: propertySnapshot.get('garages'),
-                area: propertySnapshot.get('area'),
-                id: propertySnapshot.get('id'),
-                address: propertySnapshot.get('address'),
-                lat: propertySnapshot.get('lat'),
-                lon: propertySnapshot.get('lon'),
-                showImg: propertySnapshot.get('showImg'),
-                yearBuilt: propertySnapshot.get('yearBuilt')));
-          } */

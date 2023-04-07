@@ -5,6 +5,7 @@ import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
+import 'package:real_estate/screens/common/polyline_map.dart';
 
 import '../../apis/api.dart';
 import '../../main.dart';
@@ -94,53 +95,65 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
-                                child: Container(
-                                  height: 80,
-                                  width: mq.width * .8,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(
-                                        width: 1, color: Colors.black),
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                        _customerList[index].customer_name),
-                                    subtitle: Text(
-                                      _customerList[index].address,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => PolyMapScreen(
+                                                  customerModel:
+                                                      _customerList[index],
+                                                )));
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: mq.width * .8,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          width: 1, color: Colors.black),
                                     ),
-                                    leading: Container(
-                                        height: 24,
-                                        width: 24,
-                                        decoration: BoxDecoration(),
-                                        child: ClipRRect(
-                                          clipBehavior: Clip.hardEdge,
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                          child: FittedBox(
-                                            fit: BoxFit.fill,
-                                            child: Icon(
-                                              Icons.circle,
-                                              color: _customerList[index].isLoan
-                                                  ? Colors.green
-                                                  : Colors.red,
+                                    child: ListTile(
+                                      title: Text(
+                                          _customerList[index].customer_name),
+                                      subtitle: Text(
+                                        _customerList[index].address,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      leading: Container(
+                                          height: 24,
+                                          width: 24,
+                                          decoration: BoxDecoration(),
+                                          child: ClipRRect(
+                                            clipBehavior: Clip.hardEdge,
+                                            borderRadius:
+                                                BorderRadius.circular(24),
+                                            child: FittedBox(
+                                              fit: BoxFit.fill,
+                                              child: Icon(
+                                                Icons.circle,
+                                                color:
+                                                    _customerList[index].isLoan
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                              ),
                                             ),
-                                          ),
-                                        )),
-                                    trailing: Container(
-                                        height: 36,
-                                        width: 36,
-                                        decoration: BoxDecoration(),
-                                        child: ClipRRect(
-                                          clipBehavior: Clip.hardEdge,
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                          child: const FittedBox(
-                                            fit: BoxFit.fill,
-                                            child: Icon(Icons.call),
-                                          ),
-                                        )),
+                                          )),
+                                      trailing: Container(
+                                          height: 36,
+                                          width: 36,
+                                          decoration: BoxDecoration(),
+                                          child: ClipRRect(
+                                            clipBehavior: Clip.hardEdge,
+                                            borderRadius:
+                                                BorderRadius.circular(24),
+                                            child: const FittedBox(
+                                              fit: BoxFit.fill,
+                                              child: Icon(Icons.call),
+                                            ),
+                                          )),
+                                    ),
                                   ),
                                 ),
                               )),

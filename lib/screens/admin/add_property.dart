@@ -1,20 +1,29 @@
 import "dart:developer";
+import "dart:io";
 
 import "package:flutter/material.dart";
 import "package:geocoding/geocoding.dart";
 import "package:geolocator/geolocator.dart";
+import "package:google_maps_place_picker_mb/google_maps_place_picker.dart";
 import "package:image_picker/image_picker.dart";
 import "package:real_estate/apis/api.dart";
 import "package:real_estate/model/property_model.dart";
+import "package:real_estate/screens/admin/map_screen.dart";
 import "../../helper/dialogs.dart";
 import "../../main.dart";
 import 'package:map_location_picker/map_location_picker.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 
 class AddPropertyScreen extends StatefulWidget {
-  const AddPropertyScreen(
+  AddPropertyScreen(
       {super.key, required this.currProp, required this.isUpdate});
   final Property currProp;
   final bool isUpdate;
+  static final kInitialPosition = LatLng(28.644800, 77.216721);
+
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
   @override
   State<AddPropertyScreen> createState() => _AddPropertyScreenState();
 }
@@ -34,22 +43,35 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   List<XFile>? images = <XFile>[];
   bool isImageAdded = false;
   bool isLocationFetched = false;
-  String? _currentAddress;
+  String _currentAddress = "";
   Position? _currentPosition;
+  PickResult? selectedPlace;
+  bool _showPlacePickerInContainer = false;
+  bool _showGoogleMapInContainer = false;
+
+  bool _mapsInitialized = false;
+  String _mapsRenderer = "latest";
+  void initRenderer() {
+    if (_mapsInitialized) return;
+    if (widget.mapsImplementation is GoogleMapsFlutterAndroid) {
+      switch (_mapsRenderer) {
+        case "legacy":
+          (widget.mapsImplementation as GoogleMapsFlutterAndroid)
+              .initializeWithRenderer(AndroidMapRenderer.legacy);
+          break;
+        case "latest":
+          (widget.mapsImplementation as GoogleMapsFlutterAndroid)
+              .initializeWithRenderer(AndroidMapRenderer.latest);
+          break;
+      }
+    }
+    setState(() {
+      _mapsInitialized = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    property_name = widget.currProp.property_name;
-    bedrooms = widget.currProp.bedrooms;
-    bathrooms = widget.currProp.bathrooms;
-    garages = widget.currProp.garages;
-    area = widget.currProp.area;
-    year_built = widget.currProp.yearBuilt;
-    widget.currProp.cost = widget.currProp.cost;
-    address = widget.currProp.address;
-    lat = widget.currProp.lat;
-    long = widget.currProp.lon;
-    cost = widget.currProp.cost;
-    setState(() {});
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -78,7 +100,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           widget.isUpdate
                               ? "   Update Property"
                               : "   Add Property",
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -91,7 +113,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Property Name",
                           style: TextStyle(
                               color: Colors.black,
@@ -104,7 +126,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
-                            initialValue: property_name,
+                            initialValue: widget.currProp.property_name,
                             onChanged: (value) {
                               setState(() {
                                 property_name = value;
@@ -133,7 +155,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Bedrooms",
                               style: TextStyle(
                                   color: Colors.black,
@@ -147,7 +169,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: bedrooms,
+                                initialValue: widget.currProp.bedrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bedrooms = value!;
@@ -174,7 +196,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Bathrooms",
                               style: TextStyle(
                                   color: Colors.black,
@@ -188,7 +210,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: bathrooms,
+                                initialValue: widget.currProp.bathrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bathrooms = value!;
@@ -220,7 +242,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Garages",
                               style: TextStyle(
                                   color: Colors.black,
@@ -234,7 +256,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: garages,
+                                initialValue: widget.currProp.garages,
                                 onChanged: (value) {
                                   setState(() {
                                     garages = value!;
@@ -261,7 +283,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Area",
                               style: TextStyle(
                                   color: Colors.black,
@@ -275,7 +297,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: area,
+                                initialValue: widget.currProp.area,
                                 onChanged: (value) {
                                   setState(() {
                                     area = value!;
@@ -307,7 +329,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Cost",
                               style: TextStyle(
                                   color: Colors.black,
@@ -321,7 +343,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: cost,
+                                initialValue: widget.currProp.cost,
                                 onChanged: (value) {
                                   setState(() {
                                     cost = value!;
@@ -348,7 +370,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Year built",
                               style: TextStyle(
                                   color: Colors.black,
@@ -362,7 +384,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: year_built,
+                                initialValue: widget.currProp.yearBuilt,
                                 onChanged: (value) {
                                   setState(() {
                                     year_built = value!;
@@ -407,7 +429,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
-                        initialValue: address,
+                        initialValue: widget.currProp.address,
                         onChanged: (value) {
                           setState(() {
                             address = value!;
@@ -476,28 +498,83 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           onPressed: () {
                             _handleLocationPermission().then(
                               (value) {
-                                _getCurrentPosition().then((value) {
-                                  setState(() {
-                                    lat =
-                                        _currentPosition?.latitude.toString() ??
-                                            "";
-                                    long = _currentPosition?.longitude
-                                            .toString() ??
-                                        "";
-                                    isLocationFetched = true;
-                                  });
-                                });
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return PlacePicker(
+                                        resizeToAvoidBottomInset:
+                                            false, // only works in page mode, less flickery
+                                        apiKey: Platform.isAndroid
+                                            ? "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA"
+                                            : "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA",
+                                        hintText: "Find a place ...",
+                                        searchingText: "Please wait ...",
+                                        selectText: "Select place",
+                                        outsideOfPickAreaText:
+                                            "Place not in area",
+                                        initialPosition:
+                                            MapScreen.kInitialPosition,
+                                        useCurrentLocation: true,
+                                        selectInitialPosition: true,
+                                        usePinPointingSearch: true,
+                                        usePlaceDetailSearch: true,
+                                        zoomGesturesEnabled: true,
+                                        zoomControlsEnabled: true,
+                                        onMapCreated:
+                                            (GoogleMapController controller) {
+                                          print("Map created");
+                                        },
+                                        onPlacePicked: (PickResult result) {
+                                          print(
+                                              "Place picked: ${result.formattedAddress}");
+                                          setState(() {
+                                            selectedPlace = result;
+                                            Navigator.of(context).pop();
+                                            lat = result.geometry!.location.lat
+                                                .toString();
+                                            long = result.geometry!.location.lng
+                                                .toString();
+                                            _currentAddress =
+                                                result.formattedAddress ?? "";
+                                          });
+                                        },
+                                        onMapTypeChanged: (MapType mapType) {
+                                          print(
+                                              "Map type changed to ${mapType.toString()}");
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
                               },
                             );
                           },
-                          child: Text("GPS Location"),
+                          child: Text("Locate Property"),
                         ),
                         if (isLocationFetched)
                           Icon(Icons.done_all_outlined, color: Colors.green)
                       ],
                     ),
                     SizedBox(
-                      height: mq.height * .1,
+                      height: mq.height * .01,
+                    ),
+                    Center(
+                      child: Container(
+                        width: mq.width * .7,
+                        child: Text(
+                          "${_currentAddress}",
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: mq.height * .05,
                     ),
                     InkWell(
                       onTap: () {

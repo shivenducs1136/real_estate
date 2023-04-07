@@ -56,129 +56,124 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
           child: Scaffold(
             body: Padding(
               padding: EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                // ignore: prefer_const_literals_to_create_immutables
-
-                child: Container(
-                  height: mq.height,
-                  width: mq.width,
-                  child: Stack(children: [
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
-                            size: 25,
-                          ),
+              child: Container(
+                height: mq.height,
+                width: mq.width,
+                child: Stack(children: [
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                          size: 25,
                         ),
-                        (_isSearching)
-                            ? const Text(
-                                "  Search Properties",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : const Text(
-                                "  All Properties",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                      ],
-                    ),
-                    Positioned(
-                      top: 45,
-                      left: 10,
-                      right: 10,
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          _searchList.clear();
-                          for (var i in _list) {
-                            {
-                              if (i.property_name
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase())) {
-                                _searchList.add(i);
-                                setState(() {
-                                  _searchList;
-                                });
-                              }
+                      ),
+                      (_isSearching)
+                          ? const Text(
+                              "  Search Properties",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : const Text(
+                              "  All Properties",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ],
+                  ),
+                  Positioned(
+                    top: 45,
+                    left: 10,
+                    right: 10,
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        _searchList.clear();
+                        for (var i in _list) {
+                          {
+                            if (i.property_name
+                                .toLowerCase()
+                                .contains(value.toLowerCase())) {
+                              _searchList.add(i);
+                              setState(() {
+                                _searchList;
+                              });
                             }
                           }
-                        },
-                        decoration: const InputDecoration(
-                          hintText: "Search",
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.0),
-                            ),
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        hintText: "Search",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20.0),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Positioned(
-                      top: 130,
-                      left: 10,
-                      right: 10,
-                      bottom: 10,
-                      child: StreamBuilder(
-                          stream: APIs.getAllProperties(),
-                          builder: (context, snapshot) {
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.waiting:
-                              case ConnectionState.none:
-                                return const SizedBox();
-                              case ConnectionState.active:
-                              case ConnectionState.done:
-                                final data = snapshot.data?.docs;
-                                _list = data
-                                        ?.map(
-                                            (e) => Property.fromJson(e.data()))
-                                        .toList() ??
-                                    [];
-                                if (_list.isNotEmpty) {
-                                  return Container(
-                                    child: GridView.builder(
-                                        itemCount: _isSearching
-                                            ? _searchList.length
-                                            : _list.length,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: .8,
-                                          crossAxisSpacing: 10,
-                                          mainAxisSpacing: 10,
-                                        ),
-                                        itemBuilder: ((context, index) =>
-                                            propertyItem(_isSearching
-                                                ? _searchList[index]
-                                                : _list[index]))),
-                                  );
-                                } else {
-                                  return const Center(
-                                    child: Text(
-                                      "No Property Added",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
-                                    ),
-                                  );
-                                }
-                            }
-                          }),
-                    )
-                  ]),
-                ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Positioned(
+                    top: 130,
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                    child: StreamBuilder(
+                        stream: APIs.getAllProperties(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                            case ConnectionState.none:
+                              return const SizedBox();
+                            case ConnectionState.active:
+                            case ConnectionState.done:
+                              final data = snapshot.data?.docs;
+                              _list = data
+                                      ?.map((e) => Property.fromJson(e.data()))
+                                      .toList() ??
+                                  [];
+                              if (_list.isNotEmpty) {
+                                return Container(
+                                  child: GridView.builder(
+                                      itemCount: _isSearching
+                                          ? _searchList.length
+                                          : _list.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: .8,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                      itemBuilder: ((context, index) =>
+                                          propertyItem(_isSearching
+                                              ? _searchList[index]
+                                              : _list[index]))),
+                                );
+                              } else {
+                                return const Center(
+                                  child: Text(
+                                    "No Property Added",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                );
+                              }
+                          }
+                        }),
+                  )
+                ]),
               ),
             ),
           ),
@@ -188,52 +183,61 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
   }
 
   Widget propertyItem(Property property) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                property.showImg,
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) =>
+                    AddPropertyScreen(currProp: property, isUpdate: true)));
+      },
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.network(
+                  property.showImg,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            property.property_name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+            SizedBox(height: 8),
+            Text(
+              property.property_name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            property.address,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
+            SizedBox(height: 4),
+            Text(
+              property.address,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '\$${property.cost.toString()} ',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          )
-        ]),
+            const SizedBox(height: 8),
+            Text(
+              '\$${property.cost.toString()} ',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          ]),
+        ),
       ),
     );
   }

@@ -11,6 +11,9 @@ import 'package:real_estate/screens/admin/all_agent_screen.dart';
 import 'package:real_estate/screens/admin/assign_property.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
+import 'package:real_estate/screens/auth/login_screen.dart';
+import 'package:real_estate/screens/common/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 
@@ -63,7 +66,12 @@ class _AdminScreenState extends State<AdminScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 InkWell(
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => LogoutDialog(onConfirm: onConfirm)))
+                  },
                   child: Container(
                       height: 48,
                       width: 48,
@@ -333,6 +341,14 @@ class _AdminScreenState extends State<AdminScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> onConfirm() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('login', 0);
+    Navigator.pop(context);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => LoginScreen()));
   }
 
   Widget agentChip(AgentModel a) {
