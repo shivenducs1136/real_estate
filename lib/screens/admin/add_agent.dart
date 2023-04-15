@@ -25,14 +25,25 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
   String age = "";
   String phone_number = "";
   String address = "";
+  String photourl = "";
   XFile? img;
   bool isImageAdded = false;
   @override
   Widget build(BuildContext context) {
+    if (widget.agent != null) {
+      agent_name = widget.agent!.agent_name;
+      agent_email = widget.agent!.email;
+      age = widget.agent!.age;
+      phone_number = widget.agent!.phone_number;
+      address = widget.agent!.address;
+      photourl = widget.agent!.photo;
+    }
+
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Form(
             key: formKey,
             child: SingleChildScrollView(
@@ -326,53 +337,99 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        var value = new Random();
-                        var codeNumber =
-                            (value.nextInt(900000) + 100000).toString();
-                        Dialogs.showProgressBar(context);
-                        AgentModel a = AgentModel(
-                            password: codeNumber,
-                            agent_name: agent_name,
-                            email: agent_email,
-                            age: age,
-                            phone_number: phone_number,
-                            address: address,
-                            id: "${agent_email}",
-                            photo:
-                                'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
-                        APIs.addAgentToFirebase(a).then((value) {
-                          if (img != null) {
-                            APIs.addAgentImage(img!, a).then((value) {
+                        if (widget.isUpdate) {
+                          var value = new Random();
+                          var codeNumber =
+                              (value.nextInt(900000) + 100000).toString();
+                          Dialogs.showProgressBar(context);
+                          AgentModel a = AgentModel(
+                              password: codeNumber,
+                              agent_name: agent_name,
+                              email: agent_email,
+                              age: age,
+                              phone_number: phone_number,
+                              address: address,
+                              id: "${agent_email}",
+                              photo: photourl != ""
+                                  ? photourl
+                                  : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
+                          APIs.addAgentToFirebase(a).then((value) {
+                            if (img != null) {
+                              APIs.addAgentImage(img!, a).then((value) {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Mailer.sendCredentialsEmail(
+                                    password: codeNumber,
+                                    destEmail: agent_email);
+                                Dialogs.showSnackbar(context,
+                                    "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                              });
+                            } else {
                               Navigator.pop(context);
                               Navigator.pop(context);
-                              Mailer.sendCredentialsEmail(
-                                  password: codeNumber, destEmail: agent_email);
-                              Dialogs.showSnackbar(
-                                  context, "Agent Added Successfully");
+                              Dialogs.showSnackbar(context,
+                                  "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                            }
+                          });
+                        } else {
+                          if (agent_email.isNotEmpty) {
+                            APIs.isAgentExists(agent_email).then((value) {
+                              if (value == false) {
+                                var value = new Random();
+                                var codeNumber =
+                                    (value.nextInt(900000) + 100000).toString();
+                                Dialogs.showProgressBar(context);
+                                AgentModel a = AgentModel(
+                                    password: codeNumber,
+                                    agent_name: agent_name,
+                                    email: agent_email,
+                                    age: age,
+                                    phone_number: phone_number,
+                                    address: address,
+                                    id: "${agent_email}",
+                                    photo:
+                                        'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
+                                APIs.addAgentToFirebase(a).then((value) {
+                                  if (img != null) {
+                                    APIs.addAgentImage(img!, a).then((value) {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      Mailer.sendCredentialsEmail(
+                                          password: codeNumber,
+                                          destEmail: agent_email);
+                                      Dialogs.showSnackbar(context,
+                                          "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                                    });
+                                  } else {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Dialogs.showSnackbar(context,
+                                        "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                                  }
+                                });
+                              } else {
+                                Dialogs.showSnackbar(
+                                    context, "Agent already exists");
+                              }
                             });
-                          } else {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Dialogs.showSnackbar(
-                                context, "Agent Added Successfully");
                           }
-                        });
+                        }
                       },
                       child: Container(
                         height: mq.height * .07,
                         width: mq.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blue),
                         child: Center(
                           child: Text(
-                            "Add Agent",
-                            style: TextStyle(
+                            widget.isUpdate ? "Update Agent" : "Add Agent",
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.blue),
                       ),
                     )
                   ]),

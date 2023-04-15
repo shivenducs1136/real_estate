@@ -5,23 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/model/property_model.dart';
+import 'package:real_estate/screens/admin/agent_details.dart';
 
 import '../../helper/dialogs.dart';
 import '../../main.dart';
 
-class AllAgentScreen extends StatefulWidget {
-  const AllAgentScreen({super.key});
-
+class AssignedAgentsScreen extends StatefulWidget {
+  const AssignedAgentsScreen({super.key, required this.mproperty});
+  final Property mproperty;
   @override
-  State<AllAgentScreen> createState() => _AllAgentScreenState();
+  State<AssignedAgentsScreen> createState() => _AssignedAgentsScreenState();
 }
 
-class _AllAgentScreenState extends State<AllAgentScreen> {
+class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
+  List<AgentModel> _agentlist = [];
   @override
   Widget build(BuildContext context) {
+    _agentlist.clear();
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -50,7 +54,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Text(
-                    "Agent Details",
+                    "Assgined Agents",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -74,23 +78,14 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
               ],
             ),
           ),
-          const Positioned(
-              top: 75,
-              left: 10,
-              right: 10,
-              child: Text(
-                "Long press to delete agents.",
-                style: TextStyle(fontSize: 14),
-                textAlign: TextAlign.center,
-              )),
           Positioned(
-            top: 100,
+            top: 80,
             left: 10,
             right: 10,
             bottom: 10,
             child: Container(
               child: StreamBuilder(
-                  stream: APIs.getAllAgents(),
+                  stream: APIs.getAssignedAgentwithProperty(widget.mproperty),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -98,11 +93,9 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                         return SizedBox();
                       case ConnectionState.active:
                       case ConnectionState.done:
-                        final data = snapshot.data?.docs;
-                        List<AgentModel> _agentlist = data
-                                ?.map((e) => AgentModel.fromJson(e.data()))
-                                .toList() ??
-                            [];
+                        if (snapshot.data != null) {
+                          _agentlist.add(snapshot.data!);
+                        }
                         if (_agentlist.isNotEmpty) {
                           return Container(
                             child: ListView.builder(
@@ -142,6 +135,16 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                                 onCancel: () {});
                                           },
                                           child: ListTile(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          AgentDetails(
+                                                              curr_agent:
+                                                                  _agentlist[
+                                                                      index])));
+                                            },
                                             title: Text(
                                                 "${_agentlist[index].agent_name}"),
                                             subtitle: Text(

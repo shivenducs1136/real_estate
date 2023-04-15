@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:real_estate/apis/api.dart";
 import "package:real_estate/helper/agent_searchable.dart";
+import "package:real_estate/helper/credentials.dart";
 import "package:real_estate/model/agent_model.dart";
 import "package:real_estate/model/customer_model.dart";
 
@@ -28,6 +29,12 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        persistentFooterButtons: [
+          Center(
+              child: Text(
+                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+        ],
+        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.all(20),
           child: SingleChildScrollView(
@@ -84,9 +91,9 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
 
                         return MySearchableDropdown(
                           options: _list,
-                          hintText: 'Search...',
+                          hintText: 'Please Select Property',
                           selectedItem: _selectedProperty == null
-                              ? "Please Select Property"
+                              ? ""
                               : _selectedProperty!.property_name,
                           onChanged: (newValue) {
                             setState(() {
@@ -124,9 +131,9 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
 
                         return MyAgentSearchableDropdown(
                           options: _agentlist,
-                          hintText: 'Search...',
+                          hintText: 'Please Select Agent',
                           selectedItem: _selectedAgent == null
-                              ? "Please Select Agent"
+                              ? ""
                               : _selectedAgent!.agent_name,
                           onChanged: (newValue) {
                             setState(() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
@@ -12,7 +13,6 @@ import 'package:real_estate/screens/admin/assign_property.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
-import 'package:real_estate/screens/common/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
@@ -52,6 +52,7 @@ class _AdminScreenState extends State<AdminScreen> {
         yearBuilt: "");
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.all(20),
           child: Column(
@@ -67,10 +68,24 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 InkWell(
                   onTap: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => LogoutDialog(onConfirm: onConfirm)))
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Confirm Logout'),
+                            content: Text('Are you sure you want to logout?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: onConfirm,
+                                child: Text('Confirm'),
+                              ),
+                            ],
+                          );
+                        })
                   },
                   child: Container(
                       height: 48,
@@ -339,6 +354,11 @@ class _AdminScreenState extends State<AdminScreen> {
             ],
           ),
         ),
+        persistentFooterButtons: const [
+          Center(
+              child: Text(
+                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+        ],
       ),
     );
   }
@@ -347,6 +367,7 @@ class _AdminScreenState extends State<AdminScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('login', 0);
     Navigator.pop(context);
+
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => LoginScreen()));
   }
@@ -414,7 +435,7 @@ class _AdminScreenState extends State<AdminScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => AddAgentScreen(
+                  builder: (_) => const AddAgentScreen(
                         isUpdate: false,
                         agent: null,
                       )));

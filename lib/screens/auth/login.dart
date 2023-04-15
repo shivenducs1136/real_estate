@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/screens/admin/admin_screen.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
@@ -33,6 +34,11 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        persistentFooterButtons: [
+          Center(
+              child: Text(
+                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+        ],
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(

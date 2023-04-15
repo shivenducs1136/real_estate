@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/screens/auth/login.dart';
 
+import '../../helper/credentials.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -20,6 +22,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      persistentFooterButtons: [
+        Center(
+            child: Text(
+                "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+      ],
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

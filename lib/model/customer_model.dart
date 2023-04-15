@@ -7,6 +7,7 @@ class CustomerModel {
     required this.address,
     required this.customer_id,
     required this.isLoan,
+    this.review,
   });
   late String customer_name;
   late String property_id;
@@ -15,6 +16,7 @@ class CustomerModel {
   late String address;
   late String customer_id;
   late bool isLoan;
+  String? review;
 
   CustomerModel.fromJson(Map<String, dynamic> json) {
     customer_name = json['customer_name'] ?? '';
@@ -24,6 +26,7 @@ class CustomerModel {
     address = json['address'] ?? '';
     customer_id = json['customer_id'] ?? '';
     isLoan = json['isLoan'] ?? false;
+    review = json['review'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +38,7 @@ class CustomerModel {
     _data['address'] = address;
     _data['customer_id'] = customer_id;
     _data['isLoan'] = isLoan;
+    _data['review'] = review;
     return _data;
   }
 }

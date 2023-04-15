@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
 
@@ -30,21 +33,28 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        persistentFooterButtons: [
+          Center(
+              child: Text(
+                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+        ],
+        resizeToAvoidBottomInset: false,
         body: GoogleMap(
-      onMapCreated: onMapCreated,
-      polylines: polyline,
-      markers: Set<Marker>.of(_marker),
-      initialCameraPosition: CameraPosition(
-          target: routeCoords == null
-              ? LatLng(28.7515285, 77.4995344)
-              : routeCoords![0],
-          zoom: 14.0),
-      mapType: MapType.normal,
-    ));
+          onMapCreated: onMapCreated,
+          polylines: polyline,
+          markers: Set<Marker>.of(_marker),
+          initialCameraPosition: CameraPosition(
+              target: (routeCoords == null || routeCoords!.isEmpty)
+                  ? LatLng(28.7515285, 77.4995344)
+                  : routeCoords![0],
+              zoom: 14.0),
+          mapType: MapType.normal,
+        ));
   }
 
   Future<void> onMapCreated(GoogleMapController controller) async {
     await APIs.getAgentCoordinates(widget.customerModel).then((value) {
+      log(value.toString());
       setState(() {
         _controller = controller;
         Dialogs.showProgressBar(context);

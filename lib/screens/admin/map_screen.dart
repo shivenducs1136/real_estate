@@ -10,10 +10,12 @@ import 'dart:io' show Platform;
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
+import '../../helper/credentials.dart';
+
 class MapScreen extends StatefulWidget {
   MapScreen({Key? key}) : super(key: key);
 
-  static final kInitialPosition = LatLng(-33.8567844, 151.213108);
+  static final kInitialPosition = LatLng(28.65844278, 77.2159199);
 
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
@@ -52,6 +54,12 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        persistentFooterButtons: [
+          Center(
+              child: Text(
+                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+        ],
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text("Google Map Place Picker Demo"),
         ),

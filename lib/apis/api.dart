@@ -203,33 +203,131 @@ class APIs {
   }
 
   static Future<void> deleteAgentWithAgentId(String agentId) async {
+    final propertyDocs = await firestore.collection("property").get();
+    for (var prop in propertyDocs.docs) {
+      await firestore
+          .collection("property")
+          .doc(prop.id)
+          .collection("assigned_agents")
+          .doc(agentId)
+          .delete();
+    }
+    final customerDocs = await firestore.collection("customer").get();
+
+    for (var cust in customerDocs.docs) {
+      final data = await firestore.collection("customer").doc(cust.id).get();
+      if (data != null) {
+        CustomerModel? c = CustomerModel.fromJson(data.data()!);
+        if (c.agent_id == agentId) {
+          await firestore.collection("customer").doc(cust.id).delete();
+        }
+      }
+    }
     await firestore.collection('agents').doc(agentId).delete();
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getSpecificAgentDetail(
-      String email) {
-    return firestore.collection("agents").doc(email).snapshots();
+  static Future<CustomerModel?> getCustomerById(String customerId) async {
+    final data = await firestore.collection("customer").doc(customerId).get();
+    if (data != null) {
+      return CustomerModel.fromJson(data.data()!);
+    } else {
+      return null;
+    }
+  }
+
+  static Future<AgentModel?> getSpecificAgentDetail(String email) async {
+    final mdata = await firestore.collection("agents").doc(email).get();
+    if (mdata != null) {
+      return AgentModel.fromJson(mdata.data()!);
+    } else {
+      return null;
+    }
   }
 
   static Future<List<LatLng>> getAgentCoordinates(CustomerModel c) async {
     List<LatLng> mlist = [];
     final mdata = await firestore
         .collection("tracking")
-        //.doc(c.property_id)
-        .doc("1678985709821512")
-        // .collection(c.agent_id)
-        .collection("1678994107233745")
-        .doc("1678997144177592")
-        // .doc(c.customer_id)
+        .doc(c.property_id)
+        .collection(c.agent_id)
+        .doc(c.customer_id)
         .collection("coordinates")
         .get();
+
     for (var ele in mdata.docs) {
       mlist.add(LatLng(toDouble(ele.get('lat')), toDouble(ele.get('long'))));
     }
     return mlist;
   }
 
+  static Stream<AgentModel?> getAssignedAgentwithProperty(
+      Property mproperty) async* {
+    final agentIds = await firestore
+        .collection("property")
+        .doc(mproperty.id)
+        .collection("assigned_agents")
+        .get();
+
+    for (var element in agentIds.docs) {
+      AgentModel? a = await getSpecificAgentDetail(element.id);
+      yield a;
+    }
+  }
+
+  static Stream<CustomerModel> getClientsofProperty(Property mproperty) async* {
+    final customerDocs = await firestore.collection("customer").get();
+
+    for (var element in customerDocs.docs) {
+      CustomerModel? a = await getCustomerById(element.id);
+      if (a != null) {
+        if (a.property_id == mproperty.id) {
+          yield a;
+        }
+      }
+    }
+  }
+
+  static void submitReview(CustomerModel c, String review) async {
+    await firestore.collection("customer").doc(c.customer_id).set(CustomerModel(
+            address: c.address,
+            agent_id: c.agent_id,
+            customer_id: c.customer_id,
+            customer_name: c.customer_name,
+            isLoan: c.isLoan,
+            phonenumber: c.phonenumber,
+            property_id: c.property_id,
+            review: review)
+        .toJson());
+  }
+
+  static void setisLoan(CustomerModel c, bool isLoan) async {
+    await firestore.collection("customer").doc(c.customer_id).set(CustomerModel(
+            address: c.address,
+            agent_id: c.agent_id,
+            customer_id: c.customer_id,
+            customer_name: c.customer_name,
+            isLoan: isLoan,
+            phonenumber: c.phonenumber,
+            property_id: c.property_id,
+            review: c.review)
+        .toJson());
+  }
+
+  static Future<bool> isAgentExists(String emailid) async {
+    final agent = await firestore.collection("agents").doc(emailid).get();
+    if (agent == null) {
+      return false;
+    }
+    return true;
+  }
+
   static toDouble(String num) {
     return double.parse(num);
   }
+
+  static void addUpdate(
+      {required String msg,
+      String? customerId,
+      String? agentId,
+      String? propertyId}) {}
 }

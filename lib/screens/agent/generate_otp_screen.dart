@@ -1,15 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:real_estate/apis/otp_authentication.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:real_estate/screens/common/background_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../helper/credentials.dart';
 import '../../main.dart';
 
 String clientid = "";
@@ -24,14 +23,20 @@ class GenerateOtpScreenVerify extends StatefulWidget {
 
 class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
   String verificationId = "";
+  List<String> pin = [];
   String btnText = "SEND OTP";
-  var otpController = List.generate(6, (index) => TextEditingController());
-  var isOtpSent = false;
+  bool isTrackingStarted = false;
   @override
   Widget build(BuildContext context) {
     clientid = widget.customerModel.customer_id;
     return SafeArea(
         child: Scaffold(
+      persistentFooterButtons: [
+        Center(
+            child: Text(
+                "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+      ],
+      resizeToAvoidBottomInset: false,
       body: Container(
         height: mq.height,
         width: mq.width,
@@ -52,19 +57,30 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
           ),
           Positioned(
             top: 20,
-            child: Container(
-              width: mq.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "Verify Client",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                  )
-                ],
+            child: GestureDetector(
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('agentId', widget.customerModel.agent_id);
+                prefs.setString('customerId', widget.customerModel.customer_id);
+                prefs.setString('propertyId', widget.customerModel.property_id);
+                Dialogs.showSnackbar(context, "Enabled Background processing");
+                await initializeService();
+                prefs.setBool('isTracking', true);
+              },
+              child: Container(
+                width: mq.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      "Verify Client",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -87,8 +103,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             right: 30,
             child: GestureDetector(
               onTap: () {
-                // Dialogs.showProgressBar(context);
-
+                Dialogs.showProgressBar(context);
                 _handleLocationPermission().then((value) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
@@ -98,11 +113,9 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                   prefs.setString(
                       'propertyId', widget.customerModel.property_id);
                   // await initializeService();
-                  OtpAuth.sendOtp(widget.customerModel.phonenumber)
+                  OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
                       .then((value) {
-                    setState(() {
-                      btnText = "RESEND OTP";
-                    });
+                    Navigator.pop(context);
                   });
                 });
               },
@@ -124,44 +137,35 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             ),
           ),
           Positioned(
-              top: 200,
-              left: 10,
-              right: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                    6,
-                    (index) => SizedBox(
-                          width: 56,
-                          child: Padding(
-                            padding: EdgeInsets.all(5),
-                            child: TextField(
-                                keyboardType: TextInputType.number,
-                                maxLength: 1,
-                                controller: otpController[index],
-                                cursorColor: Colors.red,
-                                onChanged: (value) {
-                                  if (value.length == 1 && index <= 5) {
-                                    FocusScope.of(context).nextFocus();
-                                  } else if (value.isEmpty && index > 0) {
-                                    FocusScope.of(context).previousFocus();
-                                  }
-                                },
-                                style: TextStyle(color: Colors.red),
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide:
-                                            BorderSide(color: Colors.red)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide:
-                                            BorderSide(color: Colors.red)),
-                                    hintText: "*")),
-                          ),
-                        )),
-              )),
+            top: 200,
+            left: 10,
+            right: 10,
+            child: OtpTextField(
+              numberOfFields: 6,
+              borderColor: Color(0xFF512DA8),
+              //set to true to show as box or false to show as dash
+              showFieldAsBox: true,
+              //runs when a code is typed in
+              onCodeChanged: (String code) {
+                //handle validation or checks here
+              },
+              //runs when every textfield is filled
+              onSubmit: (String verificationCode) {
+                Dialogs.showProgressBar(context);
+                OtpAuth.verifyOtp(verificationCode, context)
+                    .then((value) async {
+                  if (value == 1) {
+                    Dialogs.showSnackbar(context, "User Verified Successfully");
+                    Navigator.pop(context);
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setBool("isTracking", true);
+                    await initializeService();
+                  }
+                });
+              }, // end onSubmit
+            ),
+          ),
         ]),
       ),
     ));

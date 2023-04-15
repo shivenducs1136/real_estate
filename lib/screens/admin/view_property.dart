@@ -6,10 +6,13 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import "package:flutter/material.dart";
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/widgets/nearby_places.dart';
+import 'package:real_estate/helper/widgets/recommended_places.dart';
 import 'package:real_estate/model/image_model.dart';
 import 'package:real_estate/screens/admin/add_property.dart';
 import 'package:real_estate/helper/media.dart';
 
+import '../../helper/credentials.dart';
 import '../../main.dart';
 import '../../model/property_model.dart';
 
@@ -46,6 +49,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
           onWillPop: () {
             if (_isSearching) {
               setState(() {
+                _searchText = "";
                 _isSearching = !_isSearching;
               });
               return Future.value(false);
@@ -54,6 +58,12 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
             }
           },
           child: Scaffold(
+            persistentFooterButtons: [
+              Center(
+                  child: Text(
+                      "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
+            ],
+            resizeToAvoidBottomInset: false,
             body: Padding(
               padding: EdgeInsets.all(20),
               child: Container(
@@ -96,6 +106,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                     child: TextField(
                       controller: _searchController,
                       onChanged: (value) {
+                        _isSearching = true;
                         _searchList.clear();
                         for (var i in _list) {
                           {
@@ -143,24 +154,23 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                       ?.map((e) => Property.fromJson(e.data()))
                                       .toList() ??
                                   [];
+                              // propertyItem(_isSearching
+                              //             ? _searchList[index]
+                              //             : _list[index])
                               if (_list.isNotEmpty) {
-                                return Container(
-                                  child: GridView.builder(
-                                      itemCount: _isSearching
-                                          ? _searchList.length
-                                          : _list.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: .8,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                      ),
-                                      itemBuilder: ((context, index) =>
-                                          propertyItem(_isSearching
-                                              ? _searchList[index]
-                                              : _list[index]))),
-                                );
+                                return _isSearching
+                                    ? Container(
+                                        child: NearbyPlaces(
+                                        email: null,
+                                        isUpdate: true,
+                                        nearbyPlaces: _searchList,
+                                      ))
+                                    : Container(
+                                        child: NearbyPlaces(
+                                        email: null,
+                                        isUpdate: true,
+                                        nearbyPlaces: _list,
+                                      ));
                               } else {
                                 return const Center(
                                   child: Text(
@@ -177,66 +187,6 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget propertyItem(Property property) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) =>
-                    AddPropertyScreen(currProp: property, isUpdate: true)));
-      },
-      child: Card(
-        elevation: 2,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image.network(
-                  property.showImg,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              property.property_name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              property.address,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '\$${property.cost.toString()} ',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
-          ]),
         ),
       ),
     );

@@ -46,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       //appbar
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -63,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 20,
           ),
           const Text(
-            "Another sweet home 🏠 win 🏆",
+            "True Professionals",
             style: TextStyle(
                 fontSize: 16, color: Colors.black87, letterSpacing: .5),
             textAlign: TextAlign.center,

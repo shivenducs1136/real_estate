@@ -58,6 +58,11 @@ dependencies:
   google_maps_flutter:
   google_map_polyline_new: ^0.3.0+2
   provider: ^6.0.5
+  flutter_otp_text_field: ^1.1.0+2
+  google_fonts: ^3.0.1
+  ionicons: ^0.2.1
+  flutter_phone_direct_caller: ^2.1.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

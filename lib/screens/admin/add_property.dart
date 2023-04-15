@@ -1,14 +1,16 @@
 import "dart:developer";
 import "dart:io";
-
 import "package:flutter/material.dart";
 import "package:geocoding/geocoding.dart";
 import "package:geolocator/geolocator.dart";
 import "package:google_maps_place_picker_mb/google_maps_place_picker.dart";
 import "package:image_picker/image_picker.dart";
+import "package:provider/provider.dart";
 import "package:real_estate/apis/api.dart";
 import "package:real_estate/model/property_model.dart";
+import "package:real_estate/providers/admin_provider.dart";
 import "package:real_estate/screens/admin/map_screen.dart";
+import "package:real_estate/screens/admin/view_property.dart";
 import "../../helper/dialogs.dart";
 import "../../main.dart";
 import 'package:map_location_picker/map_location_picker.dart';
@@ -74,6 +76,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.all(20),
           child: Form(
@@ -530,7 +533,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                               "Place picked: ${result.formattedAddress}");
                                           setState(() {
                                             selectedPlace = result;
-                                            Navigator.of(context).pop();
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ViewPropertyScreen()));
                                             lat = result.geometry!.location.lat
                                                 .toString();
                                             long = result.geometry!.location.lng
@@ -593,14 +600,31 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             showImg: 'https://picsum.photos/200/300',
                             yearBuilt: year_built);
                         Dialogs.showProgressBar(context);
-                        APIs.addPropertyToFirebase(p).then((value) {
-                          APIs.addPropertyPhotos(images!, p).then((value) {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Dialogs.showSnackbar(
-                                context, "Property Added Successfully");
+                        if (images == null || images!.isEmpty) {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(
+                              context, "Please add atleast 1 image");
+                        } else if (property_name == "" ||
+                            cost == "" ||
+                            lat == "" ||
+                            long == "" ||
+                            year_built == "") {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(
+                              context, "Please add all details");
+                        } else {
+                          APIs.addPropertyToFirebase(p).then((value) {
+                            APIs.addPropertyPhotos(images!, p).then((value) {
+                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => ViewPropertyScreen()));
+                              Dialogs.showSnackbar(
+                                  context, "Property Added Successfully");
+                            });
                           });
-                        });
+                        }
                       },
                       child: Container(
                         height: mq.height * .07,

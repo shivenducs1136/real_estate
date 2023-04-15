@@ -48,31 +48,30 @@ void onStart(ServiceInstance service) {
       if (await service.isForegroundService()) {
         service.setForegroundNotificationInfo(
             title: "Tiwari Propmart", content: "Location Tracking...");
-        await initializeFirebase();
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String agentId = prefs.getString('agentId').toString();
-        String customerId = prefs.getString('customerId').toString();
-        String propertyId = prefs.getString('propertyId').toString();
-
-        await Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.high)
-            .then((Position position) {
-          FirebaseFirestore.instance
-              .collection("tracking")
-              .doc(propertyId)
-              .collection(agentId)
-              .doc(customerId)
-              .collection("coordinates")
-              .doc(DateTime.now().millisecondsSinceEpoch.toString())
-              .set({
-            'lat': position.latitude.toString(),
-            'long': position.longitude.toString()
-          });
-        });
       }
     }
     // perform background operations
     print("background service running");
+    await initializeFirebase();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String agentId = prefs.getString('agentId').toString();
+    String customerId = prefs.getString('customerId').toString();
+    String propertyId = prefs.getString('propertyId').toString();
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      FirebaseFirestore.instance
+          .collection("tracking")
+          .doc(propertyId)
+          .collection(agentId)
+          .doc(customerId)
+          .collection("coordinates")
+          .doc(DateTime.now().millisecondsSinceEpoch.toString())
+          .set({
+        'lat': position.latitude.toString(),
+        'long': position.longitude.toString()
+      });
+    });
     service.invoke("update");
   });
 }

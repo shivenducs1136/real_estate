@@ -1,35 +1,32 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/dialogs.dart';
-import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/common/polyline_map.dart';
-
 import '../../apis/api.dart';
 import '../../main.dart';
 
-class AssignedCustomers extends StatefulWidget {
-  const AssignedCustomers({
+class InterestedCustomerScreen extends StatefulWidget {
+  const InterestedCustomerScreen({
     super.key,
     required this.property,
-    required this.agent,
   });
   final Property property;
-  final AgentModel agent;
   @override
-  State<AssignedCustomers> createState() => _AssignedCustomersState();
+  State<InterestedCustomerScreen> createState() =>
+      _InterestedCustomerScreenState();
 }
 
-class _AssignedCustomersState extends State<AssignedCustomers> {
+class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
+  List<CustomerModel> _customerlist = [];
   @override
   Widget build(BuildContext context) {
-    log("${widget.property.id}");
+    _customerlist.clear();
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -55,7 +52,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
               GestureDetector(
                 onTap: () {},
                 child: const Text(
-                  "Customer Details",
+                  "Interested Customers",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
@@ -80,7 +77,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
           ),
         ),
         StreamBuilder(
-            stream: APIs.getAssignedCustomers(widget.agent, widget.property),
+            stream: APIs.getClientsofProperty(widget.property),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -88,17 +85,17 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                   return SizedBox();
                 case ConnectionState.active:
                 case ConnectionState.done:
-                  final data = snapshot.data?.docs;
-                  List<CustomerModel> _customerList = data
-                          ?.map((e) => CustomerModel.fromJson(e.data()))
-                          .toList() ??
-                      [];
-                  if (_customerList.isNotEmpty) {
+                  if (snapshot.data != null) {
+                    if (!_customerlist.contains(snapshot.data!)) {
+                      _customerlist.add(snapshot.data!);
+                    }
+                  }
+                  if (_customerlist.isNotEmpty) {
                     return Container(
                       height: mq.height - 250,
                       width: mq.width,
                       child: ListView.builder(
-                          itemCount: _customerList.length,
+                          itemCount: _customerlist.length,
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
@@ -109,7 +106,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                         MaterialPageRoute(
                                             builder: (_) => PolyMapScreen(
                                                   customerModel:
-                                                      _customerList[index],
+                                                      _customerlist[index],
                                                 )));
                                   },
                                   child: Container(
@@ -122,10 +119,13 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                     ),
                                     child: ListTile(
                                       title: Text(
-                                          _customerList[index].customer_name),
+                                        _customerlist[index].customer_name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                       subtitle: Text(
-                                        _customerList[index].address,
-                                        maxLines: 2,
+                                        _customerlist[index].address,
+                                        maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       leading: Container(
@@ -141,7 +141,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                               child: Icon(
                                                 Icons.circle,
                                                 color:
-                                                    _customerList[index].isLoan
+                                                    _customerlist[index].isLoan
                                                         ? Colors.green
                                                         : Colors.red,
                                               ),
@@ -150,7 +150,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                       trailing: GestureDetector(
                                         onTap: () {
                                           Dialogs.callNumber(
-                                              _customerList[index].phonenumber);
+                                              _customerlist[index].phonenumber);
                                         },
                                         child: Container(
                                             height: 36,

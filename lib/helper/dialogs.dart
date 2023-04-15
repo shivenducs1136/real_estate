@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 class Dialogs {
   static void showSnackbar(BuildContext context, String msg) {
@@ -47,5 +48,10 @@ class Dialogs {
         );
       },
     );
+  }
+
+  static callNumber(String number) async {
+    //set the number here
+    bool? res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 }
