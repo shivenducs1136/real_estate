@@ -7,7 +7,9 @@ class AgentModel {
       required this.id,
       required this.photo,
       required this.email,
-      required this.password});
+      required this.password,
+      required this.dob,
+      required this.isMale});
   late String agent_name;
   late String age;
   late String phone_number;
@@ -16,6 +18,8 @@ class AgentModel {
   late String photo;
   late String email;
   late String password;
+  late String dob;
+  late bool isMale;
 
   AgentModel.fromJson(Map<String, dynamic> json) {
     agent_name = json['agent_name'] ?? '';
@@ -25,6 +29,8 @@ class AgentModel {
     id = json['id'] ?? '';
     email = json['email'] ?? '';
     password = json['password'] ?? '';
+    dob = json['dob'] ?? '';
+    isMale = json['isMale'] ?? '';
     photo = json['photo'] ??
         'https://th.bing.com/th/id/OIP.tWwHa21PC-F18kRm0I2w7wHaHa?pid=ImgDet&rs=1';
   }
@@ -39,7 +45,8 @@ class AgentModel {
     _data['photo'] = photo;
     _data['email'] = email;
     _data['password'] = password;
-
+    _data['isMale'] = isMale;
+    _data['dob'] = dob;
     return _data;
   }
 }

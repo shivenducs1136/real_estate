@@ -1,8 +1,10 @@
 import "dart:math";
 
+import "package:calendar_date_picker2/calendar_date_picker2.dart";
 import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 import "package:real_estate/apis/api.dart";
+import "package:real_estate/helper/my_date_util.dart";
 import "package:real_estate/model/agent_model.dart";
 import "package:real_estate/model/mailer.dart";
 
@@ -26,8 +28,10 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
   String phone_number = "";
   String address = "";
   String photourl = "";
+  List<DateTime?> dob = [];
   XFile? img;
   bool isImageAdded = false;
+  bool isMale = false;
   @override
   Widget build(BuildContext context) {
     if (widget.agent != null) {
@@ -150,6 +154,63 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               labelText: "john@gmail.com",
                             ),
                           ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: mq.height * .01,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "DOB : ${dob.isNotEmpty ? MyDateUtil.getEventDetailDate(dob[0]!) : ""}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                var results =
+                                    await showCalendarDatePicker2Dialog(
+                                  context: context,
+                                  config:
+                                      CalendarDatePicker2WithActionButtonsConfig(),
+                                  dialogSize: const Size(325, 400),
+                                  value: dob,
+                                  borderRadius: BorderRadius.circular(15),
+                                );
+                                setState(() {
+                                  dob = results!;
+                                });
+                              },
+                              child: Icon(
+                                Icons.calendar_today,
+                                size: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Male ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Switch(
+                                value: !isMale,
+                                onChanged: (context) {
+                                  isMale = !isMale;
+                                  setState(() {});
+                                }),
+                            Text(
+                              " Female",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -352,7 +413,11 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               id: "${agent_email}",
                               photo: photourl != ""
                                   ? photourl
-                                  : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
+                                  : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
+                              dob: dob.isNotEmpty
+                                  ? MyDateUtil.getEventDetailDate(dob[0]!)
+                                  : "",
+                              isMale: isMale);
                           APIs.addAgentToFirebase(a).then((value) {
                             if (img != null) {
                               APIs.addAgentImage(img!, a).then((value) {
@@ -374,7 +439,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         } else {
                           if (agent_email.isNotEmpty) {
                             APIs.isAgentExists(agent_email).then((value) {
-                              if (value == false) {
+                              if (value == true) {
                                 var value = new Random();
                                 var codeNumber =
                                     (value.nextInt(900000) + 100000).toString();
@@ -388,7 +453,11 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                     address: address,
                                     id: "${agent_email}",
                                     photo:
-                                        'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4');
+                                        'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
+                                    dob: dob.isNotEmpty
+                                        ? MyDateUtil.getEventDetailDate(dob[0]!)
+                                        : "",
+                                    isMale: isMale);
                                 APIs.addAgentToFirebase(a).then((value) {
                                   if (img != null) {
                                     APIs.addAgentImage(img!, a).then((value) {

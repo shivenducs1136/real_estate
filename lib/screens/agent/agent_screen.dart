@@ -31,7 +31,9 @@ class _AgentScreenState extends State<AgentScreen> {
       id: "",
       photo: "",
       email: "",
-      password: "");
+      password: "",
+      dob: "",
+      isMale: false);
   List<Property>? allProperty;
   @override
   void initState() {
