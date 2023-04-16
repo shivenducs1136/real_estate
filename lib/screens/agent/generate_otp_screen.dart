@@ -14,8 +14,14 @@ import '../../main.dart';
 String clientid = "";
 
 class GenerateOtpScreenVerify extends StatefulWidget {
-  const GenerateOtpScreenVerify({super.key, required this.customerModel});
+  const GenerateOtpScreenVerify(
+      {super.key,
+      required this.customerModel,
+      required this.agentId,
+      required this.propertyId});
   final CustomerModel customerModel;
+  final String agentId;
+  final String propertyId;
   @override
   State<GenerateOtpScreenVerify> createState() =>
       _GenerateOtpScreenVerifyState();
@@ -60,9 +66,9 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             child: GestureDetector(
               onTap: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setString('agentId', widget.customerModel.agent_id);
+                prefs.setString('agentId', widget.agentId);
                 prefs.setString('customerId', widget.customerModel.customer_id);
-                prefs.setString('propertyId', widget.customerModel.property_id);
+                prefs.setString('propertyId', widget.propertyId);
                 Dialogs.showSnackbar(context, "Enabled Background processing");
                 await initializeService();
                 prefs.setBool('isTracking', true);
@@ -107,11 +113,10 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                 _handleLocationPermission().then((value) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  prefs.setString('agentId', widget.customerModel.agent_id);
+                  prefs.setString('agentId', widget.agentId);
                   prefs.setString(
                       'customerId', widget.customerModel.customer_id);
-                  prefs.setString(
-                      'propertyId', widget.customerModel.property_id);
+                  prefs.setString('propertyId', widget.propertyId);
                   // await initializeService();
                   OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
                       .then((value) {

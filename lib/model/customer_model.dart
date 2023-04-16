@@ -10,8 +10,8 @@ class CustomerModel {
     this.review,
   });
   late String customer_name;
-  late String property_id;
-  late String agent_id;
+  late List<dynamic> property_id;
+  late List<dynamic> agent_id;
   late String phonenumber;
   late String address;
   late String customer_id;
@@ -20,8 +20,8 @@ class CustomerModel {
 
   CustomerModel.fromJson(Map<String, dynamic> json) {
     customer_name = json['customer_name'] ?? '';
-    property_id = json['property_id'] ?? '';
-    agent_id = json['agent_id'] ?? '';
+    property_id = json['property_id'] ?? [];
+    agent_id = json['agent_id'] ?? [];
     phonenumber = json['phonenumber'] ?? '';
     address = json['address'] ?? '';
     customer_id = json['customer_id'] ?? '';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/model/customer_model.dart';
+import 'package:real_estate/screens/admin/interested_customer_screen.dart';
+import 'package:real_estate/screens/admin/interested_properties.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
+import 'package:real_estate/screens/agent/customer_property.dart';
 import 'package:real_estate/screens/agent/generate_otp_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -103,10 +106,18 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (_) =>
-                                                      GenerateOtpScreenVerify(
-                                                        customerModel:
-                                                            myCustomer[index],
-                                                      )));
+                                                      CustomerProperty(
+                                                          customerid: myCustomer[
+                                                                  index]
+                                                              .customer_id)));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (_) =>
+                                          //             GenerateOtpScreenVerify(
+                                          //               customerModel:
+                                          //                   myCustomer[index], agentId: '', propertyId: '',
+                                          //             )));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(

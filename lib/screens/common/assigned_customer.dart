@@ -29,7 +29,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
     log("${widget.property.id}");
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -79,6 +79,9 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
             ],
           ),
         ),
+        const Padding(
+            padding: EdgeInsets.only(bottom: 15),
+            child: Text("Tap to view agent routes")),
         StreamBuilder(
             stream: APIs.getAssignedCustomers(widget.agent, widget.property),
             builder: (context, snapshot) {
@@ -110,6 +113,8 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                             builder: (_) => PolyMapScreen(
                                                   customerModel:
                                                       _customerList[index],
+                                                  agentId: widget.agent.id,
+                                                  propId: widget.property.id,
                                                 )));
                                   },
                                   child: Container(

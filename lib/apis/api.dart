@@ -109,6 +109,33 @@ class APIs {
     return firestore.collection('property').snapshots();
   }
 
+  static Stream<Property?> getAssignedProperty(String customerId) async* {
+    final cs = await firestore.collection("customer").doc(customerId).get();
+    try {
+      CustomerModel cm = CustomerModel.fromJson(cs.data()!);
+      for (var propid in cm.property_id) {
+        final propdata =
+            await firestore.collection("property").doc(propid).get();
+
+        Property p = Property.fromJson(propdata.data()!);
+        yield p;
+      }
+    } catch (e) {
+      yield null;
+    }
+  }
+
+  static Future<CustomerModel?> isCustomerExists(String phoneNumber) async {
+    final data = await firestore.collection("customer").get();
+    for (var ele in data.docs) {
+      CustomerModel c = CustomerModel.fromJson(ele.data());
+      if (c.phonenumber == phoneNumber) {
+        return c;
+      }
+    }
+    return null;
+  }
+
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllPhotos(Property p) {
     return firestore
         .collection('property')
@@ -204,6 +231,7 @@ class APIs {
 
   static Future<void> deleteAgentWithAgentId(String agentId) async {
     final propertyDocs = await firestore.collection("property").get();
+
     for (var prop in propertyDocs.docs) {
       await firestore
           .collection("property")
@@ -218,8 +246,27 @@ class APIs {
       final data = await firestore.collection("customer").doc(cust.id).get();
       if (data != null) {
         CustomerModel? c = CustomerModel.fromJson(data.data()!);
-        if (c.agent_id == agentId) {
-          await firestore.collection("customer").doc(cust.id).delete();
+        if (c.agent_id.contains(agentId)) {
+          List<dynamic> mlist = c.agent_id;
+          List<dynamic> mprop = c.property_id;
+          int ele = 0;
+          for (int idx = 0; idx < mlist.length; idx++) {
+            if (mlist[idx] == agentId) {
+              ele = idx;
+              break;
+            }
+          }
+          mprop.remove(mprop[ele]);
+          mlist.remove(agentId);
+          await firestore.collection("customer").doc(cust.id).set(CustomerModel(
+                  customer_name: c.customer_name,
+                  property_id: mprop,
+                  agent_id: mlist,
+                  phonenumber: c.phonenumber,
+                  address: c.address,
+                  customer_id: c.customer_id,
+                  isLoan: c.isLoan)
+              .toJson());
         }
       }
     }
@@ -237,19 +284,20 @@ class APIs {
 
   static Future<AgentModel?> getSpecificAgentDetail(String email) async {
     final mdata = await firestore.collection("agents").doc(email).get();
-    if (mdata != null) {
+    if (mdata.data() != null) {
       return AgentModel.fromJson(mdata.data()!);
     } else {
       return null;
     }
   }
 
-  static Future<List<LatLng>> getAgentCoordinates(CustomerModel c) async {
+  static Future<List<LatLng>> getAgentCoordinates(
+      CustomerModel c, String propId, String agentId) async {
     List<LatLng> mlist = [];
     final mdata = await firestore
         .collection("tracking")
-        .doc(c.property_id)
-        .collection(c.agent_id)
+        .doc(propId)
+        .collection(agentId)
         .doc(c.customer_id)
         .collection("coordinates")
         .get();
@@ -280,7 +328,20 @@ class APIs {
     for (var element in customerDocs.docs) {
       CustomerModel? a = await getCustomerById(element.id);
       if (a != null) {
-        if (a.property_id == mproperty.id) {
+        if (a.property_id.contains(mproperty.id)) {
+          yield a;
+        }
+      }
+    }
+  }
+
+  static Stream<CustomerModel> getCustomerWhoWantLoan() async* {
+    final customerDocs = await firestore.collection("customer").get();
+
+    for (var element in customerDocs.docs) {
+      CustomerModel? a = await getCustomerById(element.id);
+      if (a != null) {
+        if (a.isLoan == true) {
           yield a;
         }
       }

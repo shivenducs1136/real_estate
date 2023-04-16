@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/cost_util.dart';
 import 'package:real_estate/helper/widgets/distance.dart';
+import 'package:real_estate/screens/admin/interested_customer_screen.dart';
 import 'package:real_estate/screens/common/property_view.dart';
 
 import '../../model/property_model.dart';
 
-class NearbyPlaces extends StatelessWidget {
-  const NearbyPlaces({
+class NeartoCustomer extends StatelessWidget {
+  const NeartoCustomer({
     Key? key,
     required this.nearbyPlaces,
     required this.isUpdate,
@@ -32,15 +34,14 @@ class NearbyPlaces extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PropertyDetailScreen(
-                          mproperty: nearbyPlaces[index],
-                          isUpdate: isUpdate,
-                          email: email,
-                        ),
-                      ));
+                  APIs.getSpecificAgentDetail(email.toString()).then((value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InterestedCustomerScreen(
+                              property: nearbyPlaces[index], agentModel: value),
+                        ));
+                  });
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

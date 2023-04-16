@@ -20,7 +20,7 @@ import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 class AddPropertyScreen extends StatefulWidget {
   AddPropertyScreen(
       {super.key, required this.currProp, required this.isUpdate});
-  final Property currProp;
+  final Property? currProp;
   final bool isUpdate;
   static final kInitialPosition = LatLng(28.644800, 77.216721);
 
@@ -129,7 +129,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
-                            initialValue: widget.currProp.property_name,
+                            initialValue: !widget.isUpdate
+                                ? ""
+                                : widget.currProp!.property_name,
                             onChanged: (value) {
                               setState(() {
                                 property_name = value;
@@ -172,7 +174,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.bedrooms,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.bedrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bedrooms = value!;
@@ -213,7 +217,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.bathrooms,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.bathrooms,
                                 onChanged: (value) {
                                   setState(() {
                                     bathrooms = value!;
@@ -259,7 +265,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.garages,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.garages,
                                 onChanged: (value) {
                                   setState(() {
                                     garages = value!;
@@ -300,7 +308,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.area,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.area,
                                 onChanged: (value) {
                                   setState(() {
                                     area = value!;
@@ -346,7 +356,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.cost,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.cost,
                                 onChanged: (value) {
                                   setState(() {
                                     cost = value!;
@@ -387,7 +399,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               height: mq.height * .05,
                               width: mq.width * .3,
                               child: TextFormField(
-                                initialValue: widget.currProp.yearBuilt,
+                                initialValue: !widget.isUpdate
+                                    ? ""
+                                    : widget.currProp!.yearBuilt,
                                 onChanged: (value) {
                                   setState(() {
                                     year_built = value!;
@@ -432,7 +446,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       height: mq.height * .15,
                       width: mq.width * 1,
                       child: TextFormField(
-                        initialValue: widget.currProp.address,
+                        initialValue:
+                            !widget.isUpdate ? "" : widget.currProp!.address,
                         onChanged: (value) {
                           setState(() {
                             address = value!;

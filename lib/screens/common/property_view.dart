@@ -4,6 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/cost_util.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/screens/admin/add_property.dart';
 import 'package:real_estate/screens/admin/assigned_agents_screen.dart';
@@ -184,11 +185,16 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 widget.isUpdate
                     ? ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => InterestedCustomerScreen(
-                                      property: widget.mproperty)));
+                          APIs.getSpecificAgentDetail(widget.email.toString())
+                              .then((value) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => InterestedCustomerScreen(
+                                          property: widget.mproperty,
+                                          agentModel: value,
+                                        )));
+                          });
                         },
                         child: const Text(
                           "Clients",

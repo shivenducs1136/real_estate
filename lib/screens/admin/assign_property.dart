@@ -211,21 +211,46 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                       _selectedProperty!, _selectedAgent!)
                                   .then((value) {
                                 Dialogs.showProgressBar(context);
-                                APIs.addCustomer(CustomerModel(
-                                        customer_name: _name,
-                                        property_id: _selectedProperty!.id,
-                                        agent_id: _selectedAgent!.id,
-                                        phonenumber: _phoneNumber,
-                                        address: _address,
-                                        customer_id:
-                                            "${DateTime.now().microsecondsSinceEpoch}",
-                                        isLoan: false))
+                                APIs.isCustomerExists(_phoneNumber)
                                     .then((value) {
-                                  Dialogs.showSnackbar(context,
-                                      "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                  if (value != null) {
+                                    List<dynamic> prop = value.property_id;
+                                    List<dynamic> agent = value.agent_id;
+                                    prop.add(_selectedProperty!.id);
+                                    agent.add(_selectedAgent!.id);
+                                    APIs.addCustomer(CustomerModel(
+                                            customer_name: _name,
+                                            property_id: prop,
+                                            agent_id: agent,
+                                            phonenumber: _phoneNumber,
+                                            address: _address,
+                                            customer_id: _phoneNumber,
+                                            isLoan: false))
+                                        .then((value) {
+                                      Dialogs.showSnackbar(context,
+                                          "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
+                                  } else {
+                                    APIs.addCustomer(CustomerModel(
+                                            customer_name: _name,
+                                            property_id: [
+                                              _selectedProperty!.id
+                                            ],
+                                            agent_id: [_selectedAgent!.id],
+                                            phonenumber: _phoneNumber,
+                                            address: _address,
+                                            customer_id: _phoneNumber,
+                                            isLoan: false))
+                                        .then((value) {
+                                      Dialogs.showSnackbar(context,
+                                          "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
+                                  }
                                 });
-                                Navigator.pop(context);
-                                Navigator.pop(context);
                               });
                             } else {
                               Dialogs.showSnackbar(

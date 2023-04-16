@@ -16,14 +16,16 @@ import '../../helper/credentials.dart';
 import '../../main.dart';
 import '../../model/property_model.dart';
 
-class ViewPropertyScreen extends StatefulWidget {
-  const ViewPropertyScreen({super.key});
+class InterestedPropertyScreen extends StatefulWidget {
+  const InterestedPropertyScreen({super.key, required this.customerid});
+  final String customerid;
 
   @override
-  State<ViewPropertyScreen> createState() => _ViewPropertyScreenState();
+  State<InterestedPropertyScreen> createState() =>
+      _InterestedPropertyScreenState();
 }
 
-class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
+class _InterestedPropertyScreenState extends State<InterestedPropertyScreen> {
   List<Property> _list = [];
   List<ImageModel> _imglist = [];
   TextEditingController _searchController = TextEditingController();
@@ -42,6 +44,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _list.clear();
     return SafeArea(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -91,7 +94,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                   fontWeight: FontWeight.bold),
                             )
                           : const Text(
-                              "  All Properties",
+                              "Associated Properties",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -142,7 +145,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                     bottom: 10,
                     child: SingleChildScrollView(
                       child: StreamBuilder(
-                          stream: APIs.getAllProperties(),
+                          stream: APIs.getAssignedProperty(widget.customerid),
                           builder: (context, snapshot) {
                             switch (snapshot.connectionState) {
                               case ConnectionState.waiting:
@@ -150,15 +153,11 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                 return const SizedBox();
                               case ConnectionState.active:
                               case ConnectionState.done:
-                                final data = snapshot.data?.docs;
-                                _list = data
-                                        ?.map(
-                                            (e) => Property.fromJson(e.data()))
-                                        .toList() ??
-                                    [];
-                                // propertyItem(_isSearching
-                                //             ? _searchList[index]
-                                //             : _list[index])
+                                if (snapshot.hasData) {
+                                  if (!_list.contains(snapshot.data)) {
+                                    _list.add(snapshot.data!);
+                                  }
+                                }
                                 if (_list.isNotEmpty) {
                                   return _isSearching
                                       ? Container(

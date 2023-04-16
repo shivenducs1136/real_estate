@@ -9,20 +9,15 @@ import 'package:real_estate/screens/common/polyline_map.dart';
 import '../../apis/api.dart';
 import '../../main.dart';
 
-class InterestedCustomerScreen extends StatefulWidget {
-  const InterestedCustomerScreen({
+class LoanScreen extends StatefulWidget {
+  const LoanScreen({
     super.key,
-    required this.property,
-    required this.agentModel,
   });
-  final Property property;
-  final AgentModel? agentModel;
   @override
-  State<InterestedCustomerScreen> createState() =>
-      _InterestedCustomerScreenState();
+  State<LoanScreen> createState() => _LoanScreenState();
 }
 
-class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
+class _LoanScreenState extends State<LoanScreen> {
   List<CustomerModel> _customerlist = [];
   @override
   Widget build(BuildContext context) {
@@ -39,7 +34,6 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
         Padding(
           padding: EdgeInsets.all(15),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // ignore: prefer_const_literals_to_create_immutables
             children: [
               InkWell(
@@ -52,38 +46,24 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
                   size: 25,
                 ),
               ),
+              SizedBox(
+                width: 10,
+              ),
               GestureDetector(
                 onTap: () {},
                 child: const Text(
-                  "Interested Customers",
+                  "Customer who wants loan",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              Container(
-                height: 48,
-                width: 48,
-                child: Container(
-                    height: 48,
-                    width: 48,
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black),
-                        borderRadius: BorderRadius.circular(14)),
-                    child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: Image.asset("images/company_logo.jpeg"))),
-              )
             ],
           ),
         ),
-        const Padding(
-            padding: EdgeInsets.only(bottom: 15),
-            child: Text("Tap to view agent routes")),
         StreamBuilder(
-            stream: APIs.getClientsofProperty(widget.property),
+            stream: APIs.getCustomerWhoWantLoan(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
@@ -106,20 +86,7 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
                                 child: GestureDetector(
-                                  onTap: () {
-                                    if (widget.agentModel != null) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => PolyMapScreen(
-                                                    customerModel:
-                                                        _customerlist[index],
-                                                    agentId:
-                                                        widget.agentModel!.id,
-                                                    propId: widget.property.id,
-                                                  )));
-                                    }
-                                  },
+                                  onTap: () {},
                                   child: Container(
                                     height: 80,
                                     width: mq.width * .8,

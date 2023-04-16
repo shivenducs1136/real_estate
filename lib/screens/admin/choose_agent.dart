@@ -5,25 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/model/agent_model.dart';
-import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
 import 'package:real_estate/screens/admin/assigned_properties.dart';
+import 'package:real_estate/screens/admin/choose_property.dart';
 
 import '../../helper/dialogs.dart';
 import '../../main.dart';
 
-class AssignedAgentsScreen extends StatefulWidget {
-  const AssignedAgentsScreen({super.key, required this.mproperty});
-  final Property mproperty;
+class ChooseAgentScreen extends StatefulWidget {
+  const ChooseAgentScreen({super.key});
+
   @override
-  State<AssignedAgentsScreen> createState() => _AssignedAgentsScreenState();
+  State<ChooseAgentScreen> createState() => _ChooseAgentScreenState();
 }
 
-class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
-  List<AgentModel> _agentlist = [];
+class _ChooseAgentScreenState extends State<ChooseAgentScreen> {
   @override
   Widget build(BuildContext context) {
-    _agentlist.clear();
     return SafeArea(
         child: Scaffold(
       persistentFooterButtons: const [
@@ -39,7 +37,6 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
           Padding(
             padding: EdgeInsets.all(15),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // ignore: prefer_const_literals_to_create_immutables
               children: [
                 InkWell(
@@ -55,27 +52,13 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Text(
-                    "Assgined Agents",
+                    "Choose Agent",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                Container(
-                  height: 48,
-                  width: 48,
-                  child: Container(
-                      height: 48,
-                      width: 48,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.black),
-                          borderRadius: BorderRadius.circular(14)),
-                      child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: Image.asset("images/company_logo.jpeg"))),
-                )
               ],
             ),
           ),
@@ -86,7 +69,7 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
             bottom: 10,
             child: Container(
               child: StreamBuilder(
-                  stream: APIs.getAssignedAgentwithProperty(widget.mproperty),
+                  stream: APIs.getAllAgents(),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -94,9 +77,11 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                         return SizedBox();
                       case ConnectionState.active:
                       case ConnectionState.done:
-                        if (snapshot.data != null) {
-                          _agentlist.add(snapshot.data!);
-                        }
+                        final data = snapshot.data?.docs;
+                        List<AgentModel> _agentlist = data
+                                ?.map((e) => AgentModel.fromJson(e.data()))
+                                .toList() ??
+                            [];
                         if (_agentlist.isNotEmpty) {
                           return Container(
                             child: ListView.builder(
@@ -114,6 +99,16 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                               width: 1, color: Colors.black),
                                         ),
                                         child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ChooseProperties(
+                                                          curr_agent:
+                                                              _agentlist[index],
+                                                        )));
+                                          },
                                           onLongPress: () {
                                             Dialogs.showInputDialog(
                                                 context: context,
@@ -136,7 +131,6 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                                 onCancel: () {});
                                           },
                                           child: ListTile(
-                                            onTap: () {},
                                             title: Text(
                                                 "${_agentlist[index].agent_name}"),
                                             subtitle: Text(

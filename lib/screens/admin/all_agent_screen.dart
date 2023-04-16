@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/screens/admin/agent_details.dart';
 
 import '../../helper/dialogs.dart';
 import '../../main.dart';
@@ -21,7 +22,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -120,6 +121,16 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                               width: 1, color: Colors.black),
                                         ),
                                         child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        AgentDetails(
+                                                            curr_agent:
+                                                                _agentlist[
+                                                                    index])));
+                                          },
                                           onLongPress: () {
                                             Dialogs.showInputDialog(
                                                 context: context,

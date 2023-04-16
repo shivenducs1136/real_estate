@@ -1,29 +1,23 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
+import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
-import 'package:real_estate/model/property_model.dart';
+import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
-import 'package:real_estate/screens/admin/assigned_properties.dart';
+import 'package:real_estate/screens/admin/interested_properties.dart';
 
-import '../../helper/dialogs.dart';
-import '../../main.dart';
+class AllCustomersScreen extends StatefulWidget {
+  const AllCustomersScreen({super.key});
 
-class AssignedAgentsScreen extends StatefulWidget {
-  const AssignedAgentsScreen({super.key, required this.mproperty});
-  final Property mproperty;
   @override
-  State<AssignedAgentsScreen> createState() => _AssignedAgentsScreenState();
+  State<AllCustomersScreen> createState() => _AllCustomersScreenState();
 }
 
-class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
-  List<AgentModel> _agentlist = [];
+class _AllCustomersScreenState extends State<AllCustomersScreen> {
   @override
   Widget build(BuildContext context) {
-    _agentlist.clear();
     return SafeArea(
         child: Scaffold(
       persistentFooterButtons: const [
@@ -55,7 +49,7 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Text(
-                    "Assgined Agents",
+                    "All Customers",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -80,13 +74,37 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
             ),
           ),
           Positioned(
-            top: 80,
+              top: 75,
+              left: 10,
+              right: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.circle,
+                    size: 12,
+                    color: Colors.red,
+                  ),
+                  Text(" - Loan not required"),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.circle,
+                    size: 12,
+                    color: Colors.green,
+                  ),
+                  Text(" - Loan required"),
+                ],
+              )),
+          Positioned(
+            top: 100,
             left: 10,
             right: 10,
             bottom: 10,
             child: Container(
               child: StreamBuilder(
-                  stream: APIs.getAssignedAgentwithProperty(widget.mproperty),
+                  stream: APIs.getAllCustomers(),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -94,13 +112,15 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                         return SizedBox();
                       case ConnectionState.active:
                       case ConnectionState.done:
-                        if (snapshot.data != null) {
-                          _agentlist.add(snapshot.data!);
-                        }
-                        if (_agentlist.isNotEmpty) {
+                        final data = snapshot.data?.docs;
+                        List<CustomerModel> _customerList = data
+                                ?.map((e) => CustomerModel.fromJson(e.data()))
+                                .toList() ??
+                            [];
+                        if (_customerList.isNotEmpty) {
                           return Container(
                             child: ListView.builder(
-                                itemCount: _agentlist.length,
+                                itemCount: _customerList.length,
                                 itemBuilder: (context, index) => Padding(
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20, bottom: 10),
@@ -114,46 +134,43 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                               width: 1, color: Colors.black),
                                         ),
                                         child: GestureDetector(
-                                          onLongPress: () {
-                                            Dialogs.showInputDialog(
-                                                context: context,
-                                                title: "Delete",
-                                                hint:
-                                                    "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
-                                                onOk: () {
-                                                  Dialogs.showProgressBar(
-                                                      context);
-                                                  APIs.deleteAgentWithAgentId(
-                                                          _agentlist[index].id)
-                                                      .then((value) {
-                                                    Navigator.pop(context);
-                                                    Dialogs.showSnackbar(
-                                                        context,
-                                                        "Deleted Successfully");
-                                                    _agentlist.remove(index);
-                                                  });
-                                                },
-                                                onCancel: () {});
+                                          onTap: () async {
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        InterestedPropertyScreen(
+                                                          customerid:
+                                                              _customerList[
+                                                                      index]
+                                                                  .customer_id,
+                                                        )));
                                           },
+                                          onLongPress: () {},
                                           child: ListTile(
-                                            onTap: () {},
                                             title: Text(
-                                                "${_agentlist[index].agent_name}"),
+                                                "${_customerList[index].customer_name}"),
                                             subtitle: Text(
-                                                "${_agentlist[index].email}"),
+                                                "+91 ${_customerList[index].phonenumber}"),
                                             leading: Container(
-                                                height: 48,
-                                                width: 48,
+                                                height: 24,
+                                                width: 24,
                                                 decoration: BoxDecoration(),
                                                 child: ClipRRect(
                                                   clipBehavior: Clip.hardEdge,
                                                   borderRadius:
-                                                      BorderRadius.circular(24),
+                                                      BorderRadius.circular(12),
                                                   child: FittedBox(
                                                     fit: BoxFit.fill,
-                                                    child: Image.network(
-                                                        _agentlist[index]
-                                                            .photo),
+                                                    child: Icon(
+                                                      Icons.circle,
+                                                      color:
+                                                          _customerList[index]
+                                                                  .isLoan
+                                                              ? Colors.green
+                                                              : Colors.red,
+                                                    ),
                                                   ),
                                                 )),
                                           ),
@@ -162,7 +179,7 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                     )),
                           );
                         } else {
-                          return Center(
+                          return const Center(
                             child: Text("No data"),
                           );
                         }

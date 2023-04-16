@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/helper/cost_util.dart';
 import 'package:real_estate/helper/widgets/distance.dart';
+import 'package:real_estate/screens/agent/generate_otp.dart';
 import 'package:real_estate/screens/common/property_view.dart';
 
 import '../../model/property_model.dart';
 
-class NearbyPlaces extends StatelessWidget {
-  const NearbyPlaces({
+class InterestedPlaces extends StatelessWidget {
+  const InterestedPlaces({
     Key? key,
     required this.nearbyPlaces,
     required this.isUpdate,
@@ -35,11 +36,7 @@ class NearbyPlaces extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PropertyDetailScreen(
-                          mproperty: nearbyPlaces[index],
-                          isUpdate: isUpdate,
-                          email: email,
-                        ),
+                        builder: (context) => GenerateOtpScreen(),
                       ));
                 },
                 child: Padding(

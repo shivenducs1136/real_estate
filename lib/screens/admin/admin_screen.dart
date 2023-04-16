@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/widgets/control_panel.dart';
+import 'package:real_estate/helper/widgets/location_card.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
@@ -53,306 +55,100 @@ class _AdminScreenState extends State<AdminScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text(
-                  "Dashboard",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () => {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('Confirm Logout'),
-                            content: Text('Are you sure you want to logout?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: onConfirm,
-                                child: Text('Confirm'),
-                              ),
-                            ],
-                          );
-                        })
-                  },
-                  child: Container(
-                      height: 48,
-                      width: 48,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.black),
-                          borderRadius: BorderRadius.circular(14)),
-                      child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: Image.asset("images/company_logo.jpeg"))),
-                )
-              ]),
-              SizedBox(
-                height: mq.height * .05,
-              ),
-              Row(
+        body: Stack(
+          children: [
+            // header row
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => AddPropertyScreen(
-                                    currProp: p,
-                                    isUpdate: false,
-                                  )));
-                    },
-                    child: Container(
-                      height: 100,
-                      width: mq.width * .2,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(250, 218, 229, 1),
-                        borderRadius: BorderRadius.circular(10),
+                  // Header Text
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Tiwari Propmarts",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24),
                       ),
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.add_home_outlined,
-                            color: Color.fromRGBO(251, 67, 131, 1),
-                            size: 30,
-                          ),
-                          Text(
-                            "Add Property",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color.fromRGBO(251, 67, 131, 1),
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      )),
-                    ),
+                      Text(
+                        "Dashboard",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 16),
+                      ),
+                    ],
                   ),
+                  // Company Logo
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const AddAgentScreen(
-                                    isUpdate: false,
-                                    agent: null,
-                                  )));
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Confirm Logout'),
+                              content: Text('Are you sure you want to logout?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('Cancel'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: onConfirm,
+                                  child: Text('Confirm'),
+                                ),
+                              ],
+                            );
+                          });
                     },
-                    child: Container(
-                      height: 100,
-                      width: mq.width * .2,
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(196, 221, 255, 1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.account_circle_outlined,
-                            color: Color.fromRGBO(45, 131, 251, 1),
-                            size: 30,
-                          ),
-                          Text(
-                            "Add \n Agents",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color.fromRGBO(45, 131, 251, 1),
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      )),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => ViewPropertyScreen()));
-                    },
-                    child: Container(
-                      height: 100,
-                      width: mq.width * .2,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(211, 255, 217, 1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.home_outlined,
-                            color: Color.fromRGBO(3, 166, 25, 1),
-                            size: 30,
-                          ),
-                          Text(
-                            "My \n Property",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color.fromRGBO(3, 166, 25, 1),
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      )),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => AssignPropertyScreen()));
-                    },
-                    child: Container(
-                      height: 100,
-                      width: mq.width * .2,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 211, 203, 1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.local_post_office_outlined,
-                            color: Color.fromRGBO(247, 37, 0, 1),
-                            size: 30,
-                          ),
-                          Text(
-                            "Assign \n Property",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color.fromRGBO(247, 37, 0, 1),
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      )),
+                    child: const CircleAvatar(
+                      radius: 24,
+                      foregroundImage: AssetImage("images/company_logo.jpeg"),
                     ),
                   )
                 ],
               ),
-              SizedBox(
-                height: mq.height * .04,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "My Agents",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const AllAgentScreen()));
-                    },
-                    child: const Text(
-                      "View all",
+            ),
+
+            // Control panel text
+            Positioned(
+                top: 100,
+                left: 20,
+                right: 20,
+                bottom: 20,
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  children: const [
+                    Text(
+                      "Control Panel",
                       style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14),
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: mq.height * .02,
-              ),
-              SizedBox(
-                height: mq.height * .15,
-                width: mq.width,
-                child: StreamBuilder(
-                  stream: APIs.getAllAgents(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                      case ConnectionState.none:
-                        return const SizedBox();
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        final data = snapshot.data?.docs;
-                        _agentlist = data
-                                ?.map((e) => AgentModel.fromJson(e.data()))
-                                .toList() ??
-                            [];
-                        if (_agentlist.isNotEmpty) {
-                          return Container(
-                              height: mq.height,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: _agentlist.length > 10
-                                      ? 10
-                                      : _agentlist.length,
-                                  itemBuilder: ((context, index) =>
-                                      agentChip(_agentlist[index]))));
-                        } else {
-                          return agentChip(AgentModel(
-                              password: '982132',
-                              email: 'xyz@gmail.com',
-                              agent_name: "Sample Name",
-                              age: "0",
-                              phone_number: "0000000000",
-                              address: "Sample Address",
-                              id: "xyz@gmail.com",
-                              photo:
-                                  "https://th.bing.com/th/id/OIP.tWwHa21PC-F18kRm0I2w7wHaHa?pid=ImgDet&rs=1"));
-                        }
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
-                height: mq.height * .04,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    "Company Updates",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: mq.height * .02,
-              ),
-              Center(
-                child: Lottie.asset(
-                  'images/nodata.json',
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ],
-          ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ControlPanelWidget(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Recent Activity",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                )),
+          ],
         ),
         persistentFooterButtons: const [
           Center(

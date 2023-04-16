@@ -9,8 +9,14 @@ import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
 
 class PolyMapScreen extends StatefulWidget {
-  const PolyMapScreen({super.key, required this.customerModel});
+  const PolyMapScreen(
+      {super.key,
+      required this.customerModel,
+      required this.agentId,
+      required this.propId});
   final CustomerModel customerModel;
+  final String agentId;
+  final String propId;
   @override
   State<PolyMapScreen> createState() => Poly_MapScreenState();
 }
@@ -33,27 +39,33 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        persistentFooterButtons: [
+        persistentFooterButtons: const [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
         ],
         resizeToAvoidBottomInset: false,
-        body: GoogleMap(
-          onMapCreated: onMapCreated,
-          polylines: polyline,
-          markers: Set<Marker>.of(_marker),
-          initialCameraPosition: CameraPosition(
-              target: (routeCoords == null || routeCoords!.isEmpty)
-                  ? LatLng(28.7515285, 77.4995344)
-                  : routeCoords![0],
-              zoom: 14.0),
-          mapType: MapType.normal,
+        body: Container(
+          child: !(routeCoords == null || routeCoords!.isEmpty)
+              ? GoogleMap(
+                  onMapCreated: onMapCreated,
+                  polylines: polyline,
+                  markers: Set<Marker>.of(_marker),
+                  initialCameraPosition:
+                      CameraPosition(target: routeCoords![0], zoom: 14.0),
+                  mapType: MapType.normal,
+                )
+              : Container(
+                  child: const Center(
+                  child: Text("No Agent Tracking Record"),
+                )),
         ));
   }
 
   Future<void> onMapCreated(GoogleMapController controller) async {
-    await APIs.getAgentCoordinates(widget.customerModel).then((value) {
+    await APIs.getAgentCoordinates(
+            widget.customerModel, widget.propId, widget.agentId)
+        .then((value) {
       log(value.toString());
       setState(() {
         _controller = controller;
