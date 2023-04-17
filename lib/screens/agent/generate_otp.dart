@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/customer_model.dart';
+import 'package:real_estate/model/property_model.dart';
+import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/admin/interested_customer_screen.dart';
 import 'package:real_estate/screens/admin/interested_properties.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
@@ -12,7 +16,13 @@ import '../../helper/credentials.dart';
 import '../../main.dart';
 
 class GenerateOtpScreen extends StatefulWidget {
-  const GenerateOtpScreen({super.key});
+  const GenerateOtpScreen({
+    super.key,
+    required this.agentModel,
+    required this.propertyModel,
+  });
+  final AgentModel agentModel;
+  final Property propertyModel;
 
   @override
   State<GenerateOtpScreen> createState() => _GenerateOtpScreenState();
@@ -32,7 +42,7 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
       },
       child: SafeArea(
           child: Scaffold(
-        persistentFooterButtons: [
+        persistentFooterButtons: const [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -82,7 +92,8 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
               child: Container(
                 color: Colors.transparent,
                 child: StreamBuilder(
-                  stream: APIs.getAllCustomers(),
+                  stream: APIs.getAssignedCustomers(
+                      widget.agentModel, widget.propertyModel),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -96,54 +107,76 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
                                 .toList() ??
                             [];
                         if (myCustomer.isNotEmpty) {
-                          return Expanded(
-                              child: ListView.builder(
-                                  itemCount: myCustomer.length,
-                                  itemBuilder: (context, index) =>
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      CustomerProperty(
-                                                          customerid: myCustomer[
-                                                                  index]
-                                                              .customer_id)));
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (_) =>
-                                          //             GenerateOtpScreenVerify(
-                                          //               customerModel:
-                                          //                   myCustomer[index], agentId: '', propertyId: '',
-                                          //             )));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, bottom: 10),
-                                          child: Container(
-                                            height: 80,
-                                            width: mq.width * .8,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.black),
-                                            ),
-                                            child: ListTile(
-                                              title: Text(myCustomer[index]
-                                                  .customer_name),
-                                              subtitle: Text(
-                                                myCustomer[index].phonenumber,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
+                          return Consumer<AgentProvider>(
+                              builder: ((context, value, child) {
+                            return Expanded(
+                                child: ListView.builder(
+                                    itemCount: myCustomer.length,
+                                    itemBuilder: (context, index) =>
+                                        GestureDetector(
+                                          onTap: () {
+                                            value
+                                                .setCustomer(myCustomer[index]);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        GenerateOtpScreenVerify(
+                                                          customerModel:
+                                                              myCustomer[index],
+                                                        )));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                bottom: 10),
+                                            child: Container(
+                                              height: 80,
+                                              width: mq.width * .8,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.black),
+                                              ),
+                                              child: ListTile(
+                                                title: Text(myCustomer[index]
+                                                    .customer_name),
+                                                subtitle: Text(
+                                                  myCustomer[index].phonenumber,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                leading: Container(
+                                                    height: 24,
+                                                    width: 24,
+                                                    decoration: BoxDecoration(),
+                                                    child: ClipRRect(
+                                                      clipBehavior:
+                                                          Clip.hardEdge,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              24),
+                                                      child: FittedBox(
+                                                        fit: BoxFit.fill,
+                                                        child: Icon(
+                                                          Icons.circle,
+                                                          color:
+                                                              myCustomer[index]
+                                                                      .isLoan
+                                                                  ? Colors.green
+                                                                  : Colors.red,
+                                                        ),
+                                                      ),
+                                                    )),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      )));
+                                        )));
+                          }));
                         } else {
                           return const Center(
                             child:

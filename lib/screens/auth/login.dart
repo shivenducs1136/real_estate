@@ -34,7 +34,7 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        persistentFooterButtons: [
+        persistentFooterButtons: const [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -112,6 +112,7 @@ class _LoginMainState extends State<LoginMain> {
                         hintText: 'eg. 1234!',
                         label: const Text("Password"),
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                     SizedBox(
                       width: mq.width,
@@ -123,7 +124,8 @@ class _LoginMainState extends State<LoginMain> {
               ElevatedButton.icon(
                 onPressed: () async {
                   if (widget.isAdmin) {
-                    if (APIs.adminLogin(email, password)) {
+                    if (APIs.adminLogin(
+                        email.trim().toString(), password.trim().toString())) {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -132,8 +134,12 @@ class _LoginMainState extends State<LoginMain> {
                       await prefs.setInt('login', 1);
                     }
                   } else {
-                    await APIs.agentLogin(email, password).then((value) async {
+                    await APIs.agentLogin(
+                            email.trim().toString(), password.trim().toString())
+                        .then((value) async {
                       if (value) {
+                        await APIs.activityLogin(email.trim().toString(),
+                            "Agent - ${email.trim().toString()} Logged in");
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

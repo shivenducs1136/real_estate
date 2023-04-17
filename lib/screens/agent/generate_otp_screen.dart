@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:otp_text_field/otp_field.dart';
+import 'package:provider/provider.dart';
 import 'package:real_estate/apis/otp_authentication.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:real_estate/providers/agent_provider.dart';
+import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/common/background_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,14 +16,12 @@ import '../../main.dart';
 String clientid = "";
 
 class GenerateOtpScreenVerify extends StatefulWidget {
-  const GenerateOtpScreenVerify(
-      {super.key,
-      required this.customerModel,
-      required this.agentId,
-      required this.propertyId});
+  const GenerateOtpScreenVerify({
+    super.key,
+    required this.customerModel,
+  });
   final CustomerModel customerModel;
-  final String agentId;
-  final String propertyId;
+
   @override
   State<GenerateOtpScreenVerify> createState() =>
       _GenerateOtpScreenVerifyState();
@@ -37,7 +37,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
     clientid = widget.customerModel.customer_id;
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -65,13 +65,10 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             top: 20,
             child: GestureDetector(
               onTap: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setString('agentId', widget.agentId);
-                prefs.setString('customerId', widget.customerModel.customer_id);
-                prefs.setString('propertyId', widget.propertyId);
-                Dialogs.showSnackbar(context, "Enabled Background processing");
-                await initializeService();
-                prefs.setBool('isTracking', true);
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // Dialogs.showSnackbar(context, "Enabled Background processing");
+                // await initializeService();
+                // prefs.setBool('isTracking', true);
               },
               child: Container(
                 width: mq.width,
@@ -97,10 +94,23 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             child: ListTile(
               title: Text("${widget.customerModel.customer_name}"),
               subtitle: Text("+91 ${widget.customerModel.phonenumber}"),
-              leading: const Icon(
-                Icons.account_circle_outlined,
-                size: 36,
-              ),
+              leading: Container(
+                  height: 24,
+                  width: 24,
+                  decoration: BoxDecoration(),
+                  child: ClipRRect(
+                    clipBehavior: Clip.hardEdge,
+                    borderRadius: BorderRadius.circular(24),
+                    child: FittedBox(
+                      fit: BoxFit.fill,
+                      child: Icon(
+                        Icons.circle,
+                        color: widget.customerModel.isLoan
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                    ),
+                  )),
             ),
           ),
           Positioned(
@@ -113,10 +123,6 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                 _handleLocationPermission().then((value) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  prefs.setString('agentId', widget.agentId);
-                  prefs.setString(
-                      'customerId', widget.customerModel.customer_id);
-                  prefs.setString('propertyId', widget.propertyId);
                   // await initializeService();
                   OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
                       .then((value) {
@@ -142,38 +148,45 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             ),
           ),
           Positioned(
-            top: 200,
-            left: 10,
-            right: 10,
-            child: OtpTextField(
-              numberOfFields: 6,
-              borderColor: Color(0xFF512DA8),
-              //set to true to show as box or false to show as dash
-              showFieldAsBox: true,
-              //runs when a code is typed in
-              onCodeChanged: (String code) {
-                //handle validation or checks here
-              },
-              //runs when every textfield is filled
-              onSubmit: (String verificationCode) {
-                Dialogs.showProgressBar(context);
-                OtpAuth.verifyOtp(verificationCode, context)
-                    .then((value) async {
-                  if (value == 1) {
-                    Dialogs.showSnackbar(context, "User Verified Successfully");
-                    Navigator.pop(context);
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setBool("isTracking", true);
-                    await initializeService();
-                  }
-                });
-              }, // end onSubmit
-            ),
-          ),
+              top: 200,
+              left: 10,
+              right: 10,
+              child: Consumer<AgentProvider>(builder: (context, mvalue, child) {
+                return OtpTextField(
+                  numberOfFields: 6,
+                  borderColor: Color(0xFF512DA8),
+                  //set to true to show as box or false to show as dash
+                  showFieldAsBox: true,
+                  //runs when a code is typed in
+                  onCodeChanged: (String code) {
+                    //handle validation or checks here
+                  },
+                  //runs when every textfield is filled
+                  onSubmit: (String verificationCode) {
+                    Dialogs.showProgressBar(context);
+                    OtpAuth.verifyOtp(verificationCode, context)
+                        .then((value) async {
+                      if (value == 1) {
+                        Dialogs.showSnackbar(
+                            context, "User Verified Successfully");
+                        Navigator.pop(context);
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setBool("isTracking", true);
+                        await BackgroundService.initializeService(context);
+                        mvalue.setTracking();
+                      }
+                    });
+                  }, // end onSubmit
+                );
+              })),
         ]),
       ),
     ));
+  }
+
+  getContext() {
+    return context;
   }
 
   Future<bool> _handleLocationPermission() async {

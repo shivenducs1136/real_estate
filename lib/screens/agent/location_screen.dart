@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/main.dart';
 import 'package:real_estate/model/customer_model.dart';
+import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AgentLocationScreen extends StatefulWidget {
-  const AgentLocationScreen({super.key, this.myCustomerModel});
+  const AgentLocationScreen({
+    super.key,
+    this.myCustomerModel,
+  });
   final CustomerModel? myCustomerModel;
+
   @override
   State<AgentLocationScreen> createState() => Agent_LocationScreenState();
 }
@@ -36,7 +42,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
         },
         child: SafeArea(
           child: Scaffold(
-              persistentFooterButtons: [
+              persistentFooterButtons: const [
                 Center(
                     child: Text(
                         "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -134,37 +140,41 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 10,
-                    left: 10,
-                    right: 10,
-                    child: GestureDetector(
-                      onTap: () async {
-                        FlutterBackgroundService().invoke('stopService');
-                        SharedPreferences pref =
-                            await SharedPreferences.getInstance();
-                        pref.setBool('isTracking', false);
-                        APIs.submitReview(widget.myCustomerModel!, reviewText);
-                        APIs.setisLoan(widget.myCustomerModel!, isChecked);
-                        Dialogs.showSnackbar(
-                            context, "Review Submitted Successfuly");
-                      },
-                      child: Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Center(
-                            child: Text(
-                          "Submit Review",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400),
-                        )),
-                      ),
-                    ),
-                  ),
+                      bottom: 10,
+                      left: 10,
+                      right: 10,
+                      child: Consumer<AgentProvider>(
+                          builder: (context, mvalue, child) {
+                        return GestureDetector(
+                          onTap: () async {
+                            FlutterBackgroundService().invoke('stopService');
+                            SharedPreferences pref =
+                                await SharedPreferences.getInstance();
+                            pref.setBool('isTracking', false);
+                            APIs.submitReview(
+                                widget.myCustomerModel!, reviewText);
+                            APIs.setisLoan(widget.myCustomerModel!, isChecked);
+                            mvalue.setTracking();
+                            Dialogs.showSnackbar(
+                                context, "Review Submitted Successfuly");
+                          },
+                          child: Container(
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Center(
+                                child: Text(
+                              "Submit Review",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400),
+                            )),
+                          ),
+                        );
+                      })),
                   const Positioned(
                       top: 140,
                       left: 20,

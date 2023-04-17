@@ -45,7 +45,6 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
 
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: Form(
@@ -421,6 +420,13 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                           APIs.addAgentToFirebase(a).then((value) {
                             if (img != null) {
                               APIs.addAgentImage(img!, a).then((value) {
+                                widget.isUpdate
+                                    ? APIs.activityAddAgent(
+                                        msg: "${agent_name} updated by Admin",
+                                        agent_id: agent_email)
+                                    : APIs.activityUpdateAgent(
+                                        msg: "${agent_name} added by Admin",
+                                        agent_id: agent_email);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Mailer.sendCredentialsEmail(
@@ -430,6 +436,13 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                     "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                               });
                             } else {
+                              widget.isUpdate
+                                  ? APIs.activityAddAgent(
+                                      msg: "${agent_name} updated by Admin",
+                                      agent_id: agent_email)
+                                  : APIs.activityUpdateAgent(
+                                      msg: "${agent_name} added by Admin",
+                                      agent_id: agent_email);
                               Navigator.pop(context);
                               Navigator.pop(context);
                               Dialogs.showSnackbar(context,
@@ -461,6 +474,15 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 APIs.addAgentToFirebase(a).then((value) {
                                   if (img != null) {
                                     APIs.addAgentImage(img!, a).then((value) {
+                                      widget.isUpdate
+                                          ? APIs.activityAddAgent(
+                                              msg:
+                                                  "${agent_name} updated by Admin",
+                                              agent_id: agent_email)
+                                          : APIs.activityUpdateAgent(
+                                              msg:
+                                                  "${agent_name} added by Admin",
+                                              agent_id: agent_email);
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                       Mailer.sendCredentialsEmail(
@@ -470,6 +492,14 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                           "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                                     });
                                   } else {
+                                    widget.isUpdate
+                                        ? APIs.activityAddAgent(
+                                            msg:
+                                                "${agent_name} updated by Admin",
+                                            agent_id: agent_email)
+                                        : APIs.activityUpdateAgent(
+                                            msg: "${agent_name} added by Admin",
+                                            agent_id: agent_email);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                     Dialogs.showSnackbar(context,

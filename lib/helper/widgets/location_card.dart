@@ -1,42 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_estate/main.dart';
+import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/providers/agent_provider.dart';
+import 'package:real_estate/screens/agent/agent_choose_property.dart';
+import 'package:real_estate/screens/agent/agent_screen.dart';
+import 'package:real_estate/screens/agent/generate_otp.dart';
 
 class LocationCard extends StatelessWidget {
-  const LocationCard({Key? key}) : super(key: key);
+  const LocationCard({Key? key, required this.magent}) : super(key: key);
+  final AgentModel magent;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Icon(
-              Icons.place,
-              size: 24,
-              color: Theme.of(context).primaryColor,
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Your Location",
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).primaryColor,
+    return Consumer<AgentProvider>(
+      builder: (context, value, child) {
+        return Card(
+          elevation: 0.4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: GestureDetector(
+            onTap: () {
+              value.setAgent(magent);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) =>
+                          ChooseAgentProperties(curr_agent: magent)));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.domain_verification,
+                    size: 24,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Generate OTP",
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: Theme.of(context).primaryColor,
+                            ),
                       ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "United States, New York",
-                  style: Theme.of(context).textTheme.labelLarge,
-                )
-              ],
-            )
-          ],
-        ),
-      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        "Verify customer & start tracking.",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

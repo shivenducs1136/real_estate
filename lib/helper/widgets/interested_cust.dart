@@ -33,11 +33,11 @@ class InterestedPlaces extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => GenerateOtpScreen(),
-                      ));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => GenerateOtpScreen(),
+                  //     ));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

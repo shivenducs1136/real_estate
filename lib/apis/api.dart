@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/model/activity_model.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
 
@@ -220,8 +221,7 @@ class APIs {
       AgentModel a, Property p) {
     return firestore
         .collection("customer")
-        .where('agent_id', isEqualTo: a.id)
-        .where('property_id', isEqualTo: p.id)
+        .where('agent_id', arrayContains: a.id)
         .snapshots();
   }
 
@@ -270,6 +270,7 @@ class APIs {
         }
       }
     }
+    activityDeleteAgent(msg: "Admin deleted Agent with email id - ${agentId}");
     await firestore.collection('agents').doc(agentId).delete();
   }
 
@@ -280,6 +281,10 @@ class APIs {
     } else {
       return null;
     }
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getActivity() {
+    return firestore.collection("activity").snapshots();
   }
 
   static Future<AgentModel?> getSpecificAgentDetail(String email) async {
@@ -386,9 +391,164 @@ class APIs {
     return double.parse(num);
   }
 
-  static void addUpdate(
-      {required String msg,
-      String? customerId,
-      String? agentId,
-      String? propertyId}) {}
+  static Future<void> activityAddProperty(
+      {required String property_id,
+      required String msg,
+      String? agent_id = "",
+      String? customer_id = "",
+      bool? isAdmin = true}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "1",
+            property_id: property_id,
+            agent_id: agent_id!,
+            customer_id: customer_id!,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityAssignedProperty(
+      {required String property_id,
+      required String msg,
+      required String agent_id,
+      required String customer_id,
+      bool? isAdmin = true}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "19",
+            property_id: property_id,
+            agent_id: agent_id!,
+            customer_id: customer_id!,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityLogin(String agentId, String msg) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "9",
+            property_id: "",
+            agent_id: agentId,
+            customer_id: "",
+            msg: msg,
+            isAdmin: false,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityLogout(String agentId, String msg) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "9",
+            property_id: "",
+            agent_id: agentId,
+            customer_id: "",
+            msg: msg,
+            isAdmin: false,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityUpdateProperty(
+      {required String property_id,
+      required String msg,
+      String? agent_id = "",
+      String? customer_id = "",
+      bool? isAdmin = true}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "5",
+            property_id: property_id,
+            agent_id: agent_id!,
+            customer_id: customer_id!,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityAddAgent(
+      {String? property_id = "",
+      required String msg,
+      required String agent_id,
+      String? customer_id = "",
+      bool? isAdmin = true}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "2",
+            property_id: property_id!,
+            agent_id: agent_id!,
+            customer_id: customer_id!,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityUpdateAgent(
+      {String? property_id = "",
+      required String msg,
+      required String agent_id,
+      String? customer_id = "",
+      bool? isAdmin = true}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "6",
+            property_id: property_id!,
+            agent_id: agent_id!,
+            customer_id: customer_id!,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityDeleteAgent(
+      {bool? isAdmin = true, required String msg}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "3",
+            property_id: "",
+            agent_id: "",
+            customer_id: "",
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityDeleteProperty(
+      {bool? isAdmin = true, required String msg}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "7",
+            property_id: "",
+            agent_id: "",
+            customer_id: "",
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityCallAgent(
+      {bool? isAdmin = true, required String msg}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "4",
+            property_id: "",
+            agent_id: "",
+            customer_id: "",
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
 }

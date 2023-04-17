@@ -76,7 +76,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.all(20),
           child: Form(
@@ -364,7 +363,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                     cost = value!;
                                   });
                                 },
-                                keyboardType: TextInputType.name,
+                                keyboardType: TextInputType.number,
                                 validator: (val) =>
                                     val != null && val.isNotEmpty
                                         ? null
@@ -548,11 +547,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                               "Place picked: ${result.formattedAddress}");
                                           setState(() {
                                             selectedPlace = result;
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        ViewPropertyScreen()));
+                                            Navigator.pop(context);
                                             lat = result.geometry!.location.lat
                                                 .toString();
                                             long = result.geometry!.location.lng
@@ -601,6 +596,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     InkWell(
                       onTap: () {
                         // add data to firebase
+                        String dateTime =
+                            DateTime.now().microsecondsSinceEpoch.toString();
                         Property p = Property(
                             property_name: property_name,
                             bedrooms: bedrooms,
@@ -608,7 +605,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             garages: garages,
                             cost: cost,
                             area: area,
-                            id: "${DateTime.now().microsecondsSinceEpoch}",
+                            id: "${dateTime}",
                             address: address,
                             lat: lat,
                             lon: long,
@@ -628,17 +625,47 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           Dialogs.showSnackbar(
                               context, "Please add all details");
                         } else {
-                          APIs.addPropertyToFirebase(p).then((value) {
-                            APIs.addPropertyPhotos(images!, p).then((value) {
-                              Navigator.pop(context);
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => ViewPropertyScreen()));
-                              Dialogs.showSnackbar(
-                                  context, "Property Added Successfully");
+                          if (!widget.isUpdate) {
+                            APIs.addPropertyToFirebase(p).then((value) {
+                              APIs.activityAddProperty(
+                                      property_id: dateTime,
+                                      msg:
+                                          "Property - ${property_name} added by Admin")
+                                  .then((value) {
+                                APIs.addPropertyPhotos(images!, p)
+                                    .then((value) {
+                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              ViewPropertyScreen()));
+                                  Dialogs.showSnackbar(
+                                      context, "Property Added Successfully");
+                                });
+                              });
                             });
-                          });
+                          } else {
+                            APIs.addPropertyToFirebase(p).then((value) {
+                              APIs.activityUpdateProperty(
+                                      property_id: dateTime,
+                                      msg:
+                                          "Property - ${property_name} updated by Admin")
+                                  .then((value) {
+                                APIs.addPropertyPhotos(images!, p)
+                                    .then((value) {
+                                  Navigator.pop(context);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              ViewPropertyScreen()));
+                                  Dialogs.showSnackbar(
+                                      context, "Property Updated Successfully");
+                                });
+                              });
+                            });
+                          }
                         }
                       },
                       child: Container(

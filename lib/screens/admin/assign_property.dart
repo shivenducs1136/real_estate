@@ -29,12 +29,11 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        persistentFooterButtons: [
+        persistentFooterButtons: const [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
         ],
-        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: EdgeInsets.all(20),
           child: SingleChildScrollView(
@@ -226,7 +225,13 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                             address: _address,
                                             customer_id: _phoneNumber,
                                             isLoan: false))
-                                        .then((value) {
+                                        .then((value) async {
+                                      await APIs.activityAssignedProperty(
+                                          property_id: _selectedProperty!.id,
+                                          msg:
+                                              "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
+                                          agent_id: _selectedAgent!.id,
+                                          customer_id: _phoneNumber);
                                       Dialogs.showSnackbar(context,
                                           "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
                                       Navigator.pop(context);
@@ -243,7 +248,13 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                             address: _address,
                                             customer_id: _phoneNumber,
                                             isLoan: false))
-                                        .then((value) {
+                                        .then((value) async {
+                                      await APIs.activityAssignedProperty(
+                                          property_id: _selectedProperty!.id,
+                                          msg:
+                                              "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
+                                          agent_id: _selectedAgent!.id,
+                                          customer_id: _phoneNumber);
                                       Dialogs.showSnackbar(context,
                                           "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
                                       Navigator.pop(context);

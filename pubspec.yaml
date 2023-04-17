@@ -63,7 +63,6 @@ dependencies:
   ionicons: ^0.2.1
   flutter_phone_direct_caller: ^2.1.1
   calendar_date_picker2: ^0.5.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

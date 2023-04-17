@@ -14,11 +14,6 @@ class OtpAuth {
       phoneNumber: '+91$phoneNumber',
       verificationCompleted: (PhoneAuthCredential credential) async {
         log("verificationCompleted");
-        await initializeService().then((value) async {
-          await FirebaseAuth.instance.signInWithCredential(credential);
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setBool('isTracking', true);
-        });
         Dialogs.showSnackbar(context, "Verification Completed");
         res = 0;
       },
@@ -62,7 +57,7 @@ class OtpAuth {
       await FirebaseAuth.instance
           .signInWithCredential(credential)
           .whenComplete(() async {
-        if (FirebaseAuth.instance.currentUser == null) {
+        if (FirebaseAuth.instance.currentUser != null) {
           Dialogs.showSnackbar(context, "Customer Verified");
           Navigator.pop(context);
           res = 1;

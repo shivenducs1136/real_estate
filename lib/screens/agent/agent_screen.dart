@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
+import 'package:real_estate/helper/widgets/submit_review.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../helper/widgets/custom_icon_button.dart';
 import '../../helper/widgets/location_card.dart';
 import '../../helper/widgets/nearby_places.dart';
 import '../../helper/widgets/recommended_places.dart';
@@ -18,11 +18,12 @@ class AgentScreen extends StatefulWidget {
   const AgentScreen({Key? key, required this.email}) : super(key: key);
   final String email;
   @override
-  State<AgentScreen> createState() => _AgentScreenState();
+  State<AgentScreen> createState() => AgentScreenState();
 }
 
-class _AgentScreenState extends State<AgentScreen> {
+class AgentScreenState extends State<AgentScreen> {
   List<Property>? mylist;
+
   AgentModel magent = AgentModel(
       agent_name: "",
       age: "",
@@ -114,8 +115,13 @@ class _AgentScreenState extends State<AgentScreen> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(14),
         children: [
-          // LOCATION CARD
-          const LocationCard(),
+          LocationCard(magent: magent),
+          const SizedBox(
+            height: 15,
+          ),
+          SubmitReviewWidget(
+            magent: magent,
+          ),
           const SizedBox(
             height: 15,
           ),
@@ -174,7 +180,7 @@ class _AgentScreenState extends State<AgentScreen> {
               }),
         ],
       ),
-      persistentFooterButtons: [
+      persistentFooterButtons: const [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
@@ -183,10 +189,11 @@ class _AgentScreenState extends State<AgentScreen> {
   }
 
   Future<void> onConfirm() async {
+    await APIs.activityLogout(
+        widget.email, "Agent - ${magent.agent_name} Logged out");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('login', 0);
     Navigator.pop(context);
-
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => LoginScreen()));
   }

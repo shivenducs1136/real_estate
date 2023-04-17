@@ -5,6 +5,8 @@ import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/widgets/control_panel.dart';
 import 'package:real_estate/helper/widgets/location_card.dart';
+import 'package:real_estate/helper/widgets/recent_activity.dart';
+import 'package:real_estate/model/activity_model.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
@@ -124,28 +126,54 @@ class _AdminScreenState extends State<AdminScreen> {
                 bottom: 20,
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       "Control Panel",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.w500),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    ControlPanelWidget(),
-                    SizedBox(
+                    const ControlPanelWidget(),
+                    const SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    const Text(
                       "Recent Activity",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.w500),
                     ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    StreamBuilder(
+                        stream: APIs.getActivity(),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                            case ConnectionState.none:
+                              return const Center(
+                                child: Text("No data"),
+                              );
+                            case ConnectionState.active:
+                            case ConnectionState.done:
+                              final data = snapshot.data!.docs;
+
+                              List<ActivityModel> mlist = data
+                                      ?.map((e) =>
+                                          ActivityModel.fromJson(e.data()))
+                                      .toList() ??
+                                  [];
+
+                              mlist = mlist.reversed.toList();
+                              return RecentActivityWidget(activityList: mlist);
+                          }
+                        })
                   ],
                 )),
           ],

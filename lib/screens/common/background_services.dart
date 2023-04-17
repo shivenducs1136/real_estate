@@ -6,7 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:map_location_picker/map_location_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:real_estate/main.dart';
+import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/model/customer_model.dart';
+import 'package:real_estate/model/property_model.dart';
+import 'package:real_estate/providers/agent_provider.dart';
+import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/agent/generate_otp_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,19 +58,15 @@ void onStart(ServiceInstance service) {
     }
     // perform background operations
     print("background service running");
+    final provider = Provider.of<AgentProvider>(contex);
     await initializeFirebase();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String agentId = prefs.getString('agentId').toString();
-    String customerId = prefs.getString('customerId').toString();
-    String propertyId = prefs.getString('propertyId').toString();
-
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       FirebaseFirestore.instance
           .collection("tracking")
-          .doc(propertyId)
-          .collection(agentId)
-          .doc(customerId)
+          .doc(provider.getProperty!.id)
+          .collection(provider.getAgent!.id)
+          .doc(provider.getCustomer!.customer_id)
           .collection("coordinates")
           .doc(DateTime.now().millisecondsSinceEpoch.toString())
           .set({
