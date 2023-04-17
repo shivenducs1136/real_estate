@@ -9,6 +9,7 @@ import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 class AgentLocationScreen extends StatefulWidget {
   const AgentLocationScreen({
@@ -147,7 +148,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                           builder: (context, mvalue, child) {
                         return GestureDetector(
                           onTap: () async {
-                            FlutterBackgroundService().invoke('stopService');
+                            Workmanager().cancelAll();
                             SharedPreferences pref =
                                 await SharedPreferences.getInstance();
                             pref.setBool('isTracking', false);
@@ -155,6 +156,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                                 widget.myCustomerModel!, reviewText);
                             APIs.setisLoan(widget.myCustomerModel!, isChecked);
                             mvalue.setTracking();
+                            Navigator.pop(context);
                             Dialogs.showSnackbar(
                                 context, "Review Submitted Successfuly");
                           },

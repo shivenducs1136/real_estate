@@ -3,13 +3,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.network" android:required="false" />
 <uses-feature android:name="android.hardware.location.gps" android:required="false"  />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
 
    <application
         android:label="Tiwari Propmarts"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-          <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

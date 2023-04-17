@@ -9,6 +9,7 @@ import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/common/background_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../../helper/credentials.dart';
 import '../../main.dart';
@@ -123,7 +124,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                 _handleLocationPermission().then((value) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  // await initializeService();
+
                   OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
                       .then((value) {
                     Navigator.pop(context);
@@ -173,7 +174,16 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.setBool("isTracking", true);
-                        await BackgroundService.initializeService(context);
+                        Workmanager().registerPeriodicTask(
+                            "location", "fetchlocation",
+                            frequency: Duration(minutes: 15),
+                            constraints:
+                                Constraints(networkType: NetworkType.connected),
+                            inputData: {
+                              "agentId": mvalue.getAgent!.id,
+                              "customerId": mvalue.getCustomer!.customer_id,
+                              "propertyId": mvalue.getProperty!.id
+                            });
                         mvalue.setTracking();
                       }
                     });
@@ -183,10 +193,6 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
         ]),
       ),
     ));
-  }
-
-  getContext() {
-    return context;
   }
 
   Future<bool> _handleLocationPermission() async {
