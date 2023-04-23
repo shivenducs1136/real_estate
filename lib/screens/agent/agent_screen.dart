@@ -85,7 +85,7 @@ class AgentScreenState extends State<AgentScreen> {
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 12),
-            child: GestureDetector(
+            child: InkWell(
               onTap: () {
                 showDialog(
                     context: context,

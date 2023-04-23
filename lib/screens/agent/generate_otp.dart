@@ -55,7 +55,7 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
             Positioned(
               top: 20,
               left: 20,
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -112,8 +112,7 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
                             return Expanded(
                                 child: ListView.builder(
                                     itemCount: myCustomer.length,
-                                    itemBuilder: (context, index) =>
-                                        GestureDetector(
+                                    itemBuilder: (context, index) => InkWell(
                                           onTap: () {
                                             value
                                                 .setCustomer(myCustomer[index]);

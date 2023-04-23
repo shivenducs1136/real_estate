@@ -55,7 +55,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                   Positioned(
                     top: 20,
                     left: 20,
-                    child: GestureDetector(
+                    child: InkWell(
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -147,7 +147,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                       right: 10,
                       child: Consumer<AgentProvider>(
                           builder: (context, mvalue, child) {
-                        return GestureDetector(
+                        return InkWell(
                           onTap: () async {
                             Workmanager().cancelAll();
                             SharedPreferences pref =

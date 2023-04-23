@@ -63,7 +63,7 @@ class _AssignedPropertiesState extends State<AssignedProperties> {
                       size: 25,
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {},
                     child: const Text(
                       "Assigned Properties",
@@ -104,7 +104,7 @@ class _AssignedPropertiesState extends State<AssignedProperties> {
   }
 
   Widget propertyItem(Property property) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
             context,

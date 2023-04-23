@@ -64,7 +64,7 @@ class _AgentDetailsState extends State<AgentDetails> {
                       size: 25,
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {},
                     child: const Text(
                       "Agent Details",
@@ -74,7 +74,7 @@ class _AgentDetailsState extends State<AgentDetails> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                       onTap: () {
                         Navigator.push(
                             context,
@@ -197,7 +197,7 @@ class _AgentDetailsState extends State<AgentDetails> {
   }
 
   Widget propertyItem(Property property) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
             context,

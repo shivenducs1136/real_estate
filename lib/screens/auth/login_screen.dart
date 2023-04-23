@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             Navigator.pushReplacement(
                                 context,
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 1,
                           color: Colors.black,
                         ),
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             Navigator.pushReplacement(
                                 context,

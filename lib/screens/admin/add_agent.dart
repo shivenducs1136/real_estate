@@ -171,7 +171,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             SizedBox(
                               width: 10,
                             ),
-                            GestureDetector(
+                            InkWell(
                               onTap: () async {
                                 var results =
                                     await showCalendarDatePicker2Dialog(

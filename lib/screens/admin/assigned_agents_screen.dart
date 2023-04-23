@@ -52,7 +52,7 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "Assgined Agents",
@@ -113,7 +113,7 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                           border: Border.all(
                                               width: 1, color: Colors.black),
                                         ),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onLongPress: () {
                                             Dialogs.showInputDialog(
                                                 context: context,

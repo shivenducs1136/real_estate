@@ -46,7 +46,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "Customers want to purchase",
@@ -135,7 +135,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                           border: Border.all(
                                               width: 1, color: Colors.black),
                                         ),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () async {
                                             // ignore: use_build_context_synchronously
                                             Navigator.push(

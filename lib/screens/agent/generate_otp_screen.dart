@@ -51,7 +51,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
           Positioned(
             top: 20,
             left: 20,
-            child: GestureDetector(
+            child: InkWell(
               onTap: () {
                 Navigator.pop(context);
               },
@@ -64,7 +64,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
           ),
           Positioned(
             top: 20,
-            child: GestureDetector(
+            child: InkWell(
               onTap: () async {
                 // SharedPreferences prefs = await SharedPreferences.getInstance();
                 // Dialogs.showSnackbar(context, "Enabled Background processing");
@@ -118,7 +118,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             bottom: 50,
             left: 30,
             right: 30,
-            child: GestureDetector(
+            child: InkWell(
               onTap: () {
                 Dialogs.showProgressBar(context);
                 _handleLocationPermission().then((value) async {

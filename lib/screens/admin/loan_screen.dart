@@ -49,7 +49,7 @@ class _LoanScreenState extends State<LoanScreen> {
               SizedBox(
                 width: 10,
               ),
-              GestureDetector(
+              InkWell(
                 onTap: () {},
                 child: const Text(
                   "Customer who wants loan",
@@ -85,7 +85,7 @@ class _LoanScreenState extends State<LoanScreen> {
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {},
                                   child: Container(
                                     height: 80,
@@ -125,7 +125,7 @@ class _LoanScreenState extends State<LoanScreen> {
                                               ),
                                             ),
                                           )),
-                                      trailing: GestureDetector(
+                                      trailing: InkWell(
                                         onTap: () {
                                           Dialogs.callNumber(
                                               _customerlist[index].phonenumber);

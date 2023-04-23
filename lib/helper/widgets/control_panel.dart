@@ -29,7 +29,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(
                       context,
@@ -93,7 +93,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
               width: 10,
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(
                       context,
@@ -161,7 +161,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => ViewPropertyScreen()));
@@ -222,7 +222,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
               width: 10,
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => AllAgentScreen()));
@@ -287,7 +287,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => AllCustomersScreen()));
@@ -348,7 +348,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
               width: 10,
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(
                       context, MaterialPageRoute(builder: (_) => LoanScreen()));
@@ -414,7 +414,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(
                       context,
@@ -477,7 +477,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
               width: 10,
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => ChooseAgentScreen()));
@@ -543,7 +543,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => PurchaseScreen()));
@@ -604,7 +604,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
               width: 10,
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   Navigator.push(
                       context, MaterialPageRoute(builder: (_) => RentScreen()));

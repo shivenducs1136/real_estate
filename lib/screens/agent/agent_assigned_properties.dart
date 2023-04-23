@@ -64,7 +64,7 @@ class _AgentAssignedPropertiesState extends State<AgentAssignedProperties> {
                       size: 25,
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {},
                     child: const Text(
                       "Assigned Properties",

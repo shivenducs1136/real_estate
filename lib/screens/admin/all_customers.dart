@@ -46,7 +46,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "All Customers",
@@ -133,7 +133,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                           border: Border.all(
                                               width: 1, color: Colors.black),
                                         ),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () async {
                                             // ignore: use_build_context_synchronously
                                             Navigator.push(

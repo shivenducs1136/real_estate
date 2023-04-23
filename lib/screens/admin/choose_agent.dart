@@ -49,7 +49,7 @@ class _ChooseAgentScreenState extends State<ChooseAgentScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "Choose Agent",
@@ -98,7 +98,7 @@ class _ChooseAgentScreenState extends State<ChooseAgentScreen> {
                                           border: Border.all(
                                               width: 1, color: Colors.black),
                                         ),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () {
                                             Navigator.push(
                                                 context,

@@ -48,7 +48,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "Agent Details",
@@ -120,7 +120,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                           border: Border.all(
                                               width: 1, color: Colors.black),
                                         ),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () {
                                             Navigator.push(
                                                 context,

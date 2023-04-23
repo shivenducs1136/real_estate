@@ -88,7 +88,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     ],
                   ),
                   // Company Logo
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       showDialog(
                           context: context,
@@ -197,7 +197,7 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Widget agentChip(AgentModel a) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(context,
             MaterialPageRoute(builder: (_) => AgentDetails(curr_agent: a)));

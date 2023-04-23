@@ -46,7 +46,7 @@ class _InterestedPropertyScreenState extends State<InterestedPropertyScreen> {
   Widget build(BuildContext context) {
     _list.clear();
     return SafeArea(
-      child: GestureDetector(
+      child: InkWell(
         onTap: () => FocusScope.of(context).unfocus(),
         child: WillPopScope(
           onWillPop: () {

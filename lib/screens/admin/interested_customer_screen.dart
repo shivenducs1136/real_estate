@@ -56,7 +56,7 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
                     size: 25,
                   ),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {},
                   child: const Text(
                     "Interested Customers",
@@ -120,7 +120,7 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     if (widget.agentModel != null) {
                                       Navigator.push(
@@ -173,7 +173,7 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
                                               ),
                                             ),
                                           )),
-                                      trailing: GestureDetector(
+                                      trailing: InkWell(
                                         onTap: () {
                                           Dialogs.callNumber(
                                               _customerlist[index].phonenumber);

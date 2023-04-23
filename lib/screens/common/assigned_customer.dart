@@ -52,7 +52,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                   size: 25,
                 ),
               ),
-              GestureDetector(
+              InkWell(
                 onTap: () {},
                 child: const Text(
                   "Customer Details",
@@ -105,7 +105,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                           itemBuilder: (context, index) => Padding(
                                 padding: const EdgeInsets.only(
                                     left: 20, right: 20, bottom: 10),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     Navigator.push(
                                         context,
@@ -152,7 +152,7 @@ class _AssignedCustomersState extends State<AssignedCustomers> {
                                               ),
                                             ),
                                           )),
-                                      trailing: GestureDetector(
+                                      trailing: InkWell(
                                         onTap: () {
                                           Dialogs.callNumber(
                                               _customerList[index].phonenumber);

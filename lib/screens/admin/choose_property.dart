@@ -65,7 +65,7 @@ class _ChoosePropertiesState extends State<ChooseProperties> {
                       size: 25,
                     ),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {},
                     child: const Text(
                       "Choose Property",
@@ -101,7 +101,7 @@ class _ChoosePropertiesState extends State<ChooseProperties> {
   }
 
   Widget propertyItem(Property property) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
             context,

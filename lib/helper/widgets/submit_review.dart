@@ -41,7 +41,7 @@ class SubmitReviewWidget extends StatelessWidget {
       //   }
       // }
 
-      return GestureDetector(
+      return InkWell(
         onTap: () {
           mvalue.setAgent(magent);
           if (mvalue.trackingInfo) {
