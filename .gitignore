@@ -11,7 +11,8 @@
 .buildlog/
 .history
 .svn/
-
+.macOS/
+.Windows/ 
 # IntelliJ related
 *.iml
 *.ipr
