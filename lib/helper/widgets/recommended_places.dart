@@ -51,14 +51,20 @@ class RecommendedPlaces extends StatelessWidget {
                   child: Column(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          recommendedPlaces[index].showImg,
-                          width: double.maxFinite,
-                          fit: BoxFit.cover,
-                          height: 150,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(12),
+                          child: FadeInImage(
+                            placeholder: AssetImage("images/picture.png"),
+                            image: NetworkImage(
+                              recommendedPlaces[index].showImg,
+                            ),
+                            imageErrorBuilder: (context, error, stackTrace) {
+                              return Image.asset('images/picture.png',
+                                  fit: BoxFit.fitWidth);
+                            },
+                            width: double.maxFinite,
+                            fit: BoxFit.cover,
+                            height: 150,
+                          )),
                       const SizedBox(height: 5),
                       Expanded(
                         child: Row(

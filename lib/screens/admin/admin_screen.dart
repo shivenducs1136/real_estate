@@ -211,7 +211,14 @@ class _AdminScreenState extends State<AdminScreen> {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(a.photo),
+                  child: FadeInImage(
+                    placeholder: AssetImage("images/picture.png"),
+                    image: NetworkImage(a.photo),
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return Image.asset('images/picture.png',
+                          fit: BoxFit.fitWidth);
+                    },
+                  ),
                 ),
                 SizedBox(height: 8),
                 Text(

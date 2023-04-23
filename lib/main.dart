@@ -44,6 +44,7 @@ void main() async {
 
     runApp(const MyApp());
   });
+  FocusManager.instance.primaryFocus?.unfocus();
 }
 
 initializeFirebase() async {

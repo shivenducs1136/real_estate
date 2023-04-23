@@ -71,8 +71,14 @@ class AgentScreenState extends State<AgentScreen> {
         ),
         actions: [
           CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(magent.photo),
+            radius: 30,
+            child: FadeInImage(
+              placeholder: AssetImage("images/picture.png"),
+              image: NetworkImage(magent.photo),
+              imageErrorBuilder: (context, error, stackTrace) {
+                return Image.asset('images/picture.png', fit: BoxFit.fitWidth);
+              },
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 12),

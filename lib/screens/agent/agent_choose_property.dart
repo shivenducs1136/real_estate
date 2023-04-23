@@ -132,9 +132,13 @@ class _ChooseAgentPropertiesState extends State<ChooseAgentProperties> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: Image.network(
-                  property.showImg,
-                  fit: BoxFit.cover,
+                child: FadeInImage(
+                  placeholder: AssetImage("images/picture.png"),
+                  image: NetworkImage(property.showImg),
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.asset('images/picture.png',
+                        fit: BoxFit.fitWidth);
+                  },
                 ),
               ),
             ),

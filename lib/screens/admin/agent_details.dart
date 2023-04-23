@@ -104,8 +104,15 @@ class _AgentDetailsState extends State<AgentDetails> {
                     children: [
                       Positioned(
                           child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(widget.curr_agent.photo),
+                        radius: 30,
+                        child: FadeInImage(
+                          placeholder: AssetImage("images/picture.png"),
+                          image: NetworkImage(widget.curr_agent.photo),
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Image.asset('images/picture.png',
+                                fit: BoxFit.fitWidth);
+                          },
+                        ),
                       )),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -207,9 +214,13 @@ class _AgentDetailsState extends State<AgentDetails> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: Image.network(
-                  property.showImg,
-                  fit: BoxFit.cover,
+                child: FadeInImage(
+                  placeholder: AssetImage("images/picture.png"),
+                  image: NetworkImage(property.showImg),
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.asset('images/picture.png',
+                        fit: BoxFit.fitWidth);
+                  },
                 ),
               ),
             ),

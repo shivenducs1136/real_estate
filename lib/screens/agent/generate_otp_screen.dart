@@ -7,7 +7,6 @@ import 'package:real_estate/model/customer_model.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
-import 'package:real_estate/screens/common/background_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 

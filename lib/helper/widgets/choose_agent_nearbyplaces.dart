@@ -60,14 +60,21 @@ class ChooseAgentNearbyPlaces extends StatelessWidget {
                         child: Row(
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                nearbyPlaces[index].showImg,
-                                height: double.maxFinite,
-                                width: 130,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                                borderRadius: BorderRadius.circular(12),
+                                child: FadeInImage(
+                                  placeholder: AssetImage("images/picture.png"),
+                                  image: NetworkImage(
+                                    nearbyPlaces[index].showImg,
+                                  ),
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset('images/picture.png',
+                                        fit: BoxFit.fitWidth);
+                                  },
+                                  height: double.maxFinite,
+                                  width: 130,
+                                  fit: BoxFit.cover,
+                                )),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
