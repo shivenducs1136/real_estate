@@ -15,7 +15,7 @@ class LocationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AgentProvider>(
       builder: (context, value, child) {
-        return InkWell(
+        return GestureDetector(
           onTap: () {
             value.setAgent(magent);
             Navigator.push(

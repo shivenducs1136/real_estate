@@ -406,6 +406,40 @@ class APIs {
     return double.parse(num);
   }
 
+  static Future<void> deleteProperty(String id) async {
+    await firestore.collection("property").doc(id).delete();
+    final agentDocs = await firestore.collection("agents").get();
+    for (var ele in agentDocs.docs) {
+      try {
+        await firestore
+            .collection("agents")
+            .doc(ele.id)
+            .collection("assigned_properties")
+            .doc(id)
+            .delete();
+      } catch (e) {
+        log(e.toString());
+      }
+    }
+    final customerDocs = await firestore.collection("customer").get();
+    for (var ele in customerDocs.docs) {
+      CustomerModel? c = CustomerModel.fromJson(ele.data());
+      int idx = 0;
+      while (c.property_id[idx] != id && idx < c.property_id.length) {
+        idx++;
+      }
+      if (idx != c.property_id.length) {
+        c.property_id.remove(id);
+        c.agent_id.remove(c.agent_id[idx]);
+      }
+      await firestore
+          .collection("customer")
+          .doc(ele.id)
+          .update({"property_id": c.property_id, "agent_id": c.agent_id});
+    }
+    await firestore.collection("tracking").doc(id).delete();
+  }
+
   static Future<void> activityAddProperty(
       {required String property_id,
       required String msg,

@@ -132,9 +132,9 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             initialValue: !widget.isUpdate
                                 ? ""
                                 : widget.currProp!.property_name,
-                            onChanged: (value) {
+                            onSaved: (value) {
                               setState(() {
-                                property_name = value;
+                                property_name = value!;
                               });
                             },
                             keyboardType: TextInputType.name,
@@ -177,7 +177,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 initialValue: !widget.isUpdate
                                     ? ""
                                     : widget.currProp!.bedrooms,
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
                                     bedrooms = value!;
                                   });
@@ -220,7 +220,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 initialValue: !widget.isUpdate
                                     ? ""
                                     : widget.currProp!.bathrooms,
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
                                     bathrooms = value!;
                                   });
@@ -268,7 +268,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 initialValue: !widget.isUpdate
                                     ? ""
                                     : widget.currProp!.garages,
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
                                     garages = value!;
                                   });
@@ -310,8 +310,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               child: TextFormField(
                                 initialValue: !widget.isUpdate
                                     ? ""
-                                    : widget.currProp!.area,
-                                onChanged: (value) {
+                                    : int.parse(widget.currProp!.area
+                                            .split(" ")
+                                            .first)
+                                        .toString(),
+                                onSaved: (value) {
                                   setState(() {
                                     area = value!;
                                   });
@@ -331,31 +334,34 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             )
                           ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10, left: 10),
-                          child: Row(
-                            children: [
-                              const Text(
-                                "   Flat \n(in sq ft)",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 8),
-                              ),
-                              Switch(
-                                  value: widget.isUpdate
-                                      ? widget.currProp!.area.contains("ft")
-                                          ? false
-                                          : true
-                                      : isFlat,
-                                  onChanged: (context) {
-                                    isFlat = !isFlat;
-                                    setState(() {});
-                                  }),
-                              const Text(
-                                "   Land \n(in sq mt)",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 8),
-                              ),
-                            ],
+                        Visibility(
+                          visible: !widget.isUpdate,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10, left: 10),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  "   Flat \n(in sq ft)",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 8),
+                                ),
+                                Switch(
+                                    value: widget.isUpdate
+                                        ? widget.currProp!.area.contains("ft")
+                                            ? false
+                                            : true
+                                        : isFlat,
+                                    onChanged: (context) {
+                                      isFlat = !isFlat;
+                                      setState(() {});
+                                    }),
+                                const Text(
+                                  "   Land \n(in sq mt)",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 8),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -386,7 +392,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 initialValue: !widget.isUpdate
                                     ? ""
                                     : widget.currProp!.cost,
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
                                     cost = value!;
                                   });
@@ -429,7 +435,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 initialValue: !widget.isUpdate
                                     ? ""
                                     : widget.currProp!.yearBuilt,
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
                                     year_built = value!;
                                   });
@@ -475,7 +481,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       child: TextFormField(
                         initialValue:
                             !widget.isUpdate ? "" : widget.currProp!.address,
-                        onChanged: (value) {
+                        onSaved: (value) {
                           setState(() {
                             address = value!;
                           });
@@ -514,14 +520,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               onTap: () async {
                                 // addimages
                                 final ImagePicker _picker = ImagePicker();
-                                XFile? img = await _picker
-                                    .pickImage(source: ImageSource.gallery)
-                                    .then((value) {
-                                  setState(() {
-                                    images!.add(value!);
-                                    isImageAdded = true;
+                                try {
+                                  XFile? img = await _picker
+                                      .pickImage(source: ImageSource.gallery)
+                                      .then((value) {
+                                    setState(() {
+                                      images!.add(value!);
+                                      isImageAdded = true;
+                                    });
                                   });
-                                });
+                                } catch (e) {}
                               },
                               child: Image.asset(
                                 "images/addimg.png",
@@ -529,80 +537,85 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                 width: 50,
                               ),
                             ),
-                            if (isImageAdded)
-                              Text(
-                                "${images?.length} images selected",
-                                style: const TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              )
+                            Text(
+                              "${widget.isUpdate ? 1 : images?.length} images selected",
+                              style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            )
                           ],
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            _handleLocationPermission().then(
-                              (value) async {
-                                await Geolocator.getCurrentPosition(
-                                        desiredAccuracy: LocationAccuracy.best)
-                                    .then((initialpos) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return PlacePicker(
-                                          resizeToAvoidBottomInset:
-                                              false, // only works in page mode, less flickery
-                                          apiKey: Platform.isAndroid
-                                              ? "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA"
-                                              : "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA",
-                                          hintText: "Find a place ...",
-                                          searchingText: "Please wait ...",
-                                          selectText: "Select place",
-                                          outsideOfPickAreaText:
-                                              "Place not in area",
-                                          initialPosition: LatLng(
-                                              initialpos.latitude,
-                                              initialpos.longitude),
-                                          useCurrentLocation: true,
-                                          selectInitialPosition: true,
-                                          usePinPointingSearch: true,
-                                          usePlaceDetailSearch: true,
-                                          zoomGesturesEnabled: true,
-                                          zoomControlsEnabled: true,
-                                          onMapCreated:
-                                              (GoogleMapController controller) {
-                                            print("Map created");
-                                          },
-                                          onPlacePicked: (PickResult result) {
-                                            print(
-                                                "Place picked: ${result.formattedAddress}");
-                                            setState(() {
-                                              selectedPlace = result;
-                                              Navigator.pop(context);
-                                              lat = result
-                                                  .geometry!.location.lat
-                                                  .toString();
-                                              long = result
-                                                  .geometry!.location.lng
-                                                  .toString();
-                                              _currentAddress =
-                                                  result.formattedAddress ?? "";
-                                            });
-                                          },
-                                          onMapTypeChanged: (MapType mapType) {
-                                            print(
-                                                "Map type changed to ${mapType.toString()}");
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  );
-                                });
-                              },
-                            );
-                          },
-                          child: Text("Locate Property"),
+                        Visibility(
+                          visible: !widget.isUpdate,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              _handleLocationPermission().then(
+                                (value) async {
+                                  await Geolocator.getCurrentPosition(
+                                          desiredAccuracy:
+                                              LocationAccuracy.best)
+                                      .then((initialpos) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return PlacePicker(
+                                            resizeToAvoidBottomInset:
+                                                false, // only works in page mode, less flickery
+                                            apiKey: Platform.isAndroid
+                                                ? "AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08"
+                                                : "AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08",
+                                            hintText: "Find a place ...",
+                                            searchingText: "Please wait ...",
+                                            selectText: "Select place",
+                                            outsideOfPickAreaText:
+                                                "Place not in area",
+                                            initialPosition: LatLng(
+                                                initialpos.latitude,
+                                                initialpos.longitude),
+                                            useCurrentLocation: true,
+                                            selectInitialPosition: true,
+                                            usePinPointingSearch: true,
+                                            usePlaceDetailSearch: true,
+                                            zoomGesturesEnabled: true,
+                                            zoomControlsEnabled: true,
+                                            onMapCreated: (GoogleMapController
+                                                controller) {
+                                              print("Map created");
+                                            },
+                                            onPlacePicked: (PickResult result) {
+                                              print(
+                                                  "Place picked: ${result.formattedAddress}");
+                                              setState(() {
+                                                selectedPlace = result;
+                                                Navigator.pop(context);
+                                                lat = result
+                                                    .geometry!.location.lat
+                                                    .toString();
+                                                long = result
+                                                    .geometry!.location.lng
+                                                    .toString();
+                                                _currentAddress =
+                                                    result.formattedAddress ??
+                                                        "";
+                                              });
+                                            },
+                                            onMapTypeChanged:
+                                                (MapType mapType) {
+                                              print(
+                                                  "Map type changed to ${mapType.toString()}");
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  });
+                                },
+                              );
+                            },
+                            child: Text("Locate Property"),
+                          ),
                         ),
                         if (isLocationFetched)
                           Icon(Icons.done_all_outlined, color: Colors.green)
@@ -630,6 +643,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        formKey.currentState!.save();
                         // add data to firebase
                         String dateTime =
                             DateTime.now().microsecondsSinceEpoch.toString();
@@ -647,15 +661,16 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             showImg: 'https://picsum.photos/200/300',
                             yearBuilt: year_built);
                         Dialogs.showProgressBar(context);
-                        if (images == null || images!.isEmpty) {
+                        if ((images == null || images!.isEmpty) &&
+                            !widget.isUpdate) {
                           Navigator.pop(context);
                           Dialogs.showSnackbar(
                               context, "Please add atleast 1 image");
                         } else if (property_name == "" ||
-                            cost == "" ||
-                            lat == "" ||
-                            long == "" ||
-                            year_built == "") {
+                                cost == "" ||
+                                year_built == "" && !widget.isUpdate
+                            ? (lat == "" || long == "")
+                            : false) {
                           Navigator.pop(context);
                           Dialogs.showSnackbar(
                               context, "Please add all details");
@@ -681,6 +696,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               });
                             });
                           } else {
+                            p.id = widget.currProp!.id;
                             APIs.addPropertyToFirebase(p).then((value) {
                               APIs.activityUpdateProperty(
                                       property_id: dateTime,

@@ -23,25 +23,7 @@ class SubmitReviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AgentProvider>(builder: (context, mvalue, child) {
-      // if (prefs != null) {
-      //   bool isTracking = prefs!.getBool("isTracking") ?? false;
-      //   if (isTracking) {
-      //     String propertyId = prefs!.getString("propertyId").toString() ?? "";
-      //     String customerId = prefs!.getString("customerId").toString() ?? "";
-      //     APIs.getPropertyByPropertyId(propertyId).then((preperty) {
-      //       if (preperty != null) {
-      //         mvalue.setProperty(preperty);
-      //       }
-      //       APIs.getCustomerById(customerId).then((customer) {
-      //         if (customer != null) {
-      //           mvalue.setCustomer(customer);
-      //         }
-      //       });
-      //     });
-      //   }
-      // }
-
-      return InkWell(
+      return GestureDetector(
         onTap: () {
           mvalue.setAgent(magent);
           if (mvalue.trackingInfo) {

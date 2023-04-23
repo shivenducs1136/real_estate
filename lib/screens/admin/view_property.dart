@@ -43,7 +43,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: InkWell(
+      child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: WillPopScope(
           onWillPop: () {

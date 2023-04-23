@@ -95,9 +95,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         SizedBox(
                           height: mq.height * .05,
                           child: TextFormField(
-                            onChanged: (value) {
+                            onSaved: (value) {
                               setState(() {
-                                agent_name = value;
+                                agent_name = value!;
                               });
                             },
                             validator: (val) => val != null && val.isNotEmpty
@@ -137,9 +137,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                           child: TextFormField(
                             initialValue:
                                 widget.isUpdate ? widget.agent?.email : '',
-                            onChanged: (value) {
+                            onSaved: (value) {
                               setState(() {
-                                agent_email = value;
+                                agent_email = value!;
                               });
                             },
                             validator: (val) => val != null && val.isNotEmpty
@@ -238,9 +238,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               child: TextFormField(
                                 initialValue:
                                     widget.isUpdate ? widget.agent?.age : '',
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
-                                    age = value;
+                                    age = value!;
                                   });
                                 },
                                 validator: (val) =>
@@ -281,9 +281,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 initialValue: widget.isUpdate
                                     ? widget.agent?.phone_number
                                     : '',
-                                onChanged: (value) {
+                                onSaved: (value) {
                                   setState(() {
-                                    phone_number = value;
+                                    phone_number = value!;
                                   });
                                 },
                                 validator: (val) =>
@@ -330,9 +330,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                       child: TextFormField(
                         initialValue:
                             widget.isUpdate ? widget.agent?.address : '',
-                        onChanged: (value) {
+                        onSaved: (value) {
                           setState(() {
-                            address = value;
+                            address = value!;
                           });
                         },
                         validator: (val) => val != null && val.isNotEmpty
@@ -397,6 +397,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        formKey.currentState!.save();
                         if (widget.isUpdate) {
                           var value = new Random();
                           var codeNumber =
@@ -453,7 +454,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                         } else {
                           if (agent_email.isNotEmpty) {
                             APIs.isAgentExists(agent_email).then((value) {
-                              if (value == true) {
+                              if (value == false) {
                                 var value = new Random();
                                 var codeNumber =
                                     (value.nextInt(900000) + 100000).toString();
@@ -512,6 +513,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                     context, "Agent already exists");
                               }
                             });
+                          } else {
+                            Dialogs.showSnackbar(
+                                context, "Please add email address");
                           }
                         }
                       },

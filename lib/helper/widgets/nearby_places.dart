@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/cost_util.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/distance.dart';
 import 'package:real_estate/screens/common/property_view.dart';
 
@@ -42,6 +44,22 @@ class NearbyPlaces extends StatelessWidget {
                         ),
                       ));
                 },
+                onLongPress: () {
+                  Dialogs.showInputDialog(
+                      context: context,
+                      title: "Delete",
+                      hint:
+                          "Are you sure want to delete property ${nearbyPlaces[index].property_name}?",
+                      onOk: () {
+                        Dialogs.showProgressBar(context);
+                        APIs.deleteProperty(nearbyPlaces[index].id)
+                            .then((value) {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(context, "Property Deleted");
+                        });
+                      },
+                      onCancel: () {});
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -69,7 +87,7 @@ class NearbyPlaces extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 nearbyPlaces[index].property_name,
-                                maxLines: 1,
+                                maxLines: 2,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -77,7 +95,6 @@ class NearbyPlaces extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Icon(
