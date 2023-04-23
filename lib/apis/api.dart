@@ -440,6 +440,26 @@ class APIs {
     await firestore.collection("tracking").doc(id).delete();
   }
 
+  static Future<void> deleteCustomer(CustomerModel c) async {
+    final mdata =
+        await firestore.collection("customer").doc(c.customer_id).get();
+    await firestore.collection("customer").doc(c.customer_id).delete();
+
+    int n = c.property_id.length;
+    for (int i = 0; i < n; i++) {
+      try {
+        await firestore
+            .collection("tracking")
+            .doc(c.property_id[i])
+            .collection(c.agent_id[i])
+            .doc(c.customer_id)
+            .delete();
+      } catch (e) {
+        log(e.toString());
+      }
+    }
+  }
+
   static Future<void> activityAddProperty(
       {required String property_id,
       required String msg,

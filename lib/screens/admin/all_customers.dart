@@ -147,7 +147,23 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                                                   .customer_id,
                                                         )));
                                           },
-                                          onLongPress: () {},
+                                          onLongPress: () {
+                                            Dialogs.showInputDialog(
+                                                context: context,
+                                                title: "Delete",
+                                                hint:
+                                                    "Are you sure want to delete agent ${_customerList[index].customer_name}?",
+                                                onOk: () {
+                                                  APIs.deleteCustomer(
+                                                          _customerList[index])
+                                                      .then((value) {
+                                                    Dialogs.showSnackbar(
+                                                        context,
+                                                        "Deleted Successfuly");
+                                                  });
+                                                },
+                                                onCancel: () {});
+                                          },
                                           child: ListTile(
                                             title: Text(
                                                 "${_customerList[index].customer_name}"),
