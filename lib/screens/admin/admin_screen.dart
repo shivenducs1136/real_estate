@@ -72,16 +72,16 @@ class _AdminScreenState extends State<AdminScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        "Tiwari Propmarts",
+                        "Tiwari Propmart",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Color.fromARGB(255, 25, 88, 103),
                             fontWeight: FontWeight.bold,
                             fontSize: 24),
                       ),
                       Text(
                         "Dashboard",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Color.fromARGB(255, 242, 105, 35),
                             fontWeight: FontWeight.w300,
                             fontSize: 16),
                       ),

@@ -50,7 +50,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   PickResult? selectedPlace;
   bool _showPlacePickerInContainer = false;
   bool _showGoogleMapInContainer = false;
-
+  List<String> areaOptions = ["Flat (in sq ft)", "Land (in sq mt)"];
+  bool isFlat = false;
   bool _mapsInitialized = false;
   String _mapsRenderer = "latest";
   void initRenderer() {
@@ -262,7 +263,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             ),
                             SizedBox(
                               height: mq.height * .05,
-                              width: mq.width * .3,
+                              width: 90,
                               child: TextFormField(
                                 initialValue: !widget.isUpdate
                                     ? ""
@@ -288,7 +289,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           ],
                         ),
                         SizedBox(
-                          width: mq.width * .1,
+                          width: 10,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,7 +306,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             ),
                             SizedBox(
                               height: mq.height * .05,
-                              width: mq.width * .3,
+                              width: 90,
                               child: TextFormField(
                                 initialValue: !widget.isUpdate
                                     ? ""
@@ -324,11 +325,38 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12)),
                                   hintText: "eg. 32 sq.ft.",
-                                  labelText: "Area in sq. ft.",
+                                  labelText: "Area..",
                                 ),
                               ),
                             )
                           ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10, left: 10),
+                          child: Row(
+                            children: [
+                              const Text(
+                                "   Flat \n(in sq ft)",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 8),
+                              ),
+                              Switch(
+                                  value: widget.isUpdate
+                                      ? widget.currProp!.area.contains("ft")
+                                          ? false
+                                          : true
+                                      : isFlat,
+                                  onChanged: (context) {
+                                    isFlat = !isFlat;
+                                    setState(() {});
+                                  }),
+                              const Text(
+                                "   Land \n(in sq mt)",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 8),
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -486,11 +514,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               onTap: () async {
                                 // addimages
                                 final ImagePicker _picker = ImagePicker();
-                                List<XFile>? img = await _picker
-                                    .pickMultiImage()
+                                XFile? img = await _picker
+                                    .pickImage(source: ImageSource.gallery)
                                     .then((value) {
                                   setState(() {
-                                    images = value;
+                                    images!.add(value!);
                                     isImageAdded = true;
                                   });
                                 });
@@ -512,58 +540,65 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           ],
                         ),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _handleLocationPermission().then(
-                              (value) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return PlacePicker(
-                                        resizeToAvoidBottomInset:
-                                            false, // only works in page mode, less flickery
-                                        apiKey: Platform.isAndroid
-                                            ? "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA"
-                                            : "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA",
-                                        hintText: "Find a place ...",
-                                        searchingText: "Please wait ...",
-                                        selectText: "Select place",
-                                        outsideOfPickAreaText:
-                                            "Place not in area",
-                                        initialPosition:
-                                            MapScreen.kInitialPosition,
-                                        useCurrentLocation: true,
-                                        selectInitialPosition: true,
-                                        usePinPointingSearch: true,
-                                        usePlaceDetailSearch: true,
-                                        zoomGesturesEnabled: true,
-                                        zoomControlsEnabled: true,
-                                        onMapCreated:
-                                            (GoogleMapController controller) {
-                                          print("Map created");
-                                        },
-                                        onPlacePicked: (PickResult result) {
-                                          print(
-                                              "Place picked: ${result.formattedAddress}");
-                                          setState(() {
-                                            selectedPlace = result;
-                                            Navigator.pop(context);
-                                            lat = result.geometry!.location.lat
-                                                .toString();
-                                            long = result.geometry!.location.lng
-                                                .toString();
-                                            _currentAddress =
-                                                result.formattedAddress ?? "";
-                                          });
-                                        },
-                                        onMapTypeChanged: (MapType mapType) {
-                                          print(
-                                              "Map type changed to ${mapType.toString()}");
-                                        },
-                                      );
-                                    },
-                                  ),
-                                );
+                              (value) async {
+                                await Geolocator.getCurrentPosition(
+                                        desiredAccuracy: LocationAccuracy.best)
+                                    .then((initialpos) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return PlacePicker(
+                                          resizeToAvoidBottomInset:
+                                              false, // only works in page mode, less flickery
+                                          apiKey: Platform.isAndroid
+                                              ? "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA"
+                                              : "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA",
+                                          hintText: "Find a place ...",
+                                          searchingText: "Please wait ...",
+                                          selectText: "Select place",
+                                          outsideOfPickAreaText:
+                                              "Place not in area",
+                                          initialPosition: LatLng(
+                                              initialpos.latitude,
+                                              initialpos.longitude),
+                                          useCurrentLocation: true,
+                                          selectInitialPosition: true,
+                                          usePinPointingSearch: true,
+                                          usePlaceDetailSearch: true,
+                                          zoomGesturesEnabled: true,
+                                          zoomControlsEnabled: true,
+                                          onMapCreated:
+                                              (GoogleMapController controller) {
+                                            print("Map created");
+                                          },
+                                          onPlacePicked: (PickResult result) {
+                                            print(
+                                                "Place picked: ${result.formattedAddress}");
+                                            setState(() {
+                                              selectedPlace = result;
+                                              Navigator.pop(context);
+                                              lat = result
+                                                  .geometry!.location.lat
+                                                  .toString();
+                                              long = result
+                                                  .geometry!.location.lng
+                                                  .toString();
+                                              _currentAddress =
+                                                  result.formattedAddress ?? "";
+                                            });
+                                          },
+                                          onMapTypeChanged: (MapType mapType) {
+                                            print(
+                                                "Map type changed to ${mapType.toString()}");
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  );
+                                });
                               },
                             );
                           },
@@ -604,7 +639,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             bathrooms: bathrooms,
                             garages: garages,
                             cost: cost,
-                            area: area,
+                            area: isFlat ? area + " sq ft" : area + " sq mt",
                             id: "${dateTime}",
                             address: address,
                             lat: lat,

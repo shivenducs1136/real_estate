@@ -118,7 +118,7 @@ class NeartoCustomer extends StatelessWidget {
                                   size: 14,
                                 ),
                                 Text(
-                                  nearbyPlaces[index].area + " sq ft",
+                                  nearbyPlaces[index].area,
                                   style: const TextStyle(
                                     fontSize: 12,
                                   ),

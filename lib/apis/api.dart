@@ -268,7 +268,8 @@ class APIs {
                   phonenumber: c.phonenumber,
                   address: c.address,
                   customer_id: c.customer_id,
-                  isLoan: c.isLoan)
+                  isLoan: c.isLoan,
+                  isPurchase: c.isPurchase)
               .toJson());
         }
       }
@@ -366,7 +367,8 @@ class APIs {
             isLoan: c.isLoan,
             phonenumber: c.phonenumber,
             property_id: c.property_id,
-            review: review)
+            review: review,
+            isPurchase: c.isPurchase)
         .toJson());
   }
 
@@ -379,7 +381,8 @@ class APIs {
             isLoan: isLoan,
             phonenumber: c.phonenumber,
             property_id: c.property_id,
-            review: c.review)
+            review: c.review,
+            isPurchase: c.isPurchase)
         .toJson());
   }
 

@@ -9,6 +9,9 @@ import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/widgets/submit_review.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
+import 'package:real_estate/screens/admin/all_customers.dart';
+import 'package:real_estate/screens/admin/assigned_properties.dart';
+import 'package:real_estate/screens/agent/agent_assigned_properties.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helper/widgets/location_card.dart';
@@ -134,7 +137,16 @@ class AgentScreenState extends State<AgentScreen> {
                 "Assigned Properties",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              TextButton(onPressed: () {}, child: const Text("View All"))
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => AgentAssignedProperties(
+                                  curr_agent: magent,
+                                )));
+                  },
+                  child: const Text("View All"))
             ],
           ),
           const SizedBox(height: 10),
@@ -153,7 +165,6 @@ class AgentScreenState extends State<AgentScreen> {
                 "All Properties",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              TextButton(onPressed: () {}, child: const Text("View All"))
             ],
           ),
           const SizedBox(height: 10),
@@ -195,6 +206,9 @@ class AgentScreenState extends State<AgentScreen> {
         widget.email, "Agent - ${magent.agent_name} Logged out");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('login', 0);
+    if (FirebaseAuth.instance.currentUser != null) {
+      FirebaseAuth.instance.currentUser!.delete();
+    }
     Navigator.pop(context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => LoginScreen()));

@@ -84,7 +84,7 @@ class RecommendedPlaces extends StatelessWidget {
                               size: 14,
                             ),
                             Text(
-                              recommendedPlaces[index].area + " sq ft",
+                              recommendedPlaces[index].area,
                               style: const TextStyle(
                                 fontSize: 12,
                               ),

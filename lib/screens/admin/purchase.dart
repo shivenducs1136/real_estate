@@ -8,14 +8,14 @@ import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
 import 'package:real_estate/screens/admin/interested_properties.dart';
 
-class AllCustomersScreen extends StatefulWidget {
-  const AllCustomersScreen({super.key});
+class PurchaseScreen extends StatefulWidget {
+  const PurchaseScreen({super.key});
 
   @override
-  State<AllCustomersScreen> createState() => _AllCustomersScreenState();
+  State<PurchaseScreen> createState() => _PurchaseScreenState();
 }
 
-class _AllCustomersScreenState extends State<AllCustomersScreen> {
+class _PurchaseScreenState extends State<PurchaseScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -49,7 +49,7 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Text(
-                    "All Customers",
+                    "Customers want to purchase",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -121,7 +121,9 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                           return Container(
                             child: ListView.builder(
                                 itemCount: _customerList.length,
-                                itemBuilder: (context, index) => Padding(
+                                itemBuilder: (context, index) {
+                                  if (_customerList[index].isPurchase) {
+                                    return Padding(
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20, bottom: 10),
                                       child: Container(
@@ -176,7 +178,11 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                           ),
                                         ),
                                       ),
-                                    )),
+                                    );
+                                  } else {
+                                    return SizedBox();
+                                  }
+                                }),
                           );
                         } else {
                           return const Center(

@@ -7,6 +7,8 @@ import 'package:real_estate/screens/admin/assign_property.dart';
 import 'package:real_estate/screens/admin/assigned_properties.dart';
 import 'package:real_estate/screens/admin/choose_agent.dart';
 import 'package:real_estate/screens/admin/loan_screen.dart';
+import 'package:real_estate/screens/admin/purchase.dart';
+import 'package:real_estate/screens/admin/rent.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 
@@ -517,6 +519,133 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                               ),
                               Text(
                                 "Track Agents",
+                                maxLines: 1,
+                                style: TextStyle(
+                                    overflow: TextOverflow.clip,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => PurchaseScreen()));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(255, 69, 69, 69),
+                          offset: Offset.zero,
+                          blurRadius: 0.1,
+                          spreadRadius: 0.1)
+                    ],
+                  ),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Container(
+                            height: 24,
+                            width: 24,
+                            child: Image.asset("images/order.png")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                "Purchase",
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                "Want to purchase",
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => RentScreen()));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Color.fromARGB(255, 69, 69, 69),
+                          offset: Offset.zero,
+                          blurRadius: 0.1,
+                          spreadRadius: 0.1)
+                    ],
+                  ),
+                  child: Center(
+                    child: Row(
+                      children: [
+                        Container(
+                            height: 24,
+                            width: 24,
+                            child: Image.asset("images/rent.png")),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                "Renting",
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                "Want to rent",
                                 maxLines: 1,
                                 style: TextStyle(
                                     overflow: TextOverflow.clip,

@@ -1,14 +1,14 @@
 class CustomerModel {
-  CustomerModel({
-    required this.customer_name,
-    required this.property_id,
-    required this.agent_id,
-    required this.phonenumber,
-    required this.address,
-    required this.customer_id,
-    required this.isLoan,
-    this.review,
-  });
+  CustomerModel(
+      {required this.customer_name,
+      required this.property_id,
+      required this.agent_id,
+      required this.phonenumber,
+      required this.address,
+      required this.customer_id,
+      required this.isLoan,
+      this.review,
+      required this.isPurchase});
   late String customer_name;
   late List<dynamic> property_id;
   late List<dynamic> agent_id;
@@ -17,6 +17,7 @@ class CustomerModel {
   late String customer_id;
   late bool isLoan;
   String? review;
+  late bool isPurchase;
 
   CustomerModel.fromJson(Map<String, dynamic> json) {
     customer_name = json['customer_name'] ?? '';
@@ -27,6 +28,7 @@ class CustomerModel {
     customer_id = json['customer_id'] ?? '';
     isLoan = json['isLoan'] ?? false;
     review = json['review'] ?? '';
+    isPurchase = json['isPurchase'] ?? true;
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,8 @@ class CustomerModel {
     _data['customer_id'] = customer_id;
     _data['isLoan'] = isLoan;
     _data['review'] = review;
+    _data['isPurchase'] = isPurchase;
+
     return _data;
   }
 }

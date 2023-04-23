@@ -25,6 +25,7 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
   String _address = "";
   Property? _selectedProperty;
   AgentModel? _selectedAgent;
+  String radioBtnValue = "Purchase";
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -198,6 +199,30 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                           _address = value!;
                         },
                       ),
+                      Column(
+                        children: [
+                          RadioListTile(
+                            title: Text("Purchase"),
+                            value: "Purchase",
+                            groupValue: radioBtnValue,
+                            onChanged: (value) {
+                              setState(() {
+                                radioBtnValue = value.toString();
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: Text("Renting"),
+                            value: "Renting",
+                            groupValue: radioBtnValue,
+                            onChanged: (value) {
+                              setState(() {
+                                radioBtnValue = value.toString();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
@@ -224,7 +249,11 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                             phonenumber: _phoneNumber,
                                             address: _address,
                                             customer_id: _phoneNumber,
-                                            isLoan: false))
+                                            isLoan: false,
+                                            isPurchase:
+                                                radioBtnValue == "Purchase"
+                                                    ? true
+                                                    : false))
                                         .then((value) async {
                                       await APIs.activityAssignedProperty(
                                           property_id: _selectedProperty!.id,
@@ -232,9 +261,12 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                               "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
                                           agent_id: _selectedAgent!.id,
                                           customer_id: _phoneNumber);
+                                      // ignore: use_build_context_synchronously
                                       Dialogs.showSnackbar(context,
                                           "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                      // ignore: use_build_context_synchronously
                                       Navigator.pop(context);
+                                      // ignore: use_build_context_synchronously
                                       Navigator.pop(context);
                                     });
                                   } else {
@@ -247,7 +279,11 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                                             phonenumber: _phoneNumber,
                                             address: _address,
                                             customer_id: _phoneNumber,
-                                            isLoan: false))
+                                            isLoan: false,
+                                            isPurchase:
+                                                radioBtnValue == "Purchase"
+                                                    ? true
+                                                    : false))
                                         .then((value) async {
                                       await APIs.activityAssignedProperty(
                                           property_id: _selectedProperty!.id,

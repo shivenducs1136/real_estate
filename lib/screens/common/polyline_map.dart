@@ -32,6 +32,14 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
 
   @override
   void initState() {
+    APIs.getPropertyByPropertyId(widget.propId).then((value) {
+      if (value != null) {
+        _marker.add(Marker(
+            markerId: MarkerId('1'),
+            position:
+                LatLng(double.parse(value!.lat), double.parse(value!.lon))));
+      }
+    });
     super.initState();
   }
 
@@ -62,10 +70,7 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
                   for (var data in snapshot.data!) {
                     routeCoords.add(data);
                   }
-                  if (routeCoords.isNotEmpty) {
-                    _marker.add(Marker(
-                        markerId: MarkerId('1'), position: routeCoords[0]));
-                  }
+                  if (routeCoords.isNotEmpty) {}
                   log(routeCoords.toString());
                   polyline.add(Polyline(
                       polylineId: PolylineId('route1'),

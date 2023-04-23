@@ -403,20 +403,21 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               (value.nextInt(900000) + 100000).toString();
                           Dialogs.showProgressBar(context);
                           AgentModel a = AgentModel(
-                              password: codeNumber,
-                              agent_name: agent_name,
-                              email: agent_email,
-                              age: age,
-                              phone_number: phone_number,
-                              address: address,
-                              id: "${agent_email}",
-                              photo: photourl != ""
-                                  ? photourl
-                                  : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
-                              dob: dob.isNotEmpty
-                                  ? MyDateUtil.getEventDetailDate(dob[0]!)
-                                  : "",
-                              isMale: isMale);
+                            password: codeNumber,
+                            agent_name: agent_name,
+                            email: agent_email,
+                            age: age,
+                            phone_number: phone_number,
+                            address: address,
+                            id: "${agent_email}",
+                            photo: photourl != ""
+                                ? photourl
+                                : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
+                            dob: dob.isNotEmpty
+                                ? MyDateUtil.getEventDetailDate(dob[0]!)
+                                : "",
+                            isMale: isMale,
+                          );
                           APIs.addAgentToFirebase(a).then((value) {
                             if (img != null) {
                               APIs.addAgentImage(img!, a).then((value) {

@@ -222,13 +222,13 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        "Area : ${widget.mproperty.area} sq ft",
+                        "Area : ${widget.mproperty.area}",
                         style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                             fontSize: 18),
                       ),
-                      Text("Garages: ${widget.mproperty.garages} sq ft",
+                      Text("Garages: ${widget.mproperty.garages}",
                           style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,

@@ -25,7 +25,7 @@ class _RecentActivityWidgetState extends State<RecentActivityWidget> {
                       Text(
                         "${widget.activityList[index].msg}",
                         textAlign: TextAlign.center,
-                        maxLines: 2,
+                        maxLines: 3,
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -36,10 +36,10 @@ class _RecentActivityWidgetState extends State<RecentActivityWidget> {
                         height: 8,
                       ),
                       Text(
-                        "${MyDateUtil.getLastActiveTime(
+                        MyDateUtil.getLastActiveTime(
                           context: context,
                           lastActive: widget.activityList[index].dateTime,
-                        )}",
+                        ),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                             color: Colors.black,

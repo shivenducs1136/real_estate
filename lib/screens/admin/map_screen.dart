@@ -13,9 +13,9 @@ import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platf
 import '../../helper/credentials.dart';
 
 class MapScreen extends StatefulWidget {
-  MapScreen({Key? key}) : super(key: key);
+  MapScreen({Key? key, this.kInitialPosition}) : super(key: key);
 
-  static final kInitialPosition = LatLng(28.65844278, 77.2159199);
+  final kInitialPosition;
 
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
@@ -145,7 +145,7 @@ class _MapScreenState extends State<MapScreen> {
                                 searchingText: "Please wait ...",
                                 selectText: "Select place",
                                 outsideOfPickAreaText: "Place not in area",
-                                initialPosition: MapScreen.kInitialPosition,
+                                initialPosition: widget.kInitialPosition,
                                 useCurrentLocation: true,
                                 selectInitialPosition: true,
                                 usePinPointingSearch: true,
@@ -195,7 +195,7 @@ class _MapScreenState extends State<MapScreen> {
                           hintText: "Find a place ...",
                           searchingText: "Please wait ...",
                           selectText: "Select place",
-                          initialPosition: MapScreen.kInitialPosition,
+                          initialPosition: widget.kInitialPosition,
                           useCurrentLocation: true,
                           selectInitialPosition: true,
                           usePinPointingSearch: true,
@@ -246,7 +246,7 @@ class _MapScreenState extends State<MapScreen> {
                         compassEnabled: false,
                         mapToolbarEnabled: false,
                         initialCameraPosition: new CameraPosition(
-                            target: MapScreen.kInitialPosition, zoom: 15),
+                            target: widget.kInitialPosition, zoom: 15),
                         mapType: MapType.normal,
                         myLocationEnabled: true,
                         onMapCreated: (GoogleMapController controller) {},
