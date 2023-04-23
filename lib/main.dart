@@ -7,12 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'firebase_options.dart';
 
 late Size mq;
-
+SharedPreferences? msprefs;
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     print("Task Executing " + taskName);
@@ -45,6 +46,7 @@ void main() async {
     runApp(const MyApp());
   });
   FocusManager.instance.primaryFocus?.unfocus();
+  msprefs = await SharedPreferences.getInstance();
 }
 
 initializeFirebase() async {

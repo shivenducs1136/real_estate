@@ -1,7 +1,10 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/admin/admin_screen.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
@@ -22,7 +25,24 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 4000), () async {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       final prefs = await SharedPreferences.getInstance();
-
+      // bool isTracking = prefs.getBool("isTracking") ?? false;
+      // if (isTracking) {
+      //   log(isTracking.toString());
+      //   AgentProvider().setTracking();
+      //   String propertyId = prefs!.getString("propertyId").toString() ?? "";
+      //   String customerId = prefs!.getString("customerId").toString() ?? "";
+      //   APIs.getPropertyByPropertyId(propertyId).then((preperty) {
+      //     if (preperty != null) {
+      //       log(preperty.toString());
+      //       AgentProvider().setProperty(preperty);
+      //     }
+      //     APIs.getCustomerById(customerId).then((customer) {
+      //       if (customer != null) {
+      //         AgentProvider().setCustomer(customer);
+      //       }
+      //     });
+      //   });
+      // }
       final int loginflag = prefs.getInt('login') ?? 0;
       final String email = prefs.getString('email') ?? '';
       if (loginflag == 0) {
@@ -32,6 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => const AdminScreen()));
       } else if (loginflag == 2) {
+        Provider.of<AgentProvider>(context, listen: false).initialise();
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

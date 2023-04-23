@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
@@ -7,17 +10,37 @@ import 'package:real_estate/screens/agent/agent_choose_property.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/agent/generate_otp.dart';
 import 'package:real_estate/screens/agent/location_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SubmitReviewWidget extends StatelessWidget {
   const SubmitReviewWidget({
     Key? key,
     required this.magent,
+    required this.prefs,
   }) : super(key: key);
   final AgentModel magent;
-
+  final SharedPreferences? prefs;
   @override
   Widget build(BuildContext context) {
     return Consumer<AgentProvider>(builder: (context, mvalue, child) {
+      // if (prefs != null) {
+      //   bool isTracking = prefs!.getBool("isTracking") ?? false;
+      //   if (isTracking) {
+      //     String propertyId = prefs!.getString("propertyId").toString() ?? "";
+      //     String customerId = prefs!.getString("customerId").toString() ?? "";
+      //     APIs.getPropertyByPropertyId(propertyId).then((preperty) {
+      //       if (preperty != null) {
+      //         mvalue.setProperty(preperty);
+      //       }
+      //       APIs.getCustomerById(customerId).then((customer) {
+      //         if (customer != null) {
+      //           mvalue.setCustomer(customer);
+      //         }
+      //       });
+      //     });
+      //   }
+      // }
+
       return Container(
         decoration: BoxDecoration(
             color: mvalue.trackingInfo ? Colors.blue : Colors.grey,

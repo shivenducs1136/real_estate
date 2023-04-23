@@ -127,9 +127,9 @@ class _LoginMainState extends State<LoginMain> {
                   FocusScope.of(context).requestFocus(FocusNode());
                   Dialogs.showProgressBar(context);
                   if (widget.isAdmin) {
+                    Navigator.pop(context);
                     if (APIs.adminLogin(
                         email.trim().toString(), password.trim().toString())) {
-                      Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

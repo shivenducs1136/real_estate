@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class OtpAuth {
   static Future<int> sendOtp(String phoneNumber, BuildContext context) async {
     int res = -1;
+    Dialogs.showProgressBar(context);
     await FirebaseAuth.instance
         .verifyPhoneNumber(
       phoneNumber: '+91$phoneNumber',
@@ -15,6 +16,7 @@ class OtpAuth {
         log("verificationCompleted");
         Dialogs.showSnackbar(context, "Verification Completed");
         res = 0;
+        Navigator.pop(context);
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
@@ -23,6 +25,7 @@ class OtpAuth {
         res = 2;
         log("verificationFailed");
         Dialogs.showSnackbar(context, "Server Problem: Verification Failed");
+        Navigator.pop(context);
       },
       codeSent: (String verificationId, int? resendToken) async {
         log("codeSent");
@@ -30,17 +33,20 @@ class OtpAuth {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('verificationId', verificationId);
         Dialogs.showSnackbar(context, "Code Sent");
+        Navigator.pop(context);
       },
       codeAutoRetrievalTimeout: (String verificationId) async {
         log("codeAutoRetrievalTimeout");
         res = 4;
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('verificationId', verificationId);
+        Navigator.pop(context);
       },
     )
         .onError((error, stackTrace) {
       Dialogs.showSnackbar(context, error.toString());
       res = 5;
+      Navigator.pop(context);
     });
     return res;
   }
@@ -58,9 +64,10 @@ class OtpAuth {
           .whenComplete(() async {
         try {
           if (FirebaseAuth.instance.currentUser != null) {
-            Dialogs.showSnackbar(context, "Customer Verified");
             Navigator.pop(context);
             res = 1;
+          } else {
+            res = -1;
           }
         } catch (e) {
           res = -1;

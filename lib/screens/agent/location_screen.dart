@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
@@ -156,6 +157,9 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                                 widget.myCustomerModel!, reviewText);
                             APIs.setisLoan(widget.myCustomerModel!, isChecked);
                             mvalue.setTracking();
+                            if (FirebaseAuth.instance.currentUser != null) {
+                              FirebaseAuth.instance.currentUser!.delete();
+                            }
                             Navigator.pop(context);
                             Dialogs.showSnackbar(
                                 context, "Review Submitted Successfuly");

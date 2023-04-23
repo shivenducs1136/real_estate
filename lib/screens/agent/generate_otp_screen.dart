@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/apis/otp_authentication.dart';
 import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
@@ -123,13 +124,10 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                 _handleLocationPermission().then((value) async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
+                  Navigator.pop(context);
 
-                  OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
-                      .then((value) {
-                    if (value == 3 || value == 2) {
-                      Navigator.pop(context);
-                    }
-                  });
+                  await OtpAuth.sendOtp(
+                      widget.customerModel.phonenumber, context);
                 });
               },
               child: Container(
@@ -168,13 +166,18 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                     Dialogs.showProgressBar(context);
                     OtpAuth.verifyOtp(verificationCode, context)
                         .then((value) async {
+                      Navigator.pop(context);
                       if (value == 1) {
                         Dialogs.showSnackbar(
                             context, "User Verified Successfully");
-                        Navigator.pop(context);
+
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.setBool("isTracking", true);
+                        prefs.setString("agentId", mvalue.getAgent!.id);
+                        prefs.setString(
+                            "customerId", mvalue.getCustomer!.customer_id);
+                        prefs.setString("propertyId", mvalue.getProperty!.id);
                         Workmanager().registerPeriodicTask(
                             "location", "fetchlocation",
                             frequency: Duration(minutes: 15),
@@ -186,6 +189,25 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                               "propertyId": mvalue.getProperty!.id
                             });
                         mvalue.setTracking();
+                        APIs.activityGenerateOtp(
+                            property_id: mvalue.getProperty!.id,
+                            msg:
+                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${mvalue.getCustomer!.customer_name} going for Property - ${mvalue.getProperty!.property_name}",
+                            agent_id: mvalue.getAgent!.id,
+                            customer_id: mvalue.getCustomer!.customer_name);
+                      } else if (value == -1) {
+                        Dialogs.showSnackbar(
+                            context, "User verification failed");
+                        Navigator.pop(context);
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setBool("isTracking", false);
+                        APIs.activityGenerateOtp(
+                            property_id: mvalue.getProperty!.id,
+                            msg:
+                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${mvalue.getCustomer!.customer_name} have tried to verify customer.",
+                            agent_id: mvalue.getAgent!.id,
+                            customer_id: mvalue.getCustomer!.customer_name);
                       }
                     });
                   }, // end onSubmit

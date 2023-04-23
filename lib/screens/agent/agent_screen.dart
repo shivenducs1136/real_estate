@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/widgets/submit_review.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helper/widgets/location_card.dart';
@@ -21,7 +25,7 @@ class AgentScreen extends StatefulWidget {
 
 class AgentScreenState extends State<AgentScreen> {
   List<Property>? mylist;
-
+  SharedPreferences? prefs;
   AgentModel magent = AgentModel(
       agent_name: "",
       age: "",
@@ -41,7 +45,9 @@ class AgentScreenState extends State<AgentScreen> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => LoginScreen()));
       }
+      prefs = await SharedPreferences.getInstance();
       magent = value!;
+
       await APIs.getAssignedPropertyofAgents(magent).then((data) {
         setState(() {});
         mylist = data;
@@ -71,14 +77,8 @@ class AgentScreenState extends State<AgentScreen> {
         ),
         actions: [
           CircleAvatar(
-            radius: 30,
-            child: FadeInImage(
-              placeholder: AssetImage("images/picture.png"),
-              image: NetworkImage(magent.photo),
-              imageErrorBuilder: (context, error, stackTrace) {
-                return Image.asset('images/picture.png', fit: BoxFit.fitWidth);
-              },
-            ),
+            radius: 18,
+            backgroundImage: NetworkImage(magent.photo),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 12),
@@ -123,9 +123,7 @@ class AgentScreenState extends State<AgentScreen> {
           const SizedBox(
             height: 15,
           ),
-          SubmitReviewWidget(
-            magent: magent,
-          ),
+          SubmitReviewWidget(magent: magent, prefs: prefs),
           const SizedBox(
             height: 15,
           ),

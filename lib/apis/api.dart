@@ -171,12 +171,15 @@ class APIs {
         .set(c.toJson());
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getPropertyByPropertyId(
-      String propId) {
-    return FirebaseFirestore.instance
+  static Future<Property?> getPropertyByPropertyId(String propId) async {
+    final data = await FirebaseFirestore.instance
         .collection('property')
         .doc(propId)
-        .snapshots();
+        .get();
+    if (data != null || data.data() != null) {
+      return Property.fromJson(data.data()!);
+    }
+    return null;
   }
 
   // static Stream<QuerySnapshot<Map<String, dynamic>>> getAgentAssignedPropertyId(
@@ -450,6 +453,25 @@ class APIs {
             property_id: "",
             agent_id: agentId,
             customer_id: "",
+            msg: msg,
+            isAdmin: false,
+            dateTime: dateTime)
+        .toJson());
+  }
+
+  static Future<void> activityGenerateOtp({
+    required String property_id,
+    required String msg,
+    required String agent_id,
+    required String customer_id,
+  }) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "400",
+            property_id: property_id,
+            agent_id: agent_id,
+            customer_id: customer_id,
             msg: msg,
             isAdmin: false,
             dateTime: dateTime)
