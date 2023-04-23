@@ -350,47 +350,50 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     SizedBox(
                       width: mq.width * .1,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            const Text(
-                              "Add Agent Image",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18),
-                            ),
-                            SizedBox(
-                              width: mq.width * .1,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                final ImagePicker _picker = ImagePicker();
-                                final XFile? image = await _picker.pickImage(
-                                    source: ImageSource.gallery);
-                                setState(() {
-                                  img = image;
-                                });
-                              },
-                              child: Image.asset(
-                                "images/addimg.png",
-                                height: 50,
-                                width: 50,
-                              ),
-                            ),
-                            if (isImageAdded)
+                    Visibility(
+                      visible: !widget.isUpdate,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
                               const Text(
-                                "Agent image added",
+                                "Add Agent Image",
                                 style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              )
-                          ],
-                        ),
-                      ],
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18),
+                              ),
+                              SizedBox(
+                                width: mq.width * .1,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  final ImagePicker _picker = ImagePicker();
+                                  final XFile? image = await _picker.pickImage(
+                                      source: ImageSource.gallery);
+                                  setState(() {
+                                    img = image;
+                                  });
+                                },
+                                child: Image.asset(
+                                  "images/addimg.png",
+                                  height: 50,
+                                  width: 50,
+                                ),
+                              ),
+                              if (isImageAdded)
+                                const Text(
+                                  "Agent image added",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: mq.height * .1,
@@ -406,11 +409,11 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                           AgentModel a = AgentModel(
                             password: codeNumber,
                             agent_name: agent_name,
-                            email: agent_email,
+                            email: agent_email.trim(),
                             age: age,
                             phone_number: phone_number,
                             address: address,
-                            id: "${agent_email}",
+                            id: "${agent_email.trim()}",
                             photo: photourl != ""
                                 ? photourl
                                 : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
@@ -425,15 +428,15 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 widget.isUpdate
                                     ? APIs.activityAddAgent(
                                         msg: "${agent_name} updated by Admin",
-                                        agent_id: agent_email)
+                                        agent_id: agent_email.trim())
                                     : APIs.activityUpdateAgent(
                                         msg: "${agent_name} added by Admin",
-                                        agent_id: agent_email);
+                                        agent_id: agent_email.trim());
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Mailer.sendCredentialsEmail(
                                     password: codeNumber,
-                                    destEmail: agent_email);
+                                    destEmail: agent_email.trim());
                                 Dialogs.showSnackbar(context,
                                     "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                               });
@@ -441,10 +444,10 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                               widget.isUpdate
                                   ? APIs.activityAddAgent(
                                       msg: "${agent_name} updated by Admin",
-                                      agent_id: agent_email)
+                                      agent_id: agent_email.trim())
                                   : APIs.activityUpdateAgent(
                                       msg: "${agent_name} added by Admin",
-                                      agent_id: agent_email);
+                                      agent_id: agent_email.trim());
                               Navigator.pop(context);
                               Navigator.pop(context);
                               Dialogs.showSnackbar(context,
@@ -452,8 +455,9 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             }
                           });
                         } else {
-                          if (agent_email.isNotEmpty) {
-                            APIs.isAgentExists(agent_email).then((value) {
+                          if (agent_email.trim().isNotEmpty) {
+                            APIs.isAgentExists(agent_email.trim())
+                                .then((value) {
                               if (value == false) {
                                 var value = new Random();
                                 var codeNumber =
@@ -462,11 +466,11 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 AgentModel a = AgentModel(
                                     password: codeNumber,
                                     agent_name: agent_name,
-                                    email: agent_email,
+                                    email: agent_email.trim(),
                                     age: age,
                                     phone_number: phone_number,
                                     address: address,
-                                    id: "${agent_email}",
+                                    id: "${agent_email.trim()}",
                                     photo:
                                         'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
                                     dob: dob.isNotEmpty
@@ -480,16 +484,16 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                           ? APIs.activityAddAgent(
                                               msg:
                                                   "${agent_name} updated by Admin",
-                                              agent_id: agent_email)
+                                              agent_id: agent_email.trim())
                                           : APIs.activityUpdateAgent(
                                               msg:
                                                   "${agent_name} added by Admin",
-                                              agent_id: agent_email);
+                                              agent_id: agent_email.trim());
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                       Mailer.sendCredentialsEmail(
                                           password: codeNumber,
-                                          destEmail: agent_email);
+                                          destEmail: agent_email.trim());
                                       Dialogs.showSnackbar(context,
                                           "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                                     });
@@ -498,10 +502,10 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                         ? APIs.activityAddAgent(
                                             msg:
                                                 "${agent_name} updated by Admin",
-                                            agent_id: agent_email)
+                                            agent_id: agent_email.trim())
                                         : APIs.activityUpdateAgent(
                                             msg: "${agent_name} added by Admin",
-                                            agent_id: agent_email);
+                                            agent_id: agent_email.trim());
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                     Dialogs.showSnackbar(context,
