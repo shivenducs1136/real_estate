@@ -275,6 +275,32 @@ class APIs {
       }
     }
     activityDeleteAgent(msg: "Admin deleted Agent with email id - ${agentId}");
+    final data = await firestore
+        .collection("agents")
+        .doc(agentId)
+        .collection("assigned_properties")
+        .get();
+    for (var ele in data.docs) {
+      await firestore
+          .collection("agents")
+          .doc(agentId)
+          .collection("assigned_properties")
+          .doc(ele.id)
+          .delete();
+    }
+    final mdata = await firestore
+        .collection("agents")
+        .doc(agentId)
+        .collection("photos")
+        .get();
+    for (var ele in mdata.docs) {
+      await firestore
+          .collection("agents")
+          .doc(agentId)
+          .collection("photos")
+          .doc(ele.id)
+          .delete();
+    }
     await firestore.collection('agents').doc(agentId).delete();
   }
 
@@ -407,6 +433,33 @@ class APIs {
   }
 
   static Future<void> deleteProperty(String id) async {
+    final data = await firestore
+        .collection("property")
+        .doc(id)
+        .collection("assigned_agents")
+        .get();
+    for (var ele in data.docs) {
+      await firestore
+          .collection("property")
+          .doc(id)
+          .collection("assigned_agents")
+          .doc(ele.id)
+          .delete();
+    }
+    final mdata = await firestore
+        .collection("property")
+        .doc(id)
+        .collection("photos")
+        .get();
+    for (var ele in mdata.docs) {
+      await firestore
+          .collection("property")
+          .doc(id)
+          .collection("photos")
+          .doc(ele.id)
+          .delete();
+    }
+
     await firestore.collection("property").doc(id).delete();
     final agentDocs = await firestore.collection("agents").get();
     for (var ele in agentDocs.docs) {
@@ -612,12 +665,30 @@ class APIs {
         .toJson());
   }
 
+  static Future<void> activityDeleteCustomer(
+      {bool? isAdmin = true,
+      required String customerId,
+      required String msg}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "3",
+            property_id: "",
+            agent_id: "",
+            customer_id: customerId,
+            msg: msg,
+            isAdmin: isAdmin!,
+            dateTime: dateTime)
+        .toJson());
+  }
+
   static Future<void> activityDeleteProperty(
-      {bool? isAdmin = true, required String msg}) async {
+      {bool? isAdmin = true,
+      required String propertyId,
+      required String msg}) async {
     String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
     await firestore.collection("activity").doc(dateTime).set(ActivityModel(
             code: "7",
-            property_id: "",
+            property_id: propertyId,
             agent_id: "",
             customer_id: "",
             msg: msg,

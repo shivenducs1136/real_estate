@@ -51,12 +51,14 @@ class NearbyPlaces extends StatelessWidget {
                       hint:
                           "Are you sure want to delete property ${nearbyPlaces[index].property_name}?",
                       onOk: () {
-                        Dialogs.showProgressBar(context);
                         APIs.deleteProperty(nearbyPlaces[index].id)
                             .then((value) {
-                          Navigator.pop(context);
                           Dialogs.showSnackbar(context, "Property Deleted");
                         });
+                        APIs.activityDeleteProperty(
+                            msg:
+                                "Property ${nearbyPlaces[index].property_name} deleted",
+                            propertyId: nearbyPlaces[index].id);
                       },
                       onCancel: () {});
                 },

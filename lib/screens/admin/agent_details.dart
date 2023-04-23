@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
-import 'package:real_estate/helper/widgets/recommended_places.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
-import 'package:real_estate/screens/common/assigned_customer.dart';
-
 import '../../helper/credentials.dart';
 import '../../main.dart';
 import '../../model/property_model.dart';

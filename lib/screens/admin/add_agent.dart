@@ -458,7 +458,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                           if (agent_email.trim().isNotEmpty) {
                             APIs.isAgentExists(agent_email.trim())
                                 .then((value) {
-                              if (value == false) {
+                              if (value == true) {
                                 var value = new Random();
                                 var codeNumber =
                                     (value.nextInt(900000) + 100000).toString();

@@ -161,6 +161,12 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                                         context,
                                                         "Deleted Successfuly");
                                                   });
+                                                  APIs.activityDeleteCustomer(
+                                                      msg:
+                                                          "Customer ${_customerList[index].customer_name} deleted",
+                                                      customerId:
+                                                          _customerList[index]
+                                                              .customer_id);
                                                 },
                                                 onCancel: () {});
                                           },

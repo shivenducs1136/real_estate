@@ -186,7 +186,6 @@ class _LoginMainState extends State<LoginMain> {
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setInt('login', 1);
                     } else {
-                      Navigator.pop(context);
                       Dialogs.showSnackbar(context, "Login Failed");
                     }
                   } else {
