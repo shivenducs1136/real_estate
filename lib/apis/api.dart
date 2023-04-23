@@ -296,9 +296,8 @@ class APIs {
     }
   }
 
-  static Future<List<LatLng>> getAgentCoordinates(
-      CustomerModel c, String propId, String agentId) async {
-    List<LatLng> mlist = [];
+  static Stream<List<LatLng>> getAgentCoordinates(
+      CustomerModel c, String propId, String agentId) async* {
     final mdata = await firestore
         .collection("tracking")
         .doc(propId)
@@ -306,11 +305,13 @@ class APIs {
         .doc(c.customer_id)
         .collection("coordinates")
         .get();
-
+    List<LatLng> mlist = [];
     for (var ele in mdata.docs) {
-      mlist.add(LatLng(toDouble(ele.get('lat')), toDouble(ele.get('long'))));
+      final data = ele.data();
+      log(data.toString());
+      mlist.add(LatLng(double.parse(data['lat']), double.parse(data['long'])));
     }
-    return mlist;
+    yield mlist;
   }
 
   static Stream<AgentModel?> getAssignedAgentwithProperty(

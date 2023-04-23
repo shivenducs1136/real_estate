@@ -81,23 +81,18 @@ class _ChoosePropertiesState extends State<ChooseProperties> {
                 height: 50,
               ),
               mlist.length != 0
-                  ? Container(
-                      height: mq.height * .5,
-                      child: NeartoCustomer(
-                        nearbyPlaces: mlist,
-                        isUpdate: true,
-                        email: widget.curr_agent.email,
-                      ))
-                  : Container(
-                      height: mq.height * .5,
-                      child: Center(
-                          child: Lottie.asset(
-                        'images/nodata.json',
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.fill,
-                      )),
+                  ? NeartoCustomer(
+                      nearbyPlaces: mlist,
+                      isUpdate: true,
+                      email: widget.curr_agent.email,
                     )
+                  : Center(
+                      child: Lottie.asset(
+                      'images/nodata.json',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.fill,
+                    ))
             ]),
           ),
         ),

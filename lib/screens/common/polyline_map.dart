@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
@@ -25,14 +26,12 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
   final Set<Polyline> polyline = {};
   List<Marker> _marker = [];
   GoogleMapController? _controller;
-  List<LatLng>? routeCoords;
+  List<LatLng> routeCoords = [];
   GoogleMapPolyline googleMapPolyline =
       GoogleMapPolyline(apiKey: "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA");
 
   @override
   void initState() {
-    _marker.add(Marker(
-        markerId: MarkerId('1'), position: LatLng(28.7515285, 77.4995344)));
     super.initState();
   }
 
@@ -45,42 +44,57 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
         ],
         resizeToAvoidBottomInset: false,
-        body: Container(
-          child: !(routeCoords == null || routeCoords!.isEmpty)
-              ? GoogleMap(
-                  onMapCreated: onMapCreated,
-                  polylines: polyline,
-                  markers: Set<Marker>.of(_marker),
-                  initialCameraPosition:
-                      CameraPosition(target: routeCoords![0], zoom: 14.0),
-                  mapType: MapType.normal,
-                )
-              : Container(
-                  child: const Center(
-                  child: Text("No Agent Tracking Record"),
-                )),
+        body: StreamBuilder(
+          stream: APIs.getAgentCoordinates(
+              widget.customerModel, widget.propId, widget.agentId),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case ConnectionState.active:
+              case ConnectionState.done:
+                log("build called " + routeCoords.length.toString());
+
+                if (snapshot != null) {
+                  for (var data in snapshot.data!) {
+                    routeCoords.add(data);
+                  }
+                  if (routeCoords.isNotEmpty) {
+                    _marker.add(Marker(
+                        markerId: MarkerId('1'), position: routeCoords[0]));
+                  }
+                  log(routeCoords.toString());
+                  polyline.add(Polyline(
+                      polylineId: PolylineId('route1'),
+                      visible: true,
+                      points: routeCoords,
+                      width: 4,
+                      color: Colors.blue,
+                      startCap: Cap.roundCap,
+                      endCap: Cap.buttCap));
+                }
+                return Container(
+                    child: routeCoords.isNotEmpty
+                        ? GoogleMap(
+                            onMapCreated: onMapCreated,
+                            polylines: polyline,
+                            markers: Set<Marker>.of(_marker),
+                            initialCameraPosition: CameraPosition(
+                                target: routeCoords[0], zoom: 14.0),
+                            mapType: MapType.normal,
+                          )
+                        : const Center(
+                            child: Text("No Location data"),
+                          ));
+            }
+          },
         ));
   }
 
   Future<void> onMapCreated(GoogleMapController controller) async {
-    await APIs.getAgentCoordinates(
-            widget.customerModel, widget.propId, widget.agentId)
-        .then((value) {
-      log(value.toString());
-      setState(() {
-        _controller = controller;
-        Dialogs.showProgressBar(context);
-        Navigator.pop(context);
-        routeCoords = value;
-        polyline.add(Polyline(
-            polylineId: PolylineId('route1'),
-            visible: true,
-            points: value,
-            width: 4,
-            color: Colors.blue,
-            startCap: Cap.roundCap,
-            endCap: Cap.buttCap));
-      });
-    });
+    _controller = controller;
   }
 }

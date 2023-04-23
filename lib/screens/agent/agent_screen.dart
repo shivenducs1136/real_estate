@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
-import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/submit_review.dart';
 import 'package:real_estate/model/agent_model.dart';
-import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helper/widgets/location_card.dart';
@@ -44,7 +42,7 @@ class AgentScreenState extends State<AgentScreen> {
             context, MaterialPageRoute(builder: (_) => LoginScreen()));
       }
       magent = value!;
-      await APIs.getAssignedPropertyofAgents(magent!).then((data) {
+      await APIs.getAssignedPropertyofAgents(magent).then((data) {
         setState(() {});
         mylist = data;
       });
