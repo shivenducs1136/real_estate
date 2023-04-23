@@ -15,19 +15,18 @@ class LocationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AgentProvider>(
       builder: (context, value, child) {
-        return Card(
-          elevation: 0.4,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: GestureDetector(
-            onTap: () {
-              value.setAgent(magent);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) =>
-                          ChooseAgentProperties(curr_agent: magent)));
-            },
+        return GestureDetector(
+          onTap: () {
+            value.setAgent(magent);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ChooseAgentProperties(curr_agent: magent)));
+          },
+          child: Card(
+            elevation: 0.4,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(

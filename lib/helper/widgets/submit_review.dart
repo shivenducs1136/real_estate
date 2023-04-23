@@ -41,22 +41,22 @@ class SubmitReviewWidget extends StatelessWidget {
       //   }
       // }
 
-      return Container(
-        decoration: BoxDecoration(
-            color: mvalue.trackingInfo ? Colors.blue : Colors.grey,
-            borderRadius: BorderRadius.circular(16)),
-        child: GestureDetector(
-          onTap: () {
-            mvalue.setAgent(magent);
-            if (mvalue.trackingInfo) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => AgentLocationScreen(
-                            myCustomerModel: mvalue.getCustomer,
-                          )));
-            }
-          },
+      return GestureDetector(
+        onTap: () {
+          mvalue.setAgent(magent);
+          if (mvalue.trackingInfo) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => AgentLocationScreen(
+                          myCustomerModel: mvalue.getCustomer,
+                        )));
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: mvalue.trackingInfo ? Colors.blue : Colors.grey,
+              borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(

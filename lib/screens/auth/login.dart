@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/dialogs.dart';
+import 'package:real_estate/model/mailer.dart';
 import 'package:real_estate/screens/admin/admin_screen.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
@@ -119,6 +122,51 @@ class _LoginMainState extends State<LoginMain> {
                       width: mq.width,
                       height: mq.height * 0.03,
                     ),
+
+                    Visibility(
+                      visible: !widget.isAdmin,
+                      child: InkWell(
+                        onTap: () {
+                          String em = email.trim().toString();
+                          if (em.isNotEmpty && em.contains("@")) {
+                            Dialogs.showProgressBar(context);
+                            APIs.isAgentExists(em).then((isAgentExist) {
+                              if (isAgentExist) {
+                                var value = new Random();
+                                var codeNumber =
+                                    (value.nextInt(900000) + 100000).toString();
+                                try {
+                                  Mailer.sendCredentialsEmail(
+                                      password: codeNumber, destEmail: em);
+                                  APIs.updateEmailAndPassword(em, codeNumber)
+                                      .then((value) {
+                                    Navigator.pop(context);
+                                    Dialogs.showSnackbar(context,
+                                        "New password is sent to ${em}");
+                                  });
+                                } catch (e) {
+                                  Navigator.pop(context);
+                                  Dialogs.showSnackbar(
+                                      context, "Unknown error occured");
+                                }
+                              } else {
+                                Navigator.pop(context);
+                                Dialogs.showSnackbar(
+                                    context, "Please enter a valid email id.");
+                              }
+                            });
+                          } else {
+                            Dialogs.showSnackbar(
+                                context, "Please enter a valid email id.");
+                          }
+                        },
+                        child: const Text(
+                          "Forgot password?",
+                          style: TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -128,8 +176,9 @@ class _LoginMainState extends State<LoginMain> {
                   Dialogs.showProgressBar(context);
                   if (widget.isAdmin) {
                     Navigator.pop(context);
-                    if (APIs.adminLogin(
-                        email.trim().toString(), password.trim().toString())) {
+                    String em = email.trim().toString();
+                    String pa = password.trim().toString();
+                    if (APIs.adminLogin(em, pa)) {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

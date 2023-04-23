@@ -278,6 +278,14 @@ class APIs {
     await firestore.collection('agents').doc(agentId).delete();
   }
 
+  static Future<void> updateEmailAndPassword(
+      String newEmail, String newPassword) async {
+    await firestore
+        .collection("agents")
+        .doc(newEmail)
+        .update({"password": newPassword});
+  }
+
   static Future<CustomerModel?> getCustomerById(String customerId) async {
     final data = await firestore.collection("customer").doc(customerId).get();
     if (data != null) {
