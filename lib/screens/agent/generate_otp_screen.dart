@@ -126,7 +126,9 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
 
                   OtpAuth.sendOtp(widget.customerModel.phonenumber, context)
                       .then((value) {
-                    Navigator.pop(context);
+                    if (value == 3 || value == 2) {
+                      Navigator.pop(context);
+                    }
                   });
                 });
               },

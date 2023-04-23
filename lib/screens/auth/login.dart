@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/screens/admin/admin_screen.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
@@ -123,21 +124,28 @@ class _LoginMainState extends State<LoginMain> {
               ),
               ElevatedButton.icon(
                 onPressed: () async {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  Dialogs.showProgressBar(context);
                   if (widget.isAdmin) {
                     if (APIs.adminLogin(
                         email.trim().toString(), password.trim().toString())) {
+                      Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (_) => const AdminScreen()));
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setInt('login', 1);
+                    } else {
+                      Navigator.pop(context);
+                      Dialogs.showSnackbar(context, "Login Failed");
                     }
                   } else {
                     await APIs.agentLogin(
                             email.trim().toString(), password.trim().toString())
                         .then((value) async {
                       if (value) {
+                        Navigator.pop(context);
                         await APIs.activityLogin(email.trim().toString(),
                             "Agent - ${email.trim().toString()} Logged in");
                         Navigator.pushReplacement(
@@ -149,6 +157,9 @@ class _LoginMainState extends State<LoginMain> {
                         final prefs = await SharedPreferences.getInstance();
                         await prefs.setInt('login', 2);
                         await prefs.setString('email', email);
+                      } else {
+                        Navigator.pop(context);
+                        Dialogs.showSnackbar(context, "Login Failed");
                       }
                     });
                   }

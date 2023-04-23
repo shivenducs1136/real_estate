@@ -56,14 +56,16 @@ class OtpAuth {
       await FirebaseAuth.instance
           .signInWithCredential(credential)
           .whenComplete(() async {
-        if (FirebaseAuth.instance.currentUser != null) {
-          Dialogs.showSnackbar(context, "Customer Verified");
-          Navigator.pop(context);
-          res = 1;
+        try {
+          if (FirebaseAuth.instance.currentUser != null) {
+            Dialogs.showSnackbar(context, "Customer Verified");
+            Navigator.pop(context);
+            res = 1;
+          }
+        } catch (e) {
+          res = -1;
         }
-        res = -1;
       });
-      return 1;
     } catch (e) {
       Dialogs.showSnackbar(context, e.toString());
       res = 0;
