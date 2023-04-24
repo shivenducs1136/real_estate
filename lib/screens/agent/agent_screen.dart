@@ -51,7 +51,7 @@ class AgentScreenState extends State<AgentScreen> {
       prefs = await SharedPreferences.getInstance();
       magent = value!;
 
-      await APIs.getAssignedPropertyofAgents(magent).then((data) {
+      await APIs.getMyAssignedPropertyofAgent(magent).then((data) {
         setState(() {});
         mylist = data;
       });
@@ -206,9 +206,7 @@ class AgentScreenState extends State<AgentScreen> {
         widget.email, "Agent - ${magent.agent_name} Logged out");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('login', 0);
-    if (FirebaseAuth.instance.currentUser != null) {
-      FirebaseAuth.instance.currentUser!.delete();
-    }
+    await FirebaseAuth.instance.signOut();
     Navigator.pop(context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => LoginScreen()));

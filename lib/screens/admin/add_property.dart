@@ -656,8 +656,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                             area: isFlat ? area + " sq ft" : area + " sq mt",
                             id: "${dateTime}",
                             address: address,
-                            lat: lat,
-                            lon: long,
+                            lat: widget.isUpdate ? widget.currProp!.lat : lat,
+                            lon: widget.isUpdate ? widget.currProp!.lon : long,
                             showImg: 'https://picsum.photos/200/300',
                             yearBuilt: year_built);
                         Dialogs.showProgressBar(context);

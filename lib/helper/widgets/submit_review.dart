@@ -27,12 +27,8 @@ class SubmitReviewWidget extends StatelessWidget {
         onTap: () {
           mvalue.setAgent(magent);
           if (mvalue.trackingInfo) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => AgentLocationScreen(
-                          myCustomerModel: mvalue.getCustomer,
-                        )));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => AgentLocationScreen()));
           }
         },
         child: Container(

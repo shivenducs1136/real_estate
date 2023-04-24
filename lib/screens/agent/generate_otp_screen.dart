@@ -64,27 +64,19 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
           ),
           Positioned(
             top: 20,
-            child: InkWell(
-              onTap: () async {
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // Dialogs.showSnackbar(context, "Enabled Background processing");
-                // await initializeService();
-                // prefs.setBool('isTracking', true);
-              },
-              child: Container(
-                width: mq.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Verify Client",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500),
-                    )
-                  ],
-                ),
+            child: Container(
+              width: mq.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    "Verify Client",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500),
+                  )
+                ],
               ),
             ),
           ),
@@ -176,7 +168,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                         prefs.setBool("isTracking", true);
                         prefs.setString("agentId", mvalue.getAgent!.id);
                         prefs.setString(
-                            "customerId", mvalue.getCustomer!.customer_id);
+                            "customerId", widget.customerModel.customer_id);
                         prefs.setString("propertyId", mvalue.getProperty!.id);
                         Workmanager().registerPeriodicTask(
                             "location", "fetchlocation",
@@ -185,16 +177,17 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                                 Constraints(networkType: NetworkType.connected),
                             inputData: {
                               "agentId": mvalue.getAgent!.id,
-                              "customerId": mvalue.getCustomer!.customer_id,
+                              "customerId": widget.customerModel.customer_id,
                               "propertyId": mvalue.getProperty!.id
                             });
-                        mvalue.setTracking();
+                        mvalue.setTracking(true);
+                        mvalue.setCustomer(widget.customerModel);
                         APIs.activityGenerateOtp(
                             property_id: mvalue.getProperty!.id,
                             msg:
-                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${mvalue.getCustomer!.customer_name} going for Property - ${mvalue.getProperty!.property_name}",
+                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} going for Property - ${mvalue.getProperty!.property_name}",
                             agent_id: mvalue.getAgent!.id,
-                            customer_id: mvalue.getCustomer!.customer_name);
+                            customer_id: widget.customerModel.customer_name);
                       } else if (value == -1) {
                         Dialogs.showSnackbar(
                             context, "User verification failed");
@@ -205,9 +198,9 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                         APIs.activityGenerateOtp(
                             property_id: mvalue.getProperty!.id,
                             msg:
-                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${mvalue.getCustomer!.customer_name} have tried to verify customer.",
+                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} have tried to verify customer.",
                             agent_id: mvalue.getAgent!.id,
-                            customer_id: mvalue.getCustomer!.customer_name);
+                            customer_id: widget.customerModel.customer_name);
                       }
                     });
                   }, // end onSubmit

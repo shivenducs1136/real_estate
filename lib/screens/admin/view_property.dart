@@ -1,16 +1,7 @@
-import 'dart:developer';
-
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import "package:flutter/material.dart";
-import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
-import 'package:real_estate/helper/widgets/recommended_places.dart';
 import 'package:real_estate/model/image_model.dart';
-import 'package:real_estate/screens/admin/add_property.dart';
-import 'package:real_estate/helper/media.dart';
 
 import '../../helper/credentials.dart';
 import '../../main.dart';
@@ -156,9 +147,7 @@ class _ViewPropertyScreenState extends State<ViewPropertyScreen> {
                                             (e) => Property.fromJson(e.data()))
                                         .toList() ??
                                     [];
-                                // propertyItem(_isSearching
-                                //             ? _searchList[index]
-                                //             : _list[index])
+
                                 if (_list.isNotEmpty) {
                                   return _isSearching
                                       ? Container(

@@ -24,7 +24,7 @@ class _AssignedPropertiesState extends State<AssignedProperties> {
   List<Property> mlist = [];
   @override
   void initState() {
-    APIs.getAssignedPropertyofAgents(widget.curr_agent).then((value) {
+    APIs.getMyAssignedPropertyofAgent(widget.curr_agent).then((value) {
       setState(() {
         mlist = value;
         log(mlist.toString());

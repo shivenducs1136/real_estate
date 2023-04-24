@@ -16,7 +16,11 @@ class OtpAuth {
         log("verificationCompleted");
         Dialogs.showSnackbar(context, "Verification Completed");
         res = 0;
-        Navigator.pop(context);
+        try {
+          Navigator.pop(context);
+        } catch (e) {
+          log(e.toString());
+        }
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
@@ -25,7 +29,11 @@ class OtpAuth {
         res = 2;
         log("verificationFailed");
         Dialogs.showSnackbar(context, "Server Problem: Verification Failed");
-        Navigator.pop(context);
+        try {
+          Navigator.pop(context);
+        } catch (e) {
+          log(e.toString());
+        }
       },
       codeSent: (String verificationId, int? resendToken) async {
         log("codeSent");
@@ -33,21 +41,34 @@ class OtpAuth {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('verificationId', verificationId);
         Dialogs.showSnackbar(context, "Code Sent");
-        Navigator.pop(context);
+        try {
+          Navigator.pop(context);
+        } catch (e) {
+          log(e.toString());
+        }
       },
       codeAutoRetrievalTimeout: (String verificationId) async {
         log("codeAutoRetrievalTimeout");
         res = 4;
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('verificationId', verificationId);
-        Navigator.pop(context);
+        try {
+          Navigator.pop(context);
+        } catch (e) {
+          log(e.toString());
+        }
       },
     )
         .onError((error, stackTrace) {
       Dialogs.showSnackbar(context, error.toString());
       res = 5;
-      Navigator.pop(context);
+      try {
+        Navigator.pop(context);
+      } catch (e) {
+        log(e.toString());
+      }
     });
+
     return res;
   }
 

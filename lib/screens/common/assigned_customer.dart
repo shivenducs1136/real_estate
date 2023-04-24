@@ -26,7 +26,6 @@ class AssignedCustomers extends StatefulWidget {
 class _AssignedCustomersState extends State<AssignedCustomers> {
   @override
   Widget build(BuildContext context) {
-    log("${widget.property.id}");
     return SafeArea(
         child: Scaffold(
       persistentFooterButtons: const [

@@ -51,8 +51,8 @@ class AgentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTracking() {
-    isTracking = !isTracking;
+  void setTracking(bool val) {
+    isTracking = val;
     notifyListeners();
   }
 }

@@ -199,8 +199,10 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget agentChip(AgentModel a) {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (_) => AgentDetails(curr_agent: a)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => AgentDetailsScreen(curr_agent: a)));
       },
       child: Card(
         child: Padding(

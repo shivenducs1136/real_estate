@@ -28,7 +28,7 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
   GoogleMapController? _controller;
   List<LatLng> routeCoords = [];
   GoogleMapPolyline googleMapPolyline =
-      GoogleMapPolyline(apiKey: "AIzaSyC00TWC-5aB9X7t_S3_bfckbW6kJKzcYMA");
+      GoogleMapPolyline(apiKey: "AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08");
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
         _marker.add(Marker(
             markerId: MarkerId('1'),
             position:
-                LatLng(double.parse(value!.lat), double.parse(value!.lon))));
+                LatLng(double.parse(value.lat), double.parse(value.lon))));
       }
     });
     super.initState();

@@ -25,24 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 4000), () async {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       final prefs = await SharedPreferences.getInstance();
-      // bool isTracking = prefs.getBool("isTracking") ?? false;
-      // if (isTracking) {
-      //   log(isTracking.toString());
-      //   AgentProvider().setTracking();
-      //   String propertyId = prefs!.getString("propertyId").toString() ?? "";
-      //   String customerId = prefs!.getString("customerId").toString() ?? "";
-      //   APIs.getPropertyByPropertyId(propertyId).then((preperty) {
-      //     if (preperty != null) {
-      //       log(preperty.toString());
-      //       AgentProvider().setProperty(preperty);
-      //     }
-      //     APIs.getCustomerById(customerId).then((customer) {
-      //       if (customer != null) {
-      //         AgentProvider().setCustomer(customer);
-      //       }
-      //     });
-      //   });
-      // }
+
       final int loginflag = prefs.getInt('login') ?? 0;
       final String email = prefs.getString('email') ?? '';
       if (loginflag == 0) {

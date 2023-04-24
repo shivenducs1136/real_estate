@@ -30,7 +30,7 @@ class _ChooseAgentPropertiesState extends State<ChooseAgentProperties> {
   List<Property> mlist = [];
   @override
   void initState() {
-    APIs.getAssignedPropertyofAgents(widget.curr_agent).then((value) {
+    APIs.getMyAssignedPropertyofAgent(widget.curr_agent).then((value) {
       setState(() {
         mlist = value;
         log(mlist.toString());
@@ -85,18 +85,14 @@ class _ChooseAgentPropertiesState extends State<ChooseAgentProperties> {
                 height: 50,
               ),
               mlist.length != 0
-                  ? Consumer<AgentProvider>(
-                      builder: (context, value, child) {
-                        return Container(
-                            height: mq.height * .5,
-                            child: ChooseAgentNearbyPlaces(
-                              nearbyPlaces: mlist,
-                              isUpdate: true,
-                              email: widget.curr_agent.email,
-                              agentModel: widget.curr_agent,
-                            ));
-                      },
-                    )
+                  ? Container(
+                      height: mq.height * .5,
+                      child: ChooseAgentNearbyPlaces(
+                        nearbyPlaces: mlist,
+                        isUpdate: true,
+                        email: widget.curr_agent.email,
+                        agentModel: widget.curr_agent,
+                      ))
                   : Container(
                       height: mq.height * .5,
                       child: Center(

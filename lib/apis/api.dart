@@ -191,7 +191,35 @@ class APIs {
   //       .snapshots();
   // }
 
-  static Future<List<Property>> getAssignedPropertyofAgents(
+  static Stream<List<Property>> getAssignedPropertyofAgents(
+      AgentModel a) async* {
+    List<Property> p = [];
+    var propId = await firestore
+        .collection("agents")
+        .doc(a.id)
+        .collection("assigned_properties")
+        .get();
+    for (var ele in propId.docs) {
+      var propertySnapshot =
+          await firestore.collection("property").doc(ele.id).get();
+      p.add(Property(
+          property_name: propertySnapshot.get('property_name'),
+          bedrooms: propertySnapshot.get('bedrooms'),
+          cost: propertySnapshot.get('cost'),
+          bathrooms: propertySnapshot.get('bathrooms'),
+          garages: propertySnapshot.get('garages'),
+          area: propertySnapshot.get('area'),
+          id: propertySnapshot.get('id'),
+          address: propertySnapshot.get('address'),
+          lat: propertySnapshot.get('lat'),
+          lon: propertySnapshot.get('lon'),
+          showImg: propertySnapshot.get('showImg'),
+          yearBuilt: propertySnapshot.get('yearBuilt')));
+    }
+    yield p;
+  }
+
+  static Future<List<Property>> getMyAssignedPropertyofAgent(
       AgentModel a) async {
     List<Property> p = [];
     var propId = await firestore

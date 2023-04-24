@@ -34,33 +34,25 @@ class NearbyPlaces extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PropertyDetailScreen(
-                          mproperty: nearbyPlaces[index],
-                          isUpdate: isUpdate,
-                          email: email,
-                        ),
-                      ));
-                },
-                onLongPress: () {
-                  Dialogs.showInputDialog(
-                      context: context,
-                      title: "Delete",
-                      hint:
-                          "Are you sure want to delete property ${nearbyPlaces[index].property_name}?",
-                      onOk: () {
-                        APIs.deleteProperty(nearbyPlaces[index].id)
-                            .then((value) {
-                          Dialogs.showSnackbar(context, "Property Deleted");
-                        });
-                        APIs.activityDeleteProperty(
-                            msg:
-                                "Property ${nearbyPlaces[index].property_name} deleted",
-                            propertyId: nearbyPlaces[index].id);
-                      },
-                      onCancel: () {});
+                  isUpdate
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PropertyDetailScreen(
+                              mproperty: nearbyPlaces[index],
+                              isUpdate: true,
+                              email: email,
+                            ),
+                          ))
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PropertyDetailScreen(
+                              mproperty: nearbyPlaces[index],
+                              isUpdate: false,
+                              email: email,
+                            ),
+                          ));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -89,7 +81,7 @@ class NearbyPlaces extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 nearbyPlaces[index].property_name,
-                                maxLines: 2,
+                                maxLines: 1,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -115,7 +107,6 @@ class NearbyPlaces extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Icon(

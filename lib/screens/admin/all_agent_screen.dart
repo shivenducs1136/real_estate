@@ -1,6 +1,3 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
@@ -126,7 +123,7 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (_) =>
-                                                        AgentDetails(
+                                                        AgentDetailsScreen(
                                                             curr_agent:
                                                                 _agentlist[
                                                                     index])));
@@ -138,12 +135,9 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                                 hint:
                                                     "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
                                                 onOk: () {
-                                                  Dialogs.showProgressBar(
-                                                      context);
                                                   APIs.deleteAgentWithAgentId(
                                                           _agentlist[index].id)
                                                       .then((value) {
-                                                    Navigator.pop(context);
                                                     Dialogs.showSnackbar(
                                                         context,
                                                         "Deleted Successfully");

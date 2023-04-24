@@ -1,32 +1,37 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
+import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
+import 'package:real_estate/model/property_model.dart';
 import 'package:real_estate/screens/admin/add_agent.dart';
-import '../../helper/credentials.dart';
-import '../../main.dart';
-import '../../model/property_model.dart';
 
-class AgentDetails extends StatefulWidget {
-  const AgentDetails({super.key, required this.curr_agent});
+class AgentDetailsScreen extends StatefulWidget {
   final AgentModel curr_agent;
 
+  const AgentDetailsScreen({super.key, required this.curr_agent});
   @override
-  State<AgentDetails> createState() => _AgentDetailsState();
+  _AgentDetailsScreenState createState() => _AgentDetailsScreenState();
 }
 
-class _AgentDetailsState extends State<AgentDetails> {
+class _AgentDetailsScreenState extends State<AgentDetailsScreen> {
+  // Define some sample data for the agent
+  String name = '';
+  String photoUrl = '';
+  int age = 35;
+  String address = '';
+  String dob = "";
+  String gender = '';
   List<Property> mlist = [];
   @override
   void initState() {
-    APIs.getAssignedPropertyofAgents(widget.curr_agent).then((value) {
-      setState(() {
-        mlist = value;
-        log(mlist.toString());
-      });
-    });
+    name = widget.curr_agent.agent_name;
+    photoUrl = widget.curr_agent.photo;
+    age = int.parse(widget.curr_agent.age);
+    address = widget.curr_agent.address;
+    dob = widget.curr_agent.dob;
+    gender = widget.curr_agent.isMale ? "Male" : "Female";
     super.initState();
   }
 
@@ -34,153 +39,143 @@ class _AgentDetailsState extends State<AgentDetails> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        persistentFooterButtons: [
-          Center(
+        appBar: AppBar(
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => AddAgentScreen(
+                            isUpdate: true, agent: widget.curr_agent)));
+              },
+              child: Icon(
+                Icons.edit_document,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            )
+          ],
+          title: Text(
+            'Agent Details',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 16),
+            Center(
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(photoUrl),
+                radius: 50,
+              ),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                  "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
-        ],
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: SingleChildScrollView(
-            // ignore: prefer_const_literals_to_create_immutables
-
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: const Text(
-                      "Agent Details",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => AddAgentScreen(
-                                      isUpdate: true,
-                                      agent: widget.curr_agent,
-                                    )));
-                      },
-                      child: const Icon(Icons.edit_document))
-                ],
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Container(
-                width: mq.width,
-                height: mq.height * .1,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    border: Border.all(width: 1, color: Colors.black),
-                    color: Color.fromARGB(222, 255, 255, 255)),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Positioned(
-                          child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(widget.curr_agent.photo),
-                      )),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 18,
-                            width: mq.width * .6,
-                            child: Text(
-                              widget.curr_agent.agent_name,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Text(
-                            "${widget.curr_agent.age} years",
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500),
-                            maxLines: 1,
-                          ),
-                          Container(
-                            height: 14,
-                            width: mq.width * .6,
-                            child: Text(
-                              "at ${widget.curr_agent.address}",
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                name,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(
-                height: 50,
-              ),
-              const Text(
-                "Assigned Properties",
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Age: $age',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 16,
+                ),
               ),
-              const SizedBox(
-                height: 50,
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Address: $address',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
               ),
-              mlist.length != 0
-                  ? Container(
-                      height: mq.height * .5,
-                      child: NearbyPlaces(
-                        nearbyPlaces: mlist,
-                        isUpdate: true,
-                        email: widget.curr_agent.email,
-                      ))
-                  : Container(
-                      height: mq.height * .5,
-                      child: Center(
-                          child: Lottie.asset(
-                        'images/nodata.json',
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.fill,
-                      )),
-                    )
-            ]),
-          ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'DOB: ${dob}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Gender: $gender',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            const Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Properties Assigned:',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
+            StreamBuilder(
+                stream: APIs.getAssignedPropertyofAgents(widget.curr_agent),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const SizedBox();
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final _list = snapshot.data;
+
+                      if (_list != null && _list.isNotEmpty) {
+                        return Container(
+                            child: NearbyPlaces(
+                          email: null,
+                          isUpdate: true,
+                          nearbyPlaces: _list,
+                        ));
+                      } else {
+                        return const Center(
+                          child: Text(
+                            "No Property Assigned",
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        );
+                      }
+                  }
+                })
+          ],
         ),
       ),
     );
