@@ -54,6 +54,25 @@ class NearbyPlaces extends StatelessWidget {
                             ),
                           ));
                 },
+                onLongPress: () {
+                  if (isUpdate) {
+                    Dialogs.showInputDialog(
+                        context: context,
+                        title: "Delete",
+                        hint:
+                            "Are you sure want to delete agent ${nearbyPlaces[index].property_name}?",
+                        onOk: () {
+                          APIs.deleteProperty(nearbyPlaces[index].id)
+                              .then((value) {
+                            APIs.activityDeleteProperty(
+                                propertyId: nearbyPlaces[index].id,
+                                msg:
+                                    "Property - ${nearbyPlaces[index].property_name} is deleted by admin.");
+                          });
+                        },
+                        onCancel: () {});
+                  }
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
