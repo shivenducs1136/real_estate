@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -182,6 +183,23 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                             });
                         mvalue.setTracking(true);
                         mvalue.setCustomer(widget.customerModel);
+                        await Geolocator.getCurrentPosition(
+                                desiredAccuracy: LocationAccuracy.best)
+                            .then((Position position) async {
+                          await FirebaseFirestore.instance
+                              .collection("tracking")
+                              .doc(mvalue.getProperty!.id)
+                              .collection(mvalue.getAgent!.id)
+                              .doc(widget.customerModel.customer_id)
+                              .collection("coordinates")
+                              .doc(DateTime.now()
+                                  .millisecondsSinceEpoch
+                                  .toString())
+                              .set({
+                            'lat': position.latitude.toString(),
+                            'long': position.longitude.toString()
+                          });
+                        });
                         APIs.activityGenerateOtp(
                             property_id: mvalue.getProperty!.id,
                             msg:

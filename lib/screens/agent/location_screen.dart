@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
@@ -143,6 +145,7 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                     right: 10,
                     child: InkWell(
                       onTap: () async {
+                        Dialogs.showProgressBar;
                         Workmanager().cancelAll();
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
@@ -151,6 +154,30 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                         APIs.setisLoan(mvalue.getCustomer!, isChecked);
                         mvalue.setTracking(false);
                         await FirebaseAuth.instance.signOut();
+                        await Geolocator.getCurrentPosition(
+                                desiredAccuracy: LocationAccuracy.best)
+                            .then((Position position) async {
+                          String agentId =
+                              pref.getString("agentId").toString() ?? "";
+                          String propertyId =
+                              pref.getString("propertyId").toString() ?? "";
+                          String customerId =
+                              pref.getString("customerId").toString() ?? "";
+                          await FirebaseFirestore.instance
+                              .collection("tracking")
+                              .doc(propertyId)
+                              .collection(agentId)
+                              .doc(customerId)
+                              .collection("coordinates")
+                              .doc(DateTime.now()
+                                  .millisecondsSinceEpoch
+                                  .toString())
+                              .set({
+                            'lat': position.latitude.toString(),
+                            'long': position.longitude.toString()
+                          });
+                        });
+                        Navigator.pop(context);
                         Navigator.pop(context);
                         Dialogs.showSnackbar(
                             context, "Review Submitted Successfuly");
