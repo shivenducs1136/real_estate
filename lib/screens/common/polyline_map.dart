@@ -47,7 +47,7 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        persistentFooterButtons: const [
+        persistentFooterButtons: [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

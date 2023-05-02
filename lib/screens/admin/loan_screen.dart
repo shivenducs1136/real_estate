@@ -24,7 +24,7 @@ class _LoanScreenState extends State<LoanScreen> {
     _customerlist.clear();
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: const [
+      persistentFooterButtons: [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

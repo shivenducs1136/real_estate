@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      persistentFooterButtons: const [
+      persistentFooterButtons: [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

@@ -1,9 +1,12 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:real_estate/helper/remote_config.dart';
+
 class Credentials {
-  static const COMPANY_NAME = "Tiwari Propmart";
-  static const COMPANY_EMAIL = "tiwaripropmart@gmail.com";
-  static const API_KEY = "AIzaSyA_vy5T6XneVZr7T9L2s_-yKC6faH83ZHw";
-  static const EMAIL_ID = "tiwaripropmart.mail@gmail.com";
-  static const PASSWORD = "trbxdinhnmhqvdxn";
-  static const ADMIN_ID = "admin";
-  static const ADMIN_PASSWORD = "123";
+  static String COMPANY_NAME = RemoteConfig().getCOMPANY_NAME();
+  static String COMPANY_EMAIL = RemoteConfig().getCOMPANY_EMAIL();
+  static String API_KEY = RemoteConfig().getAPI_KEY();
+  static String EMAIL_ID = RemoteConfig().getEMAIL_ID();
+  static String PASSWORD = RemoteConfig().getPASSWORD();
+  static String ADMIN_ID = RemoteConfig().getADMIN_ID();
+  static String ADMIN_PASSWORD = RemoteConfig().getADMIN_PASSWORD();
 }

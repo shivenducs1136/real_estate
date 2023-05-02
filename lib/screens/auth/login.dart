@@ -38,7 +38,7 @@ class _LoginMainState extends State<LoginMain> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        persistentFooterButtons: const [
+        persistentFooterButtons: [
           Center(
               child: Text(
                   "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

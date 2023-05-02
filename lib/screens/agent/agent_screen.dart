@@ -201,7 +201,7 @@ class AgentScreenState extends State<AgentScreen> {
               }),
         ],
       ),
-      persistentFooterButtons: const [
+      persistentFooterButtons: [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

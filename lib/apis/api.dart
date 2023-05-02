@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/model/activity_model.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
@@ -19,7 +20,8 @@ class APIs {
   static FirebaseStorage storage = FirebaseStorage.instance;
 
   static bool adminLogin(String loginId, String password) {
-    if (loginId == "admin" && password == "123") {
+    if (loginId == Credentials.ADMIN_ID &&
+        password == Credentials.ADMIN_PASSWORD) {
       return true;
     }
     return false;

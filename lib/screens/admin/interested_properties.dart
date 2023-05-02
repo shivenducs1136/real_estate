@@ -61,7 +61,7 @@ class _InterestedPropertyScreenState extends State<InterestedPropertyScreen> {
             }
           },
           child: Scaffold(
-            persistentFooterButtons: const [
+            persistentFooterButtons: [
               Center(
                   child: Text(
                       "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

@@ -39,7 +39,7 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
     clientid = widget.customerModel.customer_id;
     return SafeArea(
         child: Scaffold(
-      persistentFooterButtons: const [
+      persistentFooterButtons: [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))

@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:real_estate/helper/remote_config.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +48,16 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge)
       .then((value) async {
     await initializeFirebase();
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+    RemoteConfig.initializeRemoteConfig();
+    RemoteConfig.setDefaults();
     await FirebaseAppCheck.instance.activate(
       webRecaptchaSiteKey: 'recaptcha-v3-site-key',
       // Set androidProvider to `AndroidProvider.debug`

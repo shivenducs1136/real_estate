@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 4000), () async {
+    Future.delayed(const Duration(milliseconds: 2000), () async {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       final prefs = await SharedPreferences.getInstance();
 

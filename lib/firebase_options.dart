@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '69940957882',
     projectId: 'tiwaripropmart-429bb',
     storageBucket: 'tiwaripropmart-429bb.appspot.com',
+    androidClientId: '69940957882-92gql1704vuq2j13tp7uef8vvidqdt0k.apps.googleusercontent.com',
     iosClientId: '69940957882-q23h58p0nk78h0n1m1oeao71btoo51e2.apps.googleusercontent.com',
     iosBundleId: 'com.example.realEstate',
   );

@@ -47,7 +47,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      persistentFooterButtons: const [
+      persistentFooterButtons: [
         Center(
             child: Text(
                 "${Credentials.COMPANY_NAME} - ${Credentials.COMPANY_EMAIL}"))
