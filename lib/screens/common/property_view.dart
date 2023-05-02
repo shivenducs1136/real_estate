@@ -73,7 +73,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withOpacity(0.1),
                           spreadRadius: 0,
                           blurRadius: 20,
                           offset: const Offset(0, 10),

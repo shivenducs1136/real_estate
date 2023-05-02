@@ -96,7 +96,7 @@ class _GenerateOtpScreenState extends State<GenerateOtpScreen> {
             ),
             const Padding(
                 padding: EdgeInsets.only(bottom: 15),
-                child: Text("Tap to view agent routes")),
+                child: Text("Choose the customer to verify.")),
             StreamBuilder(
                 stream: APIs.getAssignedCustomers(
                     widget.agentModel, widget.propertyModel),

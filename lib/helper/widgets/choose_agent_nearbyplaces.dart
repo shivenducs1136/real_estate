@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/cost_util.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/distance.dart';
 import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
@@ -61,20 +62,8 @@ class ChooseAgentNearbyPlaces extends StatelessWidget {
                           children: [
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: FadeInImage(
-                                  placeholder: AssetImage("images/picture.png"),
-                                  image: NetworkImage(
-                                    nearbyPlaces[index].showImg,
-                                  ),
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Image.asset('images/picture.png',
-                                        fit: BoxFit.fitWidth);
-                                  },
-                                  height: double.maxFinite,
-                                  width: 130,
-                                  fit: BoxFit.cover,
-                                )),
+                                child: Dialogs.showImage(
+                                    nearbyPlaces[index].showImg)),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(

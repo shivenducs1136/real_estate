@@ -151,21 +151,9 @@ class _AssignedAgentsScreenState extends State<AssignedAgentsScreen> {
                                                       BorderRadius.circular(24),
                                                   child: FittedBox(
                                                     fit: BoxFit.fill,
-                                                    child: FadeInImage(
-                                                      placeholder: AssetImage(
-                                                          "images/picture.png"),
-                                                      image: NetworkImage(
-                                                          _agentlist[index]
-                                                              .photo),
-                                                      imageErrorBuilder:
-                                                          (context, error,
-                                                              stackTrace) {
-                                                        return Image.asset(
-                                                            'images/picture.png',
-                                                            fit: BoxFit
-                                                                .fitWidth);
-                                                      },
-                                                    ),
+                                                    child: Dialogs.showImage(
+                                                        _agentlist[index]
+                                                            .photo),
                                                   ),
                                                 )),
                                           ),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/control_panel.dart';
 import 'package:real_estate/helper/widgets/location_card.dart';
 import 'package:real_estate/helper/widgets/recent_activity.dart';
@@ -13,6 +14,7 @@ import 'package:real_estate/screens/admin/add_agent.dart';
 import 'package:real_estate/screens/admin/add_property.dart';
 import 'package:real_estate/screens/admin/agent_details.dart';
 import 'package:real_estate/screens/admin/all_agent_screen.dart';
+import 'package:real_estate/screens/admin/all_recent_activity.dart';
 import 'package:real_estate/screens/admin/assign_property.dart';
 import 'package:real_estate/screens/admin/view_property.dart';
 import 'package:real_estate/screens/agent/agent_screen.dart';
@@ -141,12 +143,25 @@ class _AdminScreenState extends State<AdminScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Text(
-                      "Recent Activity",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Recent Activity",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => RecentActivityScreen()));
+                            },
+                            child: const Text("View All"))
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -171,7 +186,8 @@ class _AdminScreenState extends State<AdminScreen> {
                                   [];
 
                               mlist = mlist.reversed.toList();
-                              return RecentActivityWidget(activityList: mlist);
+                              return RecentActivityWidget(
+                                  activityList: mlist, isAll: false);
                           }
                         })
                   ],
@@ -194,119 +210,5 @@ class _AdminScreenState extends State<AdminScreen> {
 
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => LoginScreen()));
-  }
-
-  Widget agentChip(AgentModel a) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => AgentDetailsScreen(curr_agent: a)));
-      },
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  child: FadeInImage(
-                    placeholder: AssetImage("images/picture.png"),
-                    image: NetworkImage(a.photo),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image.asset('images/picture.png',
-                          fit: BoxFit.fitWidth);
-                    },
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  '${a.agent_name}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 2,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget chip(Color mcolor, Color iconcolor, Icon micon, String txt, int type) {
-    return InkWell(
-      onTap: () {
-        if (type == 1) {
-          Property p = Property(
-              property_name: "",
-              bedrooms: "",
-              bathrooms: "",
-              garages: "",
-              cost: "",
-              area: "",
-              id: "",
-              address: "",
-              lat: "",
-              lon: "",
-              showImg: "",
-              yearBuilt: "");
-
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => AddPropertyScreen(
-                        currProp: p,
-                        isUpdate: false,
-                      )));
-        } else if (type == 2) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => const AddAgentScreen(
-                        isUpdate: false,
-                        agent: null,
-                      )));
-        } else if (type == 3) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => ViewPropertyScreen()));
-        } else if (type == 4) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => AssignPropertyScreen()));
-        }
-      },
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          height: mq.height * .13,
-          width: mq.width * .2,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20), color: mcolor),
-          child: Stack(
-            children: [
-              Positioned(top: 20, left: 20, right: 20, child: micon),
-              Positioned(
-                bottom: 20,
-                left: 10,
-                right: 10,
-                child: Text(
-                  txt,
-                  style: TextStyle(
-                      color: iconcolor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

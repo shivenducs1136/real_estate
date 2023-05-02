@@ -40,7 +40,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 255, 32, 32),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -54,9 +54,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/property.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/property.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -68,14 +73,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Property",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
                                 "Add Property",
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
@@ -104,7 +109,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 3, 109, 229),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -118,9 +123,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/agent.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/agent.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -131,7 +141,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                               Text(
                                 "Agent   ",
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     overflow: TextOverflow.ellipsis,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
@@ -139,7 +149,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                               Text(
                                 "Add Agent   ",
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
@@ -169,7 +179,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 213, 1, 157),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -183,9 +193,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/mproperty.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/mproperty.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -197,7 +212,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "My Property",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -205,7 +220,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "View Property",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -230,7 +245,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 113, 154, 1),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -244,9 +259,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/magents.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/magents.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -258,7 +278,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "My Agent",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -266,7 +286,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "View Agents",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -295,7 +315,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 4, 152, 216),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -309,9 +329,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/mcustomers.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/mcustomers.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -323,7 +348,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Customers",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -331,7 +356,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "My Customers",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -356,7 +381,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 155, 0, 238),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -370,9 +395,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/loan.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/loan.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -384,7 +414,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Loan",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -393,7 +423,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 maxLines: 1,
                                 style: TextStyle(
                                     overflow: TextOverflow.clip,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -424,7 +454,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 248, 78, 12),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -438,9 +468,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/delegation.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/delegation.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -452,7 +487,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Assign",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -460,7 +495,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Assign property",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -485,7 +520,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 87, 0, 237),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -499,9 +534,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/location.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/location.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -513,7 +553,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Location",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -522,7 +562,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 maxLines: 1,
                                 style: TextStyle(
                                     overflow: TextOverflow.clip,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -551,7 +591,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 234, 171, 0),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -565,9 +605,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/order.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/order.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -579,7 +624,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Purchase",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -587,7 +632,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Want to purchase",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )
@@ -612,7 +657,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                 child: Container(
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 159, 193, 9),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -626,9 +671,14 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                     child: Row(
                       children: [
                         Container(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset("images/rent.png")),
+                          height: 28,
+                          width: 28,
+                          padding: EdgeInsets.all(4),
+                          child: Image.asset("images/rent.png"),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -640,7 +690,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 "Renting",
                                 style: TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -649,7 +699,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                                 maxLines: 1,
                                 style: TextStyle(
                                     overflow: TextOverflow.clip,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12),
                               )

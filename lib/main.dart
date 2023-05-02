@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +20,7 @@ void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     print("Task Executing " + taskName);
     await initializeFirebase();
+
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
         .then((Position position) async {
       await FirebaseFirestore.instance
@@ -42,9 +45,16 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge)
       .then((value) async {
     await initializeFirebase();
-
+    await FirebaseAppCheck.instance.activate(
+      webRecaptchaSiteKey: 'recaptcha-v3-site-key',
+      // Set androidProvider to `AndroidProvider.debug`
+      androidProvider: AndroidProvider.debug,
+    );
     runApp(const MyApp());
   });
+  if (Platform.isAndroid) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   FocusManager.instance.primaryFocus?.unfocus();
   msprefs = await SharedPreferences.getInstance();
 }
@@ -53,6 +63,8 @@ initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Analytics
 }
 
 class MyApp extends StatelessWidget {

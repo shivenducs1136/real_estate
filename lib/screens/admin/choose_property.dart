@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/interested_cust.dart';
 import 'package:real_estate/helper/widgets/near_to_customer.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
@@ -95,67 +96,6 @@ class _ChoosePropertiesState extends State<ChooseProperties> {
                     ))
             ]),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget propertyItem(Property property) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => AssignedCustomers(
-                    property: property, agent: widget.curr_agent)));
-      },
-      child: Card(
-        elevation: 2,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: FadeInImage(
-                    placeholder: AssetImage("images/picture.png"),
-                    image: NetworkImage(
-                      property.showImg,
-                    ),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Image.asset('images/picture.png',
-                          fit: BoxFit.fitWidth);
-                    }),
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              property.property_name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              property.address,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text('\$${property.cost.toString()}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ))
-          ]),
         ),
       ),
     );

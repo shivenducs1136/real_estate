@@ -163,6 +163,13 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                               pref.getString("propertyId").toString() ?? "";
                           String customerId =
                               pref.getString("customerId").toString() ?? "";
+                          APIs.activitySubmitReview(
+                              customerId: customerId,
+                              msg:
+                                  "${mvalue.customerModel != null ? mvalue.customerModel!.customer_name : "Customer"} Submitted a review.",
+                              agentId: agentId,
+                              propertyId: propertyId);
+
                           await FirebaseFirestore.instance
                               .collection("tracking")
                               .doc(propertyId)
@@ -177,7 +184,6 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                             'long': position.longitude.toString()
                           });
                         });
-                        Navigator.pop(context);
                         Navigator.pop(context);
                         Dialogs.showSnackbar(
                             context, "Review Submitted Successfuly");

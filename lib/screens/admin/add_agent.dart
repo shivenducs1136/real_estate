@@ -31,7 +31,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
   List<DateTime?> dob = [];
   XFile? img;
   bool isImageAdded = false;
-  bool isMale = false;
+  bool isMale = true;
   @override
   Widget build(BuildContext context) {
     if (widget.agent != null) {
@@ -401,6 +401,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     InkWell(
                       onTap: () {
                         formKey.currentState!.save();
+                        String agEmail = agent_email.trim().toLowerCase();
                         if (widget.isUpdate) {
                           var value = new Random();
                           var codeNumber =
@@ -409,11 +410,12 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                           AgentModel a = AgentModel(
                             password: codeNumber,
                             agent_name: agent_name,
-                            email: agent_email.trim(),
+                            email:
+                                agent_email.trim().toLowerCase().toLowerCase(),
                             age: age,
                             phone_number: phone_number,
                             address: address,
-                            id: "${agent_email.trim()}",
+                            id: agEmail,
                             photo: photourl != ""
                                 ? photourl
                                 : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
@@ -428,35 +430,33 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 widget.isUpdate
                                     ? APIs.activityAddAgent(
                                         msg: "${agent_name} updated by Admin",
-                                        agent_id: agent_email.trim())
+                                        agent_id: agEmail)
                                     : APIs.activityUpdateAgent(
                                         msg: "${agent_name} added by Admin",
-                                        agent_id: agent_email.trim());
+                                        agent_id: agEmail);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Mailer.sendCredentialsEmail(
-                                    password: codeNumber,
-                                    destEmail: agent_email.trim());
+                                    password: codeNumber, destEmail: agEmail);
                                 Dialogs.showSnackbar(context,
                                     "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                               });
                             } else {
-                              widget.isUpdate
-                                  ? APIs.activityAddAgent(
-                                      msg: "${agent_name} updated by Admin",
-                                      agent_id: agent_email.trim())
-                                  : APIs.activityUpdateAgent(
-                                      msg: "${agent_name} added by Admin",
-                                      agent_id: agent_email.trim());
+                              APIs.activityAddAgent(
+                                  msg: "${agent_name} updated by Admin",
+                                  agent_id: agEmail);
+
                               Navigator.pop(context);
                               Navigator.pop(context);
-                              Dialogs.showSnackbar(context,
-                                  "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                              Dialogs.showSnackbar(
+                                  context, "Agent Updated Successfully");
                             }
                           });
                         } else {
-                          if (agent_email.trim().isNotEmpty) {
-                            APIs.isAgentExists(agent_email.trim())
+                          if (agEmail.isNotEmpty &&
+                              agEmail.contains("@") &&
+                              agEmail.contains(".com")) {
+                            APIs.isAgentExists(agent_email.trim().toLowerCase())
                                 .then((value) {
                               if (value == true) {
                                 var value = new Random();
@@ -466,13 +466,13 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                 AgentModel a = AgentModel(
                                     password: codeNumber,
                                     agent_name: agent_name,
-                                    email: agent_email.trim(),
+                                    email: agent_email.trim().toLowerCase(),
                                     age: age,
                                     phone_number: phone_number,
                                     address: address,
-                                    id: "${agent_email.trim()}",
+                                    id: "${agent_email.trim().toLowerCase()}",
                                     photo:
-                                        'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
+                                        'https://cdn.vectorstock.com/i/1000x1000/62/36/call-center-agent-operator-avatar-vector-24606236.webp',
                                     dob: dob.isNotEmpty
                                         ? MyDateUtil.getEventDetailDate(dob[0]!)
                                         : "",
@@ -484,16 +484,21 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                           ? APIs.activityAddAgent(
                                               msg:
                                                   "${agent_name} updated by Admin",
-                                              agent_id: agent_email.trim())
+                                              agent_id: agent_email
+                                                  .trim()
+                                                  .toLowerCase())
                                           : APIs.activityUpdateAgent(
                                               msg:
                                                   "${agent_name} added by Admin",
-                                              agent_id: agent_email.trim());
+                                              agent_id: agent_email
+                                                  .trim()
+                                                  .toLowerCase());
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                       Mailer.sendCredentialsEmail(
                                           password: codeNumber,
-                                          destEmail: agent_email.trim());
+                                          destEmail:
+                                              agent_email.trim().toLowerCase());
                                       Dialogs.showSnackbar(context,
                                           "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
                                     });
@@ -502,10 +507,14 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                                         ? APIs.activityAddAgent(
                                             msg:
                                                 "${agent_name} updated by Admin",
-                                            agent_id: agent_email.trim())
+                                            agent_id: agent_email
+                                                .trim()
+                                                .toLowerCase())
                                         : APIs.activityUpdateAgent(
                                             msg: "${agent_name} added by Admin",
-                                            agent_id: agent_email.trim());
+                                            agent_id: agent_email
+                                                .trim()
+                                                .toLowerCase());
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                     Dialogs.showSnackbar(context,
@@ -519,7 +528,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                             });
                           } else {
                             Dialogs.showSnackbar(
-                                context, "Please add email address");
+                                context, "Please add valid email address");
                           }
                         }
                       },

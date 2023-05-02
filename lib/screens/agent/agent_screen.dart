@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/submit_review.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
@@ -79,9 +80,16 @@ class AgentScreenState extends State<AgentScreen> {
           ],
         ),
         actions: [
-          CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(magent.photo),
+          Center(
+            child: Container(
+              height: 38,
+              width: 38,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: magent.photo.isNotEmpty
+                      ? Dialogs.showImage(magent.photo)
+                      : CircularProgressIndicator()),
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 12),

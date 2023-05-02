@@ -91,7 +91,7 @@ class _InterestedCustomerScreenState extends State<InterestedCustomerScreen> {
           child: Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Text(
-                "Tap to view agent routes",
+                "",
                 textAlign: TextAlign.center,
               )),
         ),

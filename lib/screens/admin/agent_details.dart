@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
 import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
@@ -32,6 +33,7 @@ class _AgentDetailsScreenState extends State<AgentDetailsScreen> {
     address = widget.curr_agent.address;
     dob = widget.curr_agent.dob;
     gender = widget.curr_agent.isMale ? "Male" : "Female";
+
     super.initState();
   }
 
@@ -79,9 +81,12 @@ class _AgentDetailsScreenState extends State<AgentDetailsScreen> {
           children: [
             SizedBox(height: 16),
             Center(
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(photoUrl),
-                radius: 50,
+              child: Container(
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Dialogs.showImage(photoUrl)),
               ),
             ),
             SizedBox(height: 16),

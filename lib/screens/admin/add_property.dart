@@ -7,6 +7,7 @@ import "package:google_maps_place_picker_mb/google_maps_place_picker.dart";
 import "package:image_picker/image_picker.dart";
 import "package:provider/provider.dart";
 import "package:real_estate/apis/api.dart";
+import "package:real_estate/helper/credentials.dart";
 import "package:real_estate/model/property_model.dart";
 import "package:real_estate/providers/admin_provider.dart";
 import "package:real_estate/screens/admin/map_screen.dart";
@@ -564,8 +565,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                                             resizeToAvoidBottomInset:
                                                 false, // only works in page mode, less flickery
                                             apiKey: Platform.isAndroid
-                                                ? "AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08"
-                                                : "AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08",
+                                                ? Credentials.API_KEY
+                                                : Credentials.API_KEY,
                                             hintText: "Find a place ...",
                                             searchingText: "Please wait ...",
                                             selectText: "Select place",
@@ -668,9 +669,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                               context, "Please add atleast 1 image");
                         } else if (property_name == "" ||
                                 cost == "" ||
-                                year_built == "" && !widget.isUpdate
-                            ? (lat == "" || long == "")
-                            : false) {
+                                year_built == ""
+                            //  && !widget.isUpdate
+                            // ? (lat == "" || long == "") : false
+
+                            ) {
                           Navigator.pop(context);
                           Dialogs.showSnackbar(
                               context, "Please add all details");

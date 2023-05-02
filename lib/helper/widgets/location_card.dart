@@ -18,15 +18,23 @@ class LocationCard extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             value.setAgent(magent);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ChooseAgentProperties(curr_agent: magent)));
+            if (!value.isTracking) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) =>
+                          ChooseAgentProperties(curr_agent: magent)));
+            }
           },
-          child: Card(
-            elevation: 0.4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Container(
+            decoration: BoxDecoration(
+                color: !value.trackingInfo ? Colors.white : Colors.grey,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                    width: 1,
+                    color: !value.trackingInfo
+                        ? Colors.black
+                        : Colors.grey.shade800)),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -34,7 +42,7 @@ class LocationCard extends StatelessWidget {
                   Icon(
                     Icons.domain_verification,
                     size: 24,
-                    color: Theme.of(context).primaryColor,
+                    color: !value.trackingInfo ? Colors.green : Colors.white,
                   ),
                   const SizedBox(width: 10),
                   Column(
@@ -43,13 +51,18 @@ class LocationCard extends StatelessWidget {
                       Text(
                         "Generate OTP",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              color: Theme.of(context).primaryColor,
+                              color: !value.trackingInfo
+                                  ? Colors.green
+                                  : Colors.white,
                             ),
                       ),
                       const SizedBox(height: 5),
                       Text(
                         "Verify customer & start tracking.",
-                        style: Theme.of(context).textTheme.labelSmall,
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            color: !value.trackingInfo
+                                ? Colors.black
+                                : Colors.white),
                       )
                     ],
                   )

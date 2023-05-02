@@ -27,7 +27,7 @@ class LoginMain extends StatefulWidget {
 class _LoginMainState extends State<LoginMain> {
   String email = "";
   String password = "";
-
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -49,135 +49,155 @@ class _LoginMainState extends State<LoginMain> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ignore: prefer_const_constructors
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_) => LoginScreen()));
-                      },
-                      // ignore: prefer_const_constructors
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black,
-                        size: 24,
-                      ),
-                    ),
-                    SizedBox(
-                      height: mq.width * .1,
-                    ),
-                    Text(
-                      widget.mtitle,
-                      // ignore: prefer_const_constructors
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: mq.width * .1,
-                    ),
-                    TextFormField(
-                      onChanged: (value) => email = value,
-                      validator: (val) => val != null && val.isNotEmpty
-                          ? null
-                          : "Required Field",
-                      decoration: InputDecoration(
+                  padding: const EdgeInsets.all(20),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         // ignore: prefer_const_constructors
-                        prefixIcon: Icon(
-                          Icons.email,
-                          color: Colors.green,
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => LoginScreen()));
+                          },
+                          // ignore: prefer_const_constructors
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                            size: 24,
+                          ),
                         ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        hintText: 'eg. xyz@gmail.com',
-                        label: const Text("Email Id"),
-                      ),
-                    ),
-                    SizedBox(
-                      width: mq.width,
-                      height: mq.height * 0.03,
-                    ),
-                    TextFormField(
-                      onChanged: (value) => password = value,
-                      validator: (val) => val != null && val.isNotEmpty
-                          ? null
-                          : "Required Field",
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.password,
-                          color: Colors.green,
+                        SizedBox(
+                          height: mq.width * .1,
                         ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        hintText: 'eg. 1234!',
-                        label: const Text("Password"),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(
-                      width: mq.width,
-                      height: mq.height * 0.03,
-                    ),
+                        Text(
+                          widget.mtitle,
+                          // ignore: prefer_const_constructors
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: mq.width * .1,
+                        ),
+                        TextFormField(
+                          onChanged: (value) => email = value,
+                          validator: (val) => val != null && val.isNotEmpty
+                              ? null
+                              : "Required Field",
+                          onSaved: ((newValue) {
+                            email = newValue!;
+                            setState(() {});
+                          }),
+                          decoration: InputDecoration(
+                            // ignore: prefer_const_constructors
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Colors.green,
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            hintText: 'eg. xyz@gmail.com',
+                            label: const Text("Email Id"),
+                          ),
+                        ),
+                        SizedBox(
+                          width: mq.width,
+                          height: mq.height * 0.03,
+                        ),
+                        TextFormField(
+                          onChanged: (value) => password = value,
+                          validator: (val) => val != null && val.isNotEmpty
+                              ? null
+                              : "Required Field",
+                          onSaved: ((newValue) {
+                            password = newValue!;
+                            setState(() {});
+                          }),
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.password,
+                              color: Colors.green,
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            hintText: 'eg. 1234!',
+                            label: const Text("Password"),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        SizedBox(
+                          width: mq.width,
+                          height: mq.height * 0.03,
+                        ),
 
-                    Visibility(
-                      visible: !widget.isAdmin,
-                      child: InkWell(
-                        onTap: () {
-                          String em = email.trim().toString();
-                          if (em.isNotEmpty && em.contains("@")) {
-                            Dialogs.showProgressBar(context);
-                            APIs.isAgentExists(em).then((isAgentExist) {
-                              if (isAgentExist) {
-                                var value = new Random();
-                                var codeNumber =
-                                    (value.nextInt(900000) + 100000).toString();
-                                try {
-                                  Mailer.sendCredentialsEmail(
-                                      password: codeNumber, destEmail: em);
-                                  APIs.updateEmailAndPassword(em, codeNumber)
-                                      .then((value) {
+                        Visibility(
+                          visible: !widget.isAdmin,
+                          child: InkWell(
+                            onTap: () {
+                              formKey.currentState!.save();
+                              String em = email.trim().toLowerCase().toString();
+                              if (em.isNotEmpty &&
+                                  em.contains("@") &&
+                                  em.contains(".com")) {
+                                Dialogs.showProgressBar(context);
+                                APIs.isAgentExists(em).then((isAgentExist) {
+                                  if (isAgentExist) {
+                                    var value = new Random();
+                                    var codeNumber =
+                                        (value.nextInt(900000) + 100000)
+                                            .toString();
+                                    try {
+                                      Mailer.sendCredentialsEmail(
+                                          password: codeNumber, destEmail: em);
+                                      APIs.updateEmailAndPassword(
+                                              em, codeNumber)
+                                          .then((value) {
+                                        Navigator.pop(context);
+                                        Dialogs.showSnackbar(context,
+                                            "New password is sent to ${em}");
+                                      });
+                                    } catch (e) {
+                                      Navigator.pop(context);
+                                      Dialogs.showSnackbar(
+                                          context, "Unknown error occured");
+                                    }
+                                  } else {
                                     Navigator.pop(context);
                                     Dialogs.showSnackbar(context,
-                                        "New password is sent to ${em}");
-                                  });
-                                } catch (e) {
-                                  Navigator.pop(context);
-                                  Dialogs.showSnackbar(
-                                      context, "Unknown error occured");
-                                }
+                                        "Please enter a valid email id.");
+                                  }
+                                });
                               } else {
-                                Navigator.pop(context);
                                 Dialogs.showSnackbar(
                                     context, "Please enter a valid email id.");
                               }
-                            });
-                          } else {
-                            Dialogs.showSnackbar(
-                                context, "Please enter a valid email id.");
-                          }
-                        },
-                        child: const Text(
-                          "Forgot password?",
-                          style: TextStyle(
-                              color: Colors.blue, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+                            },
+                            child: const Text(
+                              "Forgot password?",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
               ElevatedButton.icon(
                 onPressed: () async {
+                  formKey.currentState!.save();
                   FocusScope.of(context).requestFocus(FocusNode());
                   Dialogs.showProgressBar(context);
+                  String em = email.trim().toLowerCase().toString();
+                  String pa = password.trim().toString();
                   if (widget.isAdmin) {
                     Navigator.pop(context);
-                    String em = email.trim().toString();
-                    String pa = password.trim().toString();
+
                     if (APIs.adminLogin(em, pa)) {
                       Navigator.pushReplacement(
                           context,
@@ -189,27 +209,37 @@ class _LoginMainState extends State<LoginMain> {
                       Dialogs.showSnackbar(context, "Login Failed");
                     }
                   } else {
-                    await APIs.agentLogin(
-                            email.trim().toString(), password.trim().toString())
-                        .then((value) async {
-                      if (value) {
-                        Navigator.pop(context);
-                        await APIs.activityLogin(email.trim().toString(),
-                            "Agent - ${email.trim().toString()} Logged in");
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => AgentScreen(
-                                      email: email,
-                                    )));
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setInt('login', 2);
-                        await prefs.setString('email', email);
-                      } else {
-                        Navigator.pop(context);
-                        Dialogs.showSnackbar(context, "Login Failed");
-                      }
-                    });
+                    if (em.isNotEmpty &&
+                        em.contains("@") &&
+                        em.contains(".com")) {
+                      await APIs.agentLogin(
+                              email.trim().toLowerCase().toString(),
+                              password.trim().toString())
+                          .then((value) async {
+                        if (value) {
+                          Navigator.pop(context);
+                          await APIs.activityLogin(
+                              email.trim().toLowerCase().toString(),
+                              "Agent - ${email.trim().toLowerCase().toString()} Logged in");
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => AgentScreen(
+                                        email: email,
+                                      )));
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setInt('login', 2);
+                          await prefs.setString('email', email);
+                        } else {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(context, "Login Failed");
+                        }
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      Dialogs.showSnackbar(context,
+                          "Valid email should contains `@` and `.com` ");
+                    }
                   }
                 },
                 // ignore: prefer_const_constructors

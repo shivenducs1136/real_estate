@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/choose_agent_nearbyplaces.dart';
 import 'package:real_estate/helper/widgets/interested_cust.dart';
 import 'package:real_estate/helper/widgets/near_to_customer.dart';
@@ -128,14 +129,7 @@ class _ChooseAgentPropertiesState extends State<ChooseAgentProperties> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: FadeInImage(
-                  placeholder: AssetImage("images/picture.png"),
-                  image: NetworkImage(property.showImg),
-                  imageErrorBuilder: (context, error, stackTrace) {
-                    return Image.asset('images/picture.png',
-                        fit: BoxFit.fitWidth);
-                  },
-                ),
+                child: Dialogs.showImage(property.showImg),
               ),
             ),
             SizedBox(height: 8),

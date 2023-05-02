@@ -564,6 +564,24 @@ class APIs {
         .toJson());
   }
 
+  static Future<void> activitySubmitReview(
+      {required String customerId,
+      required String msg,
+      required String agentId,
+      required String propertyId}) async {
+    String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await firestore.collection("activity").doc(dateTime).set(ActivityModel(
+            code: "123",
+            property_id: propertyId,
+            agent_id: agentId,
+            customer_id: customerId,
+            msg: msg,
+            isAdmin: false,
+            dateTime: dateTime)
+        .toJson());
+  }
+
   static Future<void> activityAssignedProperty(
       {required String property_id,
       required String msg,

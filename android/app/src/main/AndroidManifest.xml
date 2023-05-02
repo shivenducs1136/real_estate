@@ -7,11 +7,11 @@
 <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
    <application
-        android:label="Tiwari Propmarts"
+        android:label="Tiwari Propmart"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
          <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyApD_Jr7uw4SKFSC6mLu906ab9hjtmvt08"/>
+               android:value="AIzaSyA_vy5T6XneVZr7T9L2s_-yKC6faH83ZHw"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

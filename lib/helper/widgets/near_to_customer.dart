@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/cost_util.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/distance.dart';
 import 'package:real_estate/screens/admin/interested_customer_screen.dart';
 import 'package:real_estate/screens/common/property_view.dart';
@@ -49,19 +50,8 @@ class NeartoCustomer extends StatelessWidget {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: FadeInImage(
-                            placeholder: AssetImage("images/picture.png"),
-                            image: NetworkImage(
-                              nearbyPlaces[index].showImg,
-                            ),
-                            imageErrorBuilder: (context, error, stackTrace) {
-                              return Image.asset('images/picture.png',
-                                  fit: BoxFit.fitWidth);
-                            },
-                            height: double.maxFinite,
-                            width: 130,
-                            fit: BoxFit.cover,
-                          )),
+                          child:
+                              Dialogs.showImage(nearbyPlaces[index].showImg)),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
@@ -78,7 +68,6 @@ class NeartoCustomer extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Icon(
@@ -97,7 +86,6 @@ class NeartoCustomer extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Icon(

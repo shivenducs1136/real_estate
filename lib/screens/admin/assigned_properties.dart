@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/nearby_places.dart';
 import 'package:real_estate/helper/widgets/recommended_places.dart';
 import 'package:real_estate/model/agent_model.dart';
@@ -121,14 +122,7 @@ class _AssignedPropertiesState extends State<AssignedProperties> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
-                child: FadeInImage(
-                  placeholder: AssetImage("images/picture.png"),
-                  image: NetworkImage(property.showImg),
-                  imageErrorBuilder: (context, error, stackTrace) {
-                    return Image.asset('images/picture.png',
-                        fit: BoxFit.fitWidth);
-                  },
-                ),
+                child: Dialogs.showImage(property.showImg),
               ),
             ),
             SizedBox(height: 8),
