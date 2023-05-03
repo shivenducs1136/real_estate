@@ -110,25 +110,35 @@ class _ChooseAgentScreenState extends State<ChooseAgentScreen> {
                                                         )));
                                           },
                                           onLongPress: () {
-                                            Dialogs.showInputDialog(
-                                                context: context,
-                                                title: "Delete",
-                                                hint:
-                                                    "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
-                                                onOk: () {
-                                                  Dialogs.showProgressBar(
-                                                      context);
-                                                  APIs.deleteAgentWithAgentId(
-                                                          _agentlist[index].id)
-                                                      .then((value) {
-                                                    Navigator.pop(context);
-                                                    Dialogs.showSnackbar(
-                                                        context,
-                                                        "Deleted Successfully");
-                                                    _agentlist.remove(index);
-                                                  });
-                                                },
-                                                onCancel: () {});
+                                            Dialogs.checkInternet()
+                                                .then((value) {
+                                              if (value) {
+                                                Dialogs.showInputDialog(
+                                                    context: context,
+                                                    title: "Delete",
+                                                    hint:
+                                                        "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
+                                                    onOk: () {
+                                                      Dialogs.showProgressBar(
+                                                          context);
+                                                      APIs.deleteAgentWithAgentId(
+                                                              _agentlist[index]
+                                                                  .id)
+                                                          .then((value) {
+                                                        Navigator.pop(context);
+                                                        Dialogs.showSnackbar(
+                                                            context,
+                                                            "Deleted Successfully");
+                                                        _agentlist
+                                                            .remove(index);
+                                                      });
+                                                    },
+                                                    onCancel: () {});
+                                              } else {
+                                                Dialogs.showSnackbar(context,
+                                                    "No Internet Connection");
+                                              }
+                                            });
                                           },
                                           child: ListTile(
                                             title: Text(

@@ -113,14 +113,20 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
             right: 30,
             child: InkWell(
               onTap: () {
-                Dialogs.showProgressBar(context);
-                _handleLocationPermission().then((value) async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  Navigator.pop(context);
+                Dialogs.checkInternet().then((value) {
+                  if (value) {
+                    Dialogs.showProgressBar(context);
+                    _handleLocationPermission().then((value) async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      Navigator.pop(context);
 
-                  await OtpAuth.sendOtp(
-                      widget.customerModel.phonenumber, context);
+                      await OtpAuth.sendOtp(
+                          widget.customerModel.phonenumber, context);
+                    });
+                  } else {
+                    Dialogs.showSnackbar(context, "No Internet Connection");
+                  }
                 });
               },
               child: Container(
@@ -156,69 +162,79 @@ class _GenerateOtpScreenVerifyState extends State<GenerateOtpScreenVerify> {
                   },
                   //runs when every textfield is filled
                   onSubmit: (String verificationCode) {
-                    Dialogs.showProgressBar(context);
-                    OtpAuth.verifyOtp(verificationCode, context)
-                        .then((value) async {
-                      Navigator.pop(context);
-                      if (value == 1) {
-                        Dialogs.showSnackbar(
-                            context, "User Verified Successfully");
+                    Dialogs.checkInternet().then((value) {
+                      if (value) {
+                        Dialogs.showProgressBar(context);
+                        OtpAuth.verifyOtp(verificationCode, context)
+                            .then((value) async {
+                          Navigator.pop(context);
+                          if (value == 1) {
+                            Dialogs.showSnackbar(
+                                context, "User Verified Successfully");
 
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setBool("isTracking", true);
-                        prefs.setString("agentId", mvalue.getAgent!.id);
-                        prefs.setString(
-                            "customerId", widget.customerModel.customer_id);
-                        prefs.setString("propertyId", mvalue.getProperty!.id);
-                        Workmanager().registerPeriodicTask(
-                            "location", "fetchlocation",
-                            frequency: Duration(minutes: 15),
-                            constraints:
-                                Constraints(networkType: NetworkType.connected),
-                            inputData: {
-                              "agentId": mvalue.getAgent!.id,
-                              "customerId": widget.customerModel.customer_id,
-                              "propertyId": mvalue.getProperty!.id
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool("isTracking", true);
+                            prefs.setString("agentId", mvalue.getAgent!.id);
+                            prefs.setString(
+                                "customerId", widget.customerModel.customer_id);
+                            prefs.setString(
+                                "propertyId", mvalue.getProperty!.id);
+                            Workmanager().registerPeriodicTask(
+                                "location", "fetchlocation",
+                                frequency: Duration(minutes: 15),
+                                constraints: Constraints(
+                                    networkType: NetworkType.connected),
+                                inputData: {
+                                  "agentId": mvalue.getAgent!.id,
+                                  "customerId":
+                                      widget.customerModel.customer_id,
+                                  "propertyId": mvalue.getProperty!.id
+                                });
+                            mvalue.setTracking(true);
+                            mvalue.setCustomer(widget.customerModel);
+                            await Geolocator.getCurrentPosition(
+                                    desiredAccuracy: LocationAccuracy.best)
+                                .then((Position position) async {
+                              await FirebaseFirestore.instance
+                                  .collection("tracking")
+                                  .doc(mvalue.getProperty!.id)
+                                  .collection(mvalue.getAgent!.id)
+                                  .doc(widget.customerModel.customer_id)
+                                  .collection("coordinates")
+                                  .doc(DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString())
+                                  .set({
+                                'lat': position.latitude.toString(),
+                                'long': position.longitude.toString()
+                              });
                             });
-                        mvalue.setTracking(true);
-                        mvalue.setCustomer(widget.customerModel);
-                        await Geolocator.getCurrentPosition(
-                                desiredAccuracy: LocationAccuracy.best)
-                            .then((Position position) async {
-                          await FirebaseFirestore.instance
-                              .collection("tracking")
-                              .doc(mvalue.getProperty!.id)
-                              .collection(mvalue.getAgent!.id)
-                              .doc(widget.customerModel.customer_id)
-                              .collection("coordinates")
-                              .doc(DateTime.now()
-                                  .millisecondsSinceEpoch
-                                  .toString())
-                              .set({
-                            'lat': position.latitude.toString(),
-                            'long': position.longitude.toString()
-                          });
+                            APIs.activityGenerateOtp(
+                                property_id: mvalue.getProperty!.id,
+                                msg:
+                                    "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} going for Property - ${mvalue.getProperty!.property_name}",
+                                agent_id: mvalue.getAgent!.id,
+                                customer_id:
+                                    widget.customerModel.customer_name);
+                          } else if (value == -1) {
+                            Dialogs.showSnackbar(
+                                context, "User verification failed");
+                            Navigator.pop(context);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool("isTracking", false);
+                            APIs.activityGenerateOtp(
+                                property_id: mvalue.getProperty!.id,
+                                msg:
+                                    "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} have tried to verify customer.",
+                                agent_id: mvalue.getAgent!.id,
+                                customer_id:
+                                    widget.customerModel.customer_name);
+                          }
                         });
-                        APIs.activityGenerateOtp(
-                            property_id: mvalue.getProperty!.id,
-                            msg:
-                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} going for Property - ${mvalue.getProperty!.property_name}",
-                            agent_id: mvalue.getAgent!.id,
-                            customer_id: widget.customerModel.customer_name);
-                      } else if (value == -1) {
-                        Dialogs.showSnackbar(
-                            context, "User verification failed");
-                        Navigator.pop(context);
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setBool("isTracking", false);
-                        APIs.activityGenerateOtp(
-                            property_id: mvalue.getProperty!.id,
-                            msg:
-                                "Agent - ${mvalue.getAgent!.agent_name} is with Customer - ${widget.customerModel.customer_name} have tried to verify customer.",
-                            agent_id: mvalue.getAgent!.id,
-                            customer_id: widget.customerModel.customer_name);
+                      } else {
+                        Dialogs.showSnackbar(context, "No Internet Connection");
                       }
                     });
                   }, // end onSubmit

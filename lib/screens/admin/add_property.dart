@@ -646,81 +646,94 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       onTap: () {
                         formKey.currentState!.save();
                         // add data to firebase
-                        String dateTime =
-                            DateTime.now().microsecondsSinceEpoch.toString();
-                        Property p = Property(
-                            property_name: property_name,
-                            bedrooms: bedrooms,
-                            bathrooms: bathrooms,
-                            garages: garages,
-                            cost: cost,
-                            area: isFlat ? area + " sq ft" : area + " sq mt",
-                            id: "${dateTime}",
-                            address: address,
-                            lat: widget.isUpdate ? widget.currProp!.lat : lat,
-                            lon: widget.isUpdate ? widget.currProp!.lon : long,
-                            showImg: 'https://picsum.photos/200/300',
-                            yearBuilt: year_built);
-                        Dialogs.showProgressBar(context);
-                        if ((images == null || images!.isEmpty) &&
-                            !widget.isUpdate) {
-                          Navigator.pop(context);
-                          Dialogs.showSnackbar(
-                              context, "Please add atleast 1 image");
-                        } else if (property_name == "" ||
-                                cost == "" ||
-                                year_built == ""
-                            //  && !widget.isUpdate
-                            // ? (lat == "" || long == "") : false
+                        Dialogs.checkInternet().then((value) {
+                          if (value) {
+                            String dateTime = DateTime.now()
+                                .microsecondsSinceEpoch
+                                .toString();
+                            Property p = Property(
+                                property_name: property_name,
+                                bedrooms: bedrooms,
+                                bathrooms: bathrooms,
+                                garages: garages,
+                                cost: cost,
+                                area:
+                                    isFlat ? area + " sq ft" : area + " sq mt",
+                                id: "${dateTime}",
+                                address: address,
+                                lat: widget.isUpdate
+                                    ? widget.currProp!.lat
+                                    : lat,
+                                lon: widget.isUpdate
+                                    ? widget.currProp!.lon
+                                    : long,
+                                showImg: 'https://picsum.photos/200/300',
+                                yearBuilt: year_built);
+                            Dialogs.showProgressBar(context);
+                            if ((images == null || images!.isEmpty) &&
+                                !widget.isUpdate) {
+                              Navigator.pop(context);
+                              Dialogs.showSnackbar(
+                                  context, "Please add atleast 1 image");
+                            } else if (property_name == "" ||
+                                    cost == "" ||
+                                    year_built == ""
+                                //  && !widget.isUpdate
+                                // ? (lat == "" || long == "") : false
 
-                            ) {
-                          Navigator.pop(context);
-                          Dialogs.showSnackbar(
-                              context, "Please add all details");
-                        } else {
-                          if (!widget.isUpdate) {
-                            APIs.addPropertyToFirebase(p).then((value) {
-                              APIs.activityAddProperty(
-                                      property_id: dateTime,
-                                      msg:
-                                          "Property - ${property_name} added by Admin")
-                                  .then((value) {
-                                APIs.addPropertyPhotos(images!, p)
-                                    .then((value) {
-                                  Navigator.pop(context);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              ViewPropertyScreen()));
-                                  Dialogs.showSnackbar(
-                                      context, "Property Added Successfully");
+                                ) {
+                              Navigator.pop(context);
+                              Dialogs.showSnackbar(
+                                  context, "Please add all details");
+                            } else {
+                              if (!widget.isUpdate) {
+                                APIs.addPropertyToFirebase(p).then((value) {
+                                  APIs.activityAddProperty(
+                                          property_id: dateTime,
+                                          msg:
+                                              "Property - ${property_name} added by Admin")
+                                      .then((value) {
+                                    APIs.addPropertyPhotos(images!, p)
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ViewPropertyScreen()));
+                                      Dialogs.showSnackbar(context,
+                                          "Property Added Successfully");
+                                    });
+                                  });
                                 });
-                              });
-                            });
+                              } else {
+                                p.id = widget.currProp!.id;
+                                APIs.addPropertyToFirebase(p).then((value) {
+                                  APIs.activityUpdateProperty(
+                                          property_id: dateTime,
+                                          msg:
+                                              "Property - ${property_name} updated by Admin")
+                                      .then((value) {
+                                    APIs.addPropertyPhotos(images!, p)
+                                        .then((value) {
+                                      Navigator.pop(context);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ViewPropertyScreen()));
+                                      Dialogs.showSnackbar(context,
+                                          "Property Updated Successfully");
+                                    });
+                                  });
+                                });
+                              }
+                            }
                           } else {
-                            p.id = widget.currProp!.id;
-                            APIs.addPropertyToFirebase(p).then((value) {
-                              APIs.activityUpdateProperty(
-                                      property_id: dateTime,
-                                      msg:
-                                          "Property - ${property_name} updated by Admin")
-                                  .then((value) {
-                                APIs.addPropertyPhotos(images!, p)
-                                    .then((value) {
-                                  Navigator.pop(context);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              ViewPropertyScreen()));
-                                  Dialogs.showSnackbar(
-                                      context, "Property Updated Successfully");
-                                });
-                              });
-                            });
+                            Dialogs.showSnackbar(
+                                context, "No Internet Connection");
                           }
-                        }
+                        });
                       },
                       child: Container(
                         height: mq.height * .07,

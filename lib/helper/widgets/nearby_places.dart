@@ -57,21 +57,28 @@ class NearbyPlaces extends StatelessWidget {
                       },
                       onLongPress: () {
                         if (isUpdate) {
-                          Dialogs.showInputDialog(
-                              context: context,
-                              title: "Delete",
-                              hint:
-                                  "Are you sure want to delete agent ${nearbyPlaces[index].property_name}?",
-                              onOk: () {
-                                APIs.deleteProperty(nearbyPlaces[index].id)
-                                    .then((value) {
-                                  APIs.activityDeleteProperty(
-                                      propertyId: nearbyPlaces[index].id,
-                                      msg:
-                                          "Property - ${nearbyPlaces[index].property_name} is deleted by admin.");
-                                });
-                              },
-                              onCancel: () {});
+                          Dialogs.checkInternet().then((value) {
+                            if (value) {
+                              Dialogs.showInputDialog(
+                                  context: context,
+                                  title: "Delete",
+                                  hint:
+                                      "Are you sure want to delete agent ${nearbyPlaces[index].property_name}?",
+                                  onOk: () {
+                                    APIs.deleteProperty(nearbyPlaces[index].id)
+                                        .then((value) {
+                                      APIs.activityDeleteProperty(
+                                          propertyId: nearbyPlaces[index].id,
+                                          msg:
+                                              "Property - ${nearbyPlaces[index].property_name} is deleted by admin.");
+                                    });
+                                  },
+                                  onCancel: () {});
+                            } else {
+                              Dialogs.showSnackbar(
+                                  context, "No Internet Connection");
+                            }
+                          });
                         }
                       },
                       child: Padding(

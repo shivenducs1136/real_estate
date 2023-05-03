@@ -145,48 +145,55 @@ class Agent_LocationScreenState extends State<AgentLocationScreen> {
                     right: 10,
                     child: InkWell(
                       onTap: () async {
-                        Dialogs.showProgressBar;
-                        Workmanager().cancelAll();
-                        SharedPreferences pref =
-                            await SharedPreferences.getInstance();
-                        pref.setBool('isTracking', false);
-                        APIs.submitReview(mvalue.getCustomer!, reviewText);
-                        APIs.setisLoan(mvalue.getCustomer!, isChecked);
-                        mvalue.setTracking(false);
-                        await FirebaseAuth.instance.signOut();
-                        await Geolocator.getCurrentPosition(
-                                desiredAccuracy: LocationAccuracy.best)
-                            .then((Position position) async {
-                          String agentId =
-                              pref.getString("agentId").toString() ?? "";
-                          String propertyId =
-                              pref.getString("propertyId").toString() ?? "";
-                          String customerId =
-                              pref.getString("customerId").toString() ?? "";
-                          APIs.activitySubmitReview(
-                              customerId: customerId,
-                              msg:
-                                  "${mvalue.customerModel != null ? mvalue.customerModel!.customer_name : "Customer"} Submitted a review.",
-                              agentId: agentId,
-                              propertyId: propertyId);
+                        Dialogs.checkInternet().then((value) async {
+                          if (value) {
+                            Dialogs.showProgressBar;
+                            Workmanager().cancelAll();
+                            SharedPreferences pref =
+                                await SharedPreferences.getInstance();
+                            pref.setBool('isTracking', false);
+                            APIs.submitReview(mvalue.getCustomer!, reviewText);
+                            APIs.setisLoan(mvalue.getCustomer!, isChecked);
+                            mvalue.setTracking(false);
+                            await FirebaseAuth.instance.signOut();
+                            await Geolocator.getCurrentPosition(
+                                    desiredAccuracy: LocationAccuracy.best)
+                                .then((Position position) async {
+                              String agentId =
+                                  pref.getString("agentId").toString() ?? "";
+                              String propertyId =
+                                  pref.getString("propertyId").toString() ?? "";
+                              String customerId =
+                                  pref.getString("customerId").toString() ?? "";
+                              APIs.activitySubmitReview(
+                                  customerId: customerId,
+                                  msg:
+                                      "${mvalue.customerModel != null ? mvalue.customerModel!.customer_name : "Customer"} Submitted a review.",
+                                  agentId: agentId,
+                                  propertyId: propertyId);
 
-                          await FirebaseFirestore.instance
-                              .collection("tracking")
-                              .doc(propertyId)
-                              .collection(agentId)
-                              .doc(customerId)
-                              .collection("coordinates")
-                              .doc(DateTime.now()
-                                  .millisecondsSinceEpoch
-                                  .toString())
-                              .set({
-                            'lat': position.latitude.toString(),
-                            'long': position.longitude.toString()
-                          });
+                              await FirebaseFirestore.instance
+                                  .collection("tracking")
+                                  .doc(propertyId)
+                                  .collection(agentId)
+                                  .doc(customerId)
+                                  .collection("coordinates")
+                                  .doc(DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString())
+                                  .set({
+                                'lat': position.latitude.toString(),
+                                'long': position.longitude.toString()
+                              });
+                            });
+                            Navigator.pop(context);
+                            Dialogs.showSnackbar(
+                                context, "Review Submitted Successfuly");
+                          } else {
+                            Dialogs.showSnackbar(
+                                context, "No Internet Connection");
+                          }
                         });
-                        Navigator.pop(context);
-                        Dialogs.showSnackbar(
-                            context, "Review Submitted Successfuly");
                       },
                       child: Container(
                         height: 80,

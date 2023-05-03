@@ -401,136 +401,155 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     InkWell(
                       onTap: () {
                         formKey.currentState!.save();
-                        String agEmail = agent_email.trim().toLowerCase();
-                        if (widget.isUpdate) {
-                          var value = new Random();
-                          var codeNumber =
-                              (value.nextInt(900000) + 100000).toString();
-                          Dialogs.showProgressBar(context);
-                          AgentModel a = AgentModel(
-                            password: codeNumber,
-                            agent_name: agent_name,
-                            email:
-                                agent_email.trim().toLowerCase().toLowerCase(),
-                            age: age,
-                            phone_number: phone_number,
-                            address: address,
-                            id: agEmail,
-                            photo: photourl != ""
-                                ? photourl
-                                : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
-                            dob: dob.isNotEmpty
-                                ? MyDateUtil.getEventDetailDate(dob[0]!)
-                                : "",
-                            isMale: isMale,
-                          );
-                          APIs.addAgentToFirebase(a).then((value) {
-                            if (img != null) {
-                              APIs.addAgentImage(img!, a).then((value) {
-                                widget.isUpdate
-                                    ? APIs.activityAddAgent(
-                                        msg: "${agent_name} updated by Admin",
-                                        agent_id: agEmail)
-                                    : APIs.activityUpdateAgent(
-                                        msg: "${agent_name} added by Admin",
-                                        agent_id: agEmail);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                                Mailer.sendCredentialsEmail(
-                                    password: codeNumber, destEmail: agEmail);
-                                Dialogs.showSnackbar(context,
-                                    "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
-                              });
-                            } else {
-                              APIs.activityAddAgent(
-                                  msg: "${agent_name} updated by Admin",
-                                  agent_id: agEmail);
 
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Dialogs.showSnackbar(
-                                  context, "Agent Updated Successfully");
-                            }
-                          });
-                        } else {
-                          if (agEmail.isNotEmpty &&
-                              agEmail.contains("@") &&
-                              agEmail.contains(".com")) {
-                            APIs.isAgentExists(agent_email.trim().toLowerCase())
-                                .then((value) {
-                              if (value == true) {
-                                var value = new Random();
-                                var codeNumber =
-                                    (value.nextInt(900000) + 100000).toString();
-                                Dialogs.showProgressBar(context);
-                                AgentModel a = AgentModel(
-                                    password: codeNumber,
-                                    agent_name: agent_name,
-                                    email: agent_email.trim().toLowerCase(),
-                                    age: age,
-                                    phone_number: phone_number,
-                                    address: address,
-                                    id: "${agent_email.trim().toLowerCase()}",
-                                    photo:
-                                        'https://cdn.vectorstock.com/i/1000x1000/62/36/call-center-agent-operator-avatar-vector-24606236.webp',
-                                    dob: dob.isNotEmpty
-                                        ? MyDateUtil.getEventDetailDate(dob[0]!)
-                                        : "",
-                                    isMale: isMale);
-                                APIs.addAgentToFirebase(a).then((value) {
-                                  if (img != null) {
-                                    APIs.addAgentImage(img!, a).then((value) {
-                                      widget.isUpdate
-                                          ? APIs.activityAddAgent(
-                                              msg:
-                                                  "${agent_name} updated by Admin",
-                                              agent_id: agent_email
-                                                  .trim()
-                                                  .toLowerCase())
-                                          : APIs.activityUpdateAgent(
-                                              msg:
-                                                  "${agent_name} added by Admin",
-                                              agent_id: agent_email
-                                                  .trim()
-                                                  .toLowerCase());
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                      Mailer.sendCredentialsEmail(
-                                          password: codeNumber,
-                                          destEmail:
-                                              agent_email.trim().toLowerCase());
-                                      Dialogs.showSnackbar(context,
-                                          "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
-                                    });
-                                  } else {
+                        Dialogs.checkInternet().then((value) {
+                          if (value) {
+                            String agEmail = agent_email.trim().toLowerCase();
+                            if (widget.isUpdate) {
+                              var value = new Random();
+                              var codeNumber =
+                                  (value.nextInt(900000) + 100000).toString();
+                              Dialogs.showProgressBar(context);
+                              AgentModel a = AgentModel(
+                                password: codeNumber,
+                                agent_name: agent_name,
+                                email: agent_email
+                                    .trim()
+                                    .toLowerCase()
+                                    .toLowerCase(),
+                                age: age,
+                                phone_number: phone_number,
+                                address: address,
+                                id: agEmail,
+                                photo: photourl != ""
+                                    ? photourl
+                                    : 'https://www.bing.com/images/blob?bcid=r3B777OKZl0FlejhWxYdTD-8qF4A.....x4',
+                                dob: dob.isNotEmpty
+                                    ? MyDateUtil.getEventDetailDate(dob[0]!)
+                                    : "",
+                                isMale: isMale,
+                              );
+                              APIs.addAgentToFirebase(a).then((value) {
+                                if (img != null) {
+                                  APIs.addAgentImage(img!, a).then((value) {
                                     widget.isUpdate
                                         ? APIs.activityAddAgent(
                                             msg:
                                                 "${agent_name} updated by Admin",
-                                            agent_id: agent_email
-                                                .trim()
-                                                .toLowerCase())
+                                            agent_id: agEmail)
                                         : APIs.activityUpdateAgent(
                                             msg: "${agent_name} added by Admin",
-                                            agent_id: agent_email
-                                                .trim()
-                                                .toLowerCase());
+                                            agent_id: agEmail);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
+                                    Mailer.sendCredentialsEmail(
+                                        password: codeNumber,
+                                        destEmail: agEmail);
                                     Dialogs.showSnackbar(context,
                                         "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                                  });
+                                } else {
+                                  APIs.activityAddAgent(
+                                      msg: "${agent_name} updated by Admin",
+                                      agent_id: agEmail);
+
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  Dialogs.showSnackbar(
+                                      context, "Agent Updated Successfully");
+                                }
+                              });
+                            } else {
+                              if (agEmail.isNotEmpty &&
+                                  agEmail.contains("@") &&
+                                  agEmail.contains(".com")) {
+                                APIs.isAgentExists(
+                                        agent_email.trim().toLowerCase())
+                                    .then((value) {
+                                  if (value == true) {
+                                    var value = new Random();
+                                    var codeNumber =
+                                        (value.nextInt(900000) + 100000)
+                                            .toString();
+                                    Dialogs.showProgressBar(context);
+                                    AgentModel a = AgentModel(
+                                        password: codeNumber,
+                                        agent_name: agent_name,
+                                        email: agent_email.trim().toLowerCase(),
+                                        age: age,
+                                        phone_number: phone_number,
+                                        address: address,
+                                        id:
+                                            "${agent_email.trim().toLowerCase()}",
+                                        photo:
+                                            'https://cdn.vectorstock.com/i/1000x1000/62/36/call-center-agent-operator-avatar-vector-24606236.webp',
+                                        dob: dob.isNotEmpty
+                                            ? MyDateUtil.getEventDetailDate(
+                                                dob[0]!)
+                                            : "",
+                                        isMale: isMale);
+                                    APIs.addAgentToFirebase(a).then((value) {
+                                      if (img != null) {
+                                        APIs.addAgentImage(img!, a)
+                                            .then((value) {
+                                          widget.isUpdate
+                                              ? APIs.activityAddAgent(
+                                                  msg:
+                                                      "${agent_name} updated by Admin",
+                                                  agent_id: agent_email
+                                                      .trim()
+                                                      .toLowerCase())
+                                              : APIs.activityUpdateAgent(
+                                                  msg:
+                                                      "${agent_name} added by Admin",
+                                                  agent_id: agent_email
+                                                      .trim()
+                                                      .toLowerCase());
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          Mailer.sendCredentialsEmail(
+                                              password: codeNumber,
+                                              destEmail: agent_email
+                                                  .trim()
+                                                  .toLowerCase());
+                                          Dialogs.showSnackbar(context,
+                                              "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                                        });
+                                      } else {
+                                        widget.isUpdate
+                                            ? APIs.activityAddAgent(
+                                                msg:
+                                                    "${agent_name} updated by Admin",
+                                                agent_id: agent_email
+                                                    .trim()
+                                                    .toLowerCase())
+                                            : APIs.activityUpdateAgent(
+                                                msg:
+                                                    "${agent_name} added by Admin",
+                                                agent_id: agent_email
+                                                    .trim()
+                                                    .toLowerCase());
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                        Dialogs.showSnackbar(context,
+                                            "Agent ${widget.isUpdate ? "Updated" : "Added"} Successfully");
+                                      }
+                                    });
+                                  } else {
+                                    Dialogs.showSnackbar(
+                                        context, "Agent already exists");
                                   }
                                 });
                               } else {
                                 Dialogs.showSnackbar(
-                                    context, "Agent already exists");
+                                    context, "Please add valid email address");
                               }
-                            });
+                            }
                           } else {
                             Dialogs.showSnackbar(
-                                context, "Please add valid email address");
+                                context, "No Internet Connection");
                           }
-                        }
+                        });
                       },
                       child: Container(
                         height: mq.height * .07,

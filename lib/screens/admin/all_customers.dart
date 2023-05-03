@@ -148,27 +148,37 @@ class _AllCustomersScreenState extends State<AllCustomersScreen> {
                                                         )));
                                           },
                                           onLongPress: () {
-                                            Dialogs.showInputDialog(
-                                                context: context,
-                                                title: "Delete",
-                                                hint:
-                                                    "Are you sure want to delete agent ${_customerList[index].customer_name}?",
-                                                onOk: () {
-                                                  APIs.deleteCustomer(
-                                                          _customerList[index])
-                                                      .then((value) {
-                                                    Dialogs.showSnackbar(
-                                                        context,
-                                                        "Deleted Successfuly");
-                                                  });
-                                                  APIs.activityDeleteCustomer(
-                                                      msg:
-                                                          "Customer ${_customerList[index].customer_name} deleted",
-                                                      customerId:
-                                                          _customerList[index]
-                                                              .customer_id);
-                                                },
-                                                onCancel: () {});
+                                            Dialogs.checkInternet()
+                                                .then((value) {
+                                              if (value) {
+                                                Dialogs.showInputDialog(
+                                                    context: context,
+                                                    title: "Delete",
+                                                    hint:
+                                                        "Are you sure want to delete agent ${_customerList[index].customer_name}?",
+                                                    onOk: () {
+                                                      APIs.deleteCustomer(
+                                                              _customerList[
+                                                                  index])
+                                                          .then((value) {
+                                                        Dialogs.showSnackbar(
+                                                            context,
+                                                            "Deleted Successfuly");
+                                                      });
+                                                      APIs.activityDeleteCustomer(
+                                                          msg:
+                                                              "Customer ${_customerList[index].customer_name} deleted",
+                                                          customerId:
+                                                              _customerList[
+                                                                      index]
+                                                                  .customer_id);
+                                                    },
+                                                    onCancel: () {});
+                                              } else {
+                                                Dialogs.showSnackbar(context,
+                                                    "No Internet Connection");
+                                              }
+                                            });
                                           },
                                           child: ListTile(
                                             title: Text(

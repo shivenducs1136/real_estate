@@ -149,7 +149,6 @@ class _RentScreenState extends State<RentScreen> {
                                                                   .customer_id,
                                                         )));
                                           },
-                                          onLongPress: () {},
                                           child: ListTile(
                                             title: Text(
                                                 "${_customerList[index].customer_name}"),

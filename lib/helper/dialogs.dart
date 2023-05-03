@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
@@ -55,6 +56,14 @@ class Dialogs {
         );
       },
     );
+  }
+
+  static Future<bool> checkInternet() async {
+    var result = await Connectivity().checkConnectivity();
+    if (result == ConnectivityResult.none) {
+      return false;
+    }
+    return true;
   }
 
   static Future<void> showInputDialog({

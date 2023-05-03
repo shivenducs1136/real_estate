@@ -149,7 +149,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                                                   .customer_id,
                                                         )));
                                           },
-                                          onLongPress: () {},
                                           child: ListTile(
                                             title: Text(
                                                 "${_customerList[index].customer_name}"),

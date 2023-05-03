@@ -228,88 +228,100 @@ class _AssignPropertyScreenState extends State<AssignPropertyScreen> {
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate() &&
-                                _selectedProperty != null &&
-                                _selectedAgent != null) {
-                              _formKey.currentState!.save();
+                            Dialogs.checkInternet().then((value) {
+                              if (value) {
+                                if (_formKey.currentState!.validate() &&
+                                    _selectedProperty != null &&
+                                    _selectedAgent != null) {
+                                  _formKey.currentState!.save();
 
-                              if (_phoneNumber.length == 10) {
-                                APIs.assignPropertyToAgent(
-                                        _selectedProperty!, _selectedAgent!)
-                                    .then((value) {
-                                  Dialogs.showProgressBar(context);
-                                  APIs.isCustomerExists(_phoneNumber)
-                                      .then((value) {
-                                    if (value != null) {
-                                      List<dynamic> prop = value.property_id;
-                                      List<dynamic> agent = value.agent_id;
-                                      prop.add(_selectedProperty!.id);
-                                      agent.add(_selectedAgent!.id);
-                                      APIs.addCustomer(CustomerModel(
-                                              customer_name: _name,
-                                              property_id: prop,
-                                              agent_id: agent,
-                                              phonenumber: _phoneNumber,
-                                              address: _address,
-                                              customer_id: _phoneNumber,
-                                              isLoan: false,
-                                              isPurchase:
-                                                  radioBtnValue == "Purchase"
+                                  if (_phoneNumber.length == 10) {
+                                    APIs.assignPropertyToAgent(
+                                            _selectedProperty!, _selectedAgent!)
+                                        .then((value) {
+                                      Dialogs.showProgressBar(context);
+                                      APIs.isCustomerExists(_phoneNumber)
+                                          .then((value) {
+                                        if (value != null) {
+                                          List<dynamic> prop =
+                                              value.property_id;
+                                          List<dynamic> agent = value.agent_id;
+                                          prop.add(_selectedProperty!.id);
+                                          agent.add(_selectedAgent!.id);
+                                          APIs.addCustomer(CustomerModel(
+                                                  customer_name: _name,
+                                                  property_id: prop,
+                                                  agent_id: agent,
+                                                  phonenumber: _phoneNumber,
+                                                  address: _address,
+                                                  customer_id: _phoneNumber,
+                                                  isLoan: false,
+                                                  isPurchase: radioBtnValue ==
+                                                          "Purchase"
                                                       ? true
                                                       : false))
-                                          .then((value) async {
-                                        await APIs.activityAssignedProperty(
-                                            property_id: _selectedProperty!.id,
-                                            msg:
-                                                "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
-                                            agent_id: _selectedAgent!.id,
-                                            customer_id: _phoneNumber);
-                                        // ignore: use_build_context_synchronously
-                                        Dialogs.showSnackbar(context,
-                                            "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
-                                        // ignore: use_build_context_synchronously
-                                        Navigator.pop(context);
-                                        // ignore: use_build_context_synchronously
-                                        Navigator.pop(context);
-                                      });
-                                    } else {
-                                      APIs.addCustomer(CustomerModel(
-                                              customer_name: _name,
-                                              property_id: [
-                                                _selectedProperty!.id
-                                              ],
-                                              agent_id: [_selectedAgent!.id],
-                                              phonenumber: _phoneNumber,
-                                              address: _address,
-                                              customer_id: _phoneNumber,
-                                              isLoan: false,
-                                              isPurchase:
-                                                  radioBtnValue == "Purchase"
+                                              .then((value) async {
+                                            await APIs.activityAssignedProperty(
+                                                property_id:
+                                                    _selectedProperty!.id,
+                                                msg:
+                                                    "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
+                                                agent_id: _selectedAgent!.id,
+                                                customer_id: _phoneNumber);
+                                            // ignore: use_build_context_synchronously
+                                            Dialogs.showSnackbar(context,
+                                                "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.pop(context);
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.pop(context);
+                                          });
+                                        } else {
+                                          APIs.addCustomer(CustomerModel(
+                                                  customer_name: _name,
+                                                  property_id: [
+                                                    _selectedProperty!.id
+                                                  ],
+                                                  agent_id: [
+                                                    _selectedAgent!.id
+                                                  ],
+                                                  phonenumber: _phoneNumber,
+                                                  address: _address,
+                                                  customer_id: _phoneNumber,
+                                                  isLoan: false,
+                                                  isPurchase: radioBtnValue ==
+                                                          "Purchase"
                                                       ? true
                                                       : false))
-                                          .then((value) async {
-                                        await APIs.activityAssignedProperty(
-                                            property_id: _selectedProperty!.id,
-                                            msg:
-                                                "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
-                                            agent_id: _selectedAgent!.id,
-                                            customer_id: _phoneNumber);
-                                        Dialogs.showSnackbar(context,
-                                            "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
+                                              .then((value) async {
+                                            await APIs.activityAssignedProperty(
+                                                property_id:
+                                                    _selectedProperty!.id,
+                                                msg:
+                                                    "Admin assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}",
+                                                agent_id: _selectedAgent!.id,
+                                                customer_id: _phoneNumber);
+                                            Dialogs.showSnackbar(context,
+                                                "Successfully assigned ${_selectedProperty!.property_name} to ${_selectedAgent!.agent_name} with ${_name}");
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          });
+                                        }
                                       });
-                                    }
-                                  });
-                                });
+                                    });
+                                  } else {
+                                    Dialogs.showSnackbar(
+                                        context, "Invalid phone number");
+                                  }
+                                } else {
+                                  Dialogs.showSnackbar(context,
+                                      "Property or Agent can't be empty");
+                                }
                               } else {
                                 Dialogs.showSnackbar(
-                                    context, "Invalid phone number");
+                                    context, "No Internet Connection");
                               }
-                            } else {
-                              Dialogs.showSnackbar(
-                                  context, "Property or Agent can't be empty");
-                            }
+                            });
                           },
                           child: Text('Submit'),
                         ),

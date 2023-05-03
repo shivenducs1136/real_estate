@@ -129,22 +129,32 @@ class _AllAgentScreenState extends State<AllAgentScreen> {
                                                                     index])));
                                           },
                                           onLongPress: () {
-                                            Dialogs.showInputDialog(
-                                                context: context,
-                                                title: "Delete",
-                                                hint:
-                                                    "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
-                                                onOk: () {
-                                                  APIs.deleteAgentWithAgentId(
-                                                          _agentlist[index].id)
-                                                      .then((value) {
-                                                    Dialogs.showSnackbar(
-                                                        context,
-                                                        "Deleted Successfully");
-                                                    _agentlist.remove(index);
-                                                  });
-                                                },
-                                                onCancel: () {});
+                                            Dialogs.checkInternet()
+                                                .then((value) {
+                                              if (value) {
+                                                Dialogs.showInputDialog(
+                                                    context: context,
+                                                    title: "Delete",
+                                                    hint:
+                                                        "Are you sure want to delete agent ${_agentlist[index].agent_name}?",
+                                                    onOk: () {
+                                                      APIs.deleteAgentWithAgentId(
+                                                              _agentlist[index]
+                                                                  .id)
+                                                          .then((value) {
+                                                        Dialogs.showSnackbar(
+                                                            context,
+                                                            "Deleted Successfully");
+                                                        _agentlist
+                                                            .remove(index);
+                                                      });
+                                                    },
+                                                    onCancel: () {});
+                                              } else {
+                                                Dialogs.showSnackbar(context,
+                                                    "No Internet Connection");
+                                              }
+                                            });
                                           },
                                           child: ListTile(
                                             title: Text(

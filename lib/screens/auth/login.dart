@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -141,41 +143,49 @@ class _LoginMainState extends State<LoginMain> {
                             onTap: () {
                               formKey.currentState!.save();
                               String em = email.trim().toLowerCase().toString();
-                              if (em.isNotEmpty &&
-                                  em.contains("@") &&
-                                  em.contains(".com")) {
-                                Dialogs.showProgressBar(context);
-                                APIs.isAgentExists(em).then((isAgentExist) {
-                                  if (isAgentExist) {
-                                    var value = new Random();
-                                    var codeNumber =
-                                        (value.nextInt(900000) + 100000)
-                                            .toString();
-                                    try {
-                                      Mailer.sendCredentialsEmail(
-                                          password: codeNumber, destEmail: em);
-                                      APIs.updateEmailAndPassword(
-                                              em, codeNumber)
-                                          .then((value) {
+                              Dialogs.checkInternet().then((value) {
+                                if (value) {
+                                  if (em.isNotEmpty &&
+                                      em.contains("@") &&
+                                      em.contains(".com")) {
+                                    Dialogs.showProgressBar(context);
+                                    APIs.isAgentExists(em).then((isAgentExist) {
+                                      if (isAgentExist) {
+                                        var value = new Random();
+                                        var codeNumber =
+                                            (value.nextInt(900000) + 100000)
+                                                .toString();
+                                        try {
+                                          Mailer.sendCredentialsEmail(
+                                              password: codeNumber,
+                                              destEmail: em);
+                                          APIs.updateEmailAndPassword(
+                                                  em, codeNumber)
+                                              .then((value) {
+                                            Navigator.pop(context);
+                                            Dialogs.showSnackbar(context,
+                                                "New password is sent to ${em}");
+                                          });
+                                        } catch (e) {
+                                          Navigator.pop(context);
+                                          Dialogs.showSnackbar(
+                                              context, "Unknown error occured");
+                                        }
+                                      } else {
                                         Navigator.pop(context);
                                         Dialogs.showSnackbar(context,
-                                            "New password is sent to ${em}");
-                                      });
-                                    } catch (e) {
-                                      Navigator.pop(context);
-                                      Dialogs.showSnackbar(
-                                          context, "Unknown error occured");
-                                    }
+                                            "Please enter a valid email id.");
+                                      }
+                                    });
                                   } else {
-                                    Navigator.pop(context);
                                     Dialogs.showSnackbar(context,
                                         "Please enter a valid email id.");
                                   }
-                                });
-                              } else {
-                                Dialogs.showSnackbar(
-                                    context, "Please enter a valid email id.");
-                              }
+                                } else {
+                                  Dialogs.showSnackbar(
+                                      context, "No Internet Connection");
+                                }
+                              });
                             },
                             child: const Text(
                               "Forgot password?",
@@ -192,55 +202,63 @@ class _LoginMainState extends State<LoginMain> {
                 onPressed: () async {
                   formKey.currentState!.save();
                   FocusScope.of(context).requestFocus(FocusNode());
-                  Dialogs.showProgressBar(context);
                   String em = email.trim().toLowerCase().toString();
                   String pa = password.trim().toString();
-                  if (widget.isAdmin) {
-                    Navigator.pop(context);
+                  Dialogs.checkInternet().then((value) async {
+                    if (value) {
+                      Dialogs.showProgressBar(context);
 
-                    if (APIs.adminLogin(em, pa)) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const AdminScreen()));
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.setInt('login', 1);
-                    } else {
-                      Dialogs.showSnackbar(context, "Login Failed");
-                    }
-                  } else {
-                    if (em.isNotEmpty &&
-                        em.contains("@") &&
-                        em.contains(".com")) {
-                      await APIs.agentLogin(
-                              email.trim().toLowerCase().toString(),
-                              password.trim().toString())
-                          .then((value) async {
-                        if (value) {
-                          Navigator.pop(context);
-                          await APIs.activityLogin(
-                              email.trim().toLowerCase().toString(),
-                              "Agent - ${email.trim().toLowerCase().toString()} Logged in");
+                      if (widget.isAdmin) {
+                        Navigator.pop(context);
+
+                        if (APIs.adminLogin(em, pa)) {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => AgentScreen(
-                                        email: email,
-                                      )));
+                                  builder: (_) => const AdminScreen()));
                           final prefs = await SharedPreferences.getInstance();
-                          await prefs.setInt('login', 2);
-                          await prefs.setString('email', email);
+                          await prefs.setInt('login', 1);
                         } else {
-                          Navigator.pop(context);
                           Dialogs.showSnackbar(context, "Login Failed");
                         }
-                      });
+                      } else {
+                        if (em.isNotEmpty &&
+                            em.contains("@") &&
+                            em.contains(".com")) {
+                          await APIs.agentLogin(
+                                  email.trim().toLowerCase().toString(),
+                                  password.trim().toString())
+                              .then((value) async {
+                            if (value) {
+                              Navigator.pop(context);
+                              await APIs.activityLogin(
+                                  email.trim().toLowerCase().toString(),
+                                  "Agent - ${email.trim().toLowerCase().toString()} Logged in");
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => AgentScreen(
+                                            email: email,
+                                          )));
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setInt('login', 2);
+                              await prefs.setString('email', email);
+                            } else {
+                              Navigator.pop(context);
+                              Dialogs.showSnackbar(context, "Login Failed");
+                            }
+                          });
+                        } else {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(context,
+                              "Valid email should contains `@` and `.com` ");
+                        }
+                      }
                     } else {
-                      Navigator.pop(context);
-                      Dialogs.showSnackbar(context,
-                          "Valid email should contains `@` and `.com` ");
+                      Dialogs.showSnackbar(context, "No Internet Connection");
                     }
-                  }
+                  });
                 },
                 // ignore: prefer_const_constructors
                 icon: Icon(
