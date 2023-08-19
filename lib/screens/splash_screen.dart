@@ -87,9 +87,9 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 20,
           ),
           const Text(
-            "True Professionals",
+            "TRUE PROFESSIONALS",
             style: TextStyle(
-                fontSize: 16, color: Colors.black87, letterSpacing: .5),
+                fontSize: 16, color: Colors.black87, letterSpacing: 5),
             textAlign: TextAlign.center,
           ),
         ]),
