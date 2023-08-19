@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/providers/agent_provider.dart';
 import 'package:real_estate/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,8 +22,8 @@ void callbackDispatcher() {
       await FirebaseFirestore.instance
           .collection("tracking")
           .doc(inputData!['propertyId'])
-          .collection(inputData!['agentId'])
-          .doc(inputData!['customerId'])
+          .collection(inputData['agentId'])
+          .doc(inputData['customerId'])
           .collection("coordinates")
           .doc(DateTime.now().millisecondsSinceEpoch.toString())
           .set({

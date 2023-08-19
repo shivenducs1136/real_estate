@@ -71,9 +71,9 @@ class AgentScreenState extends State<AgentScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(magent!.agent_name),
+            Text(magent.agent_name),
             Text(
-              magent!.email,
+              magent.email,
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ],

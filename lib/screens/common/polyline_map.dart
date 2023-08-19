@@ -1,12 +1,10 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_map_polyline_new/google_map_polyline_new.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
-import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/model/customer_model.dart';
 
 class PolyMapScreen extends StatefulWidget {
@@ -37,7 +35,7 @@ class Poly_MapScreenState extends State<PolyMapScreen> {
         _marker.add(Marker(
             markerId: MarkerId('1'),
             position:
-                LatLng(double.parse(value!.lat), double.parse(value!.lon))));
+                LatLng(double.parse(value.lat), double.parse(value.lon))));
       }
     });
     super.initState();

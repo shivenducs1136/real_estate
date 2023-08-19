@@ -17,7 +17,7 @@ class NearbyPlaces extends StatelessWidget {
   final String? email;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: List.generate(nearbyPlaces.length, (index) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),

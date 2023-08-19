@@ -102,8 +102,7 @@ class _AgentDetailsState extends State<AgentDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Positioned(
-                          child: CircleAvatar(
+                      CircleAvatar(
                         radius: 30,
                         child: FadeInImage(
                           placeholder: AssetImage("images/picture.png"),
@@ -113,7 +112,7 @@ class _AgentDetailsState extends State<AgentDetails> {
                                 fit: BoxFit.fitWidth);
                           },
                         ),
-                      )),
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
