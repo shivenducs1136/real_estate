@@ -2,9 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/model/activity_model.dart';
@@ -65,7 +64,7 @@ class APIs {
         .collection('agents')
         .doc(a.id)
         .collection('photos')
-        .doc("${file.name}.${ext}")
+        .doc("${file.name}.$ext")
         .set({"image": imageUrl});
     await firestore.collection('agents').doc(a.id).update({
       'photo': imageUrl,
@@ -95,7 +94,7 @@ class APIs {
           .collection('property')
           .doc(p.id)
           .collection('photos')
-          .doc("${file.name}.${ext}")
+          .doc("${file.name}.$ext")
           .set({"image": imageUrl});
       if (x) {
         await firestore.collection('property').doc(p.id).update({
@@ -247,34 +246,32 @@ class APIs {
 
     for (var cust in customerDocs.docs) {
       final data = await firestore.collection("customer").doc(cust.id).get();
-      if (data != null) {
-        CustomerModel? c = CustomerModel.fromJson(data.data()!);
-        if (c.agent_id.contains(agentId)) {
-          List<dynamic> mlist = c.agent_id;
-          List<dynamic> mprop = c.property_id;
-          int ele = 0;
-          for (int idx = 0; idx < mlist.length; idx++) {
-            if (mlist[idx] == agentId) {
-              ele = idx;
-              break;
-            }
+      CustomerModel? c = CustomerModel.fromJson(data.data()!);
+      if (c.agent_id.contains(agentId)) {
+        List<dynamic> mlist = c.agent_id;
+        List<dynamic> mprop = c.property_id;
+        int ele = 0;
+        for (int idx = 0; idx < mlist.length; idx++) {
+          if (mlist[idx] == agentId) {
+            ele = idx;
+            break;
           }
-          mprop.remove(mprop[ele]);
-          mlist.remove(agentId);
-          await firestore.collection("customer").doc(cust.id).set(CustomerModel(
-                  customer_name: c.customer_name,
-                  property_id: mprop,
-                  agent_id: mlist,
-                  phonenumber: c.phonenumber,
-                  address: c.address,
-                  customer_id: c.customer_id,
-                  isLoan: c.isLoan,
-                  isPurchase: c.isPurchase)
-              .toJson());
         }
+        mprop.remove(mprop[ele]);
+        mlist.remove(agentId);
+        await firestore.collection("customer").doc(cust.id).set(CustomerModel(
+                customer_name: c.customer_name,
+                property_id: mprop,
+                agent_id: mlist,
+                phonenumber: c.phonenumber,
+                address: c.address,
+                customer_id: c.customer_id,
+                isLoan: c.isLoan,
+                isPurchase: c.isPurchase)
+            .toJson());
       }
     }
-    activityDeleteAgent(msg: "Admin deleted Agent with email id - ${agentId}");
+    activityDeleteAgent(msg: "Admin deleted Agent with email id - $agentId");
     await firestore.collection('agents').doc(agentId).delete();
   }
 
@@ -436,8 +433,8 @@ class APIs {
     await firestore.collection("activity").doc(dateTime).set(ActivityModel(
             code: "19",
             property_id: property_id,
-            agent_id: agent_id!,
-            customer_id: customer_id!,
+            agent_id: agent_id,
+            customer_id: customer_id,
             msg: msg,
             isAdmin: isAdmin!,
             dateTime: dateTime)
@@ -518,7 +515,7 @@ class APIs {
     await firestore.collection("activity").doc(dateTime).set(ActivityModel(
             code: "2",
             property_id: property_id!,
-            agent_id: agent_id!,
+            agent_id: agent_id,
             customer_id: customer_id!,
             msg: msg,
             isAdmin: isAdmin!,
@@ -536,7 +533,7 @@ class APIs {
     await firestore.collection("activity").doc(dateTime).set(ActivityModel(
             code: "6",
             property_id: property_id!,
-            agent_id: agent_id!,
+            agent_id: agent_id,
             customer_id: customer_id!,
             msg: msg,
             isAdmin: isAdmin!,
