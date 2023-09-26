@@ -14,7 +14,7 @@ class RemoteConfig {
     await _remoteConfig.setDefaults(const {
       "COMPANY_NAME": "Tiwari Propmart",
       "COMPANY_EMAIL": "tiwaripropmart@gmail.com",
-      "API_KEY": "AIzaSyBcsyv9L2qMDC8_IbRE2bL6bX8wBoqeSrE",
+      "API_KEY": "",
       "EMAIL_ID": "tiwaripropmart.mail@gmail.com",
       "PASSWORD": "trbxdinhnmhqvdxn",
       "ADMIN_ID": "admin",

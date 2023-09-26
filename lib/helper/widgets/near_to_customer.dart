@@ -50,8 +50,15 @@ class NeartoCustomer extends StatelessWidget {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child:
-                              Dialogs.showImage(nearbyPlaces[index].showImg)),
+                          child: Container(
+                            height: double.maxFinite,
+                            width: 130,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Dialogs.showImage(
+                                  nearbyPlaces[index].showImg),
+                            ),
+                          )),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(

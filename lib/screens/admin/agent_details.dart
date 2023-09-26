@@ -78,6 +78,7 @@ class _AgentDetailsScreenState extends State<AgentDetailsScreen> {
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 16),
             Center(

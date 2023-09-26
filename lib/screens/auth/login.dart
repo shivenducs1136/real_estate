@@ -145,42 +145,50 @@ class _LoginMainState extends State<LoginMain> {
                               String em = email.trim().toLowerCase().toString();
                               Dialogs.checkInternet().then((value) {
                                 if (value) {
-                                  if (em.isNotEmpty &&
-                                      em.contains("@") &&
-                                      em.contains(".com")) {
-                                    Dialogs.showProgressBar(context);
-                                    APIs.isAgentExists(em).then((isAgentExist) {
-                                      if (isAgentExist) {
-                                        var value = new Random();
-                                        var codeNumber =
-                                            (value.nextInt(900000) + 100000)
-                                                .toString();
-                                        try {
-                                          Mailer.sendCredentialsEmail(
-                                              password: codeNumber,
-                                              destEmail: em);
-                                          APIs.updateEmailAndPassword(
-                                                  em, codeNumber)
-                                              .then((value) {
+                                  APIs.isAgentExists(em).then((value) {
+                                    if (value) {
+                                      if (em.isNotEmpty &&
+                                          em.contains("@") &&
+                                          em.contains(".com")) {
+                                        Dialogs.showProgressBar(context);
+                                        APIs.isAgentExists(em)
+                                            .then((isAgentExist) {
+                                          if (isAgentExist) {
+                                            var value = new Random();
+                                            var codeNumber =
+                                                (value.nextInt(900000) + 100000)
+                                                    .toString();
+                                            try {
+                                              Mailer.sendCredentialsEmail(
+                                                  password: codeNumber,
+                                                  destEmail: em);
+                                              APIs.updateEmailAndPassword(
+                                                      em, codeNumber)
+                                                  .then((value) {
+                                                Navigator.pop(context);
+                                                Dialogs.showSnackbar(context,
+                                                    "New password is sent to ${em}");
+                                              });
+                                            } catch (e) {
+                                              Navigator.pop(context);
+                                              Dialogs.showSnackbar(context,
+                                                  "Unknown error occured");
+                                            }
+                                          } else {
                                             Navigator.pop(context);
                                             Dialogs.showSnackbar(context,
-                                                "New password is sent to ${em}");
-                                          });
-                                        } catch (e) {
-                                          Navigator.pop(context);
-                                          Dialogs.showSnackbar(
-                                              context, "Unknown error occured");
-                                        }
+                                                "Please enter a valid email id.");
+                                          }
+                                        });
                                       } else {
-                                        Navigator.pop(context);
                                         Dialogs.showSnackbar(context,
                                             "Please enter a valid email id.");
                                       }
-                                    });
-                                  } else {
-                                    Dialogs.showSnackbar(context,
-                                        "Please enter a valid email id.");
-                                  }
+                                    } else {
+                                      Dialogs.showSnackbar(
+                                          context, "Agent doesn't exists");
+                                    }
+                                  });
                                 } else {
                                   Dialogs.showSnackbar(
                                       context, "No Internet Connection");
