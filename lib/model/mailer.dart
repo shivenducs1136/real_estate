@@ -9,11 +9,11 @@ class Mailer {
     String _password = Credentials.PASSWORD;
     final smtpServer = gmail(_username, _password);
     final message = Message()
-      ..from = Address(_username, 'Tiwari Propmart')
+      ..from = Address(_username, 'Propmart')
       ..recipients.add(destEmail)
-      ..subject = "Tiwari Propmart Registration Successfull."
+      ..subject = "Propmart Registration Successfull."
       ..html =
-          "<h2>Registration Successfull</h2><br><p> Hi there,<br>Your account is successfully created on Tiwari Propmart.<br>Please find your login credentials below.<br> Credentials: <br> Login Id: ${destEmail} <br> Password: ${password}</p><br><h4>Best & Regards</h4><br><p>Tiwari Propmart</p>";
+          "<h2>Registration Successfull</h2><br><p> Hi there,<br>Your account is successfully created on Propmart.<br>Please find your login credentials below.<br> Credentials: <br> Login Id: ${destEmail} <br> Password: ${password}</p><br><h4>Best & Regards</h4><br><p>Propmart</p>";
     var connection = PersistentConnection(smtpServer);
     await connection.send(message);
     await connection.close();

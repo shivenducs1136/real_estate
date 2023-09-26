@@ -12,11 +12,11 @@ class RemoteConfig {
 
   static setDefaults() async {
     await _remoteConfig.setDefaults(const {
-      "COMPANY_NAME": "Tiwari Propmart",
-      "COMPANY_EMAIL": "tiwaripropmart@gmail.com",
+      "COMPANY_NAME": "Propmart",
+      "COMPANY_EMAIL": "shivendu.2024cs1136@kiet.edu",
       "API_KEY": "",
       "EMAIL_ID": "tiwaripropmart.mail@gmail.com",
-      "PASSWORD": "trbxdinhnmhqvdxn",
+      "PASSWORD": "ruqtgvnrjspfbvok",
       "ADMIN_ID": "admin",
       "ADMIN_PASSWORD": "123",
     });

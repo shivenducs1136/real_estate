@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 import 'package:real_estate/apis/api.dart';
 import 'package:real_estate/helper/credentials.dart';
-import 'package:real_estate/helper/dialogs.dart';
 import 'package:real_estate/helper/widgets/control_panel.dart';
-import 'package:real_estate/helper/widgets/location_card.dart';
 import 'package:real_estate/helper/widgets/recent_activity.dart';
 import 'package:real_estate/model/activity_model.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/property_model.dart';
-import 'package:real_estate/screens/admin/add_agent.dart';
-import 'package:real_estate/screens/admin/add_property.dart';
-import 'package:real_estate/screens/admin/agent_details.dart';
-import 'package:real_estate/screens/admin/all_agent_screen.dart';
 import 'package:real_estate/screens/admin/all_recent_activity.dart';
-import 'package:real_estate/screens/admin/assign_property.dart';
-import 'package:real_estate/screens/admin/view_property.dart';
-import 'package:real_estate/screens/agent/agent_screen.dart';
 import 'package:real_estate/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -74,7 +64,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        "Tiwari Propmart",
+                        "Propmart",
                         style: TextStyle(
                             color: Color.fromARGB(255, 25, 88, 103),
                             fontWeight: FontWeight.bold,

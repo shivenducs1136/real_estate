@@ -63,7 +63,7 @@ Future<void> main() async {
     await FirebaseAppCheck.instance.activate(
       webRecaptchaSiteKey: 'recaptcha-v3-site-key',
       // Set androidProvider to `AndroidProvider.debug`
-      androidProvider: AndroidProvider.debug,
+      androidProvider: AndroidProvider.playIntegrity,
     );
   });
 

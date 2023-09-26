@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:real_estate/apis/api.dart';
+import 'package:real_estate/ar/ar_screens.dart';
 import 'package:real_estate/helper/cost_util.dart';
 import 'package:real_estate/helper/credentials.dart';
 import 'package:real_estate/helper/dialogs.dart';
@@ -63,22 +64,28 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(20)),
-                      image: DecorationImage(
-                        image: NetworkImage(widget.mproperty.showImg),
-                        fit: BoxFit.cover,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 0,
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => ArScreenOne()));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(20)),
+                        image: DecorationImage(
+                          image: NetworkImage(widget.mproperty.showImg),
+                          fit: BoxFit.cover,
                         ),
-                      ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 0,
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Positioned(

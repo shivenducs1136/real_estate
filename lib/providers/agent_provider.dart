@@ -4,7 +4,6 @@ import 'package:real_estate/main.dart';
 import 'package:real_estate/model/agent_model.dart';
 import 'package:real_estate/model/customer_model.dart';
 import 'package:real_estate/model/property_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AgentProvider extends ChangeNotifier {
   /// Internal, private state of the cart.
